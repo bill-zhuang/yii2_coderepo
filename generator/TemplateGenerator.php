@@ -20,7 +20,7 @@ class TemplateGenerator
         //module
         $this->_module_name = 'Test';
         //controller
-        $this->_controller_name = 'Test';
+        $this->_controller_name = 'DefaultTest';
         //asset
         $this->_css = [
             'test.css'
@@ -30,7 +30,7 @@ class TemplateGenerator
         ];
         //view
         $this->_asset_name = $this->_controller_name;
-        $this->_page_title = 'Test';
+        $this->_page_title = 'DefaultTest';
         $this->_all_batch_id = '';
         $this->_batch_id = '';
         $this->_table_row_data = [
@@ -46,6 +46,7 @@ class TemplateGenerator
 
     public function generate()
     {
+        $this->_generateJsFile();
         $this->_generateViewFile();
         $this->_generateModuleFile();
         $this->_generateAppAssetFile();
@@ -141,6 +142,41 @@ class TemplateGenerator
                 'controller_name' => $this->_controller_name,
                 'asset_name' => $this->_asset_name,
                 'page_title_name' => $this->_page_title,
+                'all_batch_id' => $this->_all_batch_id,
+                'batch_id' => $this->_batch_id,
+                'table_row_data' => $this->_table_row_data,
+                'primary_id' => $this->_primary_id,
+                'form_element_prefix' => strtolower(implode('_', $camel_name)),
+            ];
+            $create_result = $this->_renderFile($template_path, $dest_path, $params);
+            if ($create_result !== false)
+            {
+                echo 'Create View File index.php Successfully' . PHP_EOL;
+            }
+            else
+            {
+                echo 'Create View File index.php Failed' . PHP_EOL;
+            }
+        }
+    }
+
+    private function _generateJsFile()
+    {
+        $camel_name = $this->_splitControllerName();
+        $folder_name = strtolower(implode('-', $camel_name));
+        if ($folder_name !== '')
+        {
+            $js_folder_path = __DIR__ . '/../web/js/'
+                . ($this->_module_name === '' ? '' : (strtolower($this->_module_name) . '/'))
+                . $folder_name;
+            $this->_createDirectory($js_folder_path);
+            //create view file
+            $template_path = __DIR__ . '/template/JsTemplate.php';
+            $dest_path = $js_folder_path . '/' . $folder_name . '.js';
+            $params = [
+                'module_name' => $this->_module_name,
+                'controller_name' => $this->_controller_name,
+                'controller_url' => $folder_name,
                 'all_batch_id' => $this->_all_batch_id,
                 'batch_id' => $this->_batch_id,
                 'table_row_data' => $this->_table_row_data,
