@@ -4,7 +4,7 @@
 echo "<?php\n";
 ?>
 
-namespace app\modules\<?php echo $module_name; ?>;
+namespace app\modules\<?php echo strtolower($module_name); ?>;
 
 class <?php echo $module_name; ?>Module extends \yii\base\Module
 {
