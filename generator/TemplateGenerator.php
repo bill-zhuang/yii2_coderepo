@@ -8,21 +8,45 @@ class TemplateGenerator
     private $_controller_name;
     private $_css;
     private $_js;
+    private $_asset_name;
+    private $_page_title;
+    private $_all_batch_id;
+    private $_batch_id;
+    private $_table_row_data;
+    private $_primary_id;
 
     public function __construct()
     {
+        //module
         $this->_module_name = 'Test';
+        //controller
         $this->_controller_name = 'Test';
+        //asset
         $this->_css = [
             'test.css'
         ];
         $this->_js = [
             'test.js',
         ];
+        //view
+        $this->_asset_name = $this->_controller_name;
+        $this->_page_title = 'Test';
+        $this->_all_batch_id = '';
+        $this->_batch_id = '';
+        $this->_table_row_data = [
+            'name' => 'name',
+            'weight' => 'weight',
+            'create time' => 'create time',
+            'update time' => 'update time',
+        ];
+        $this->_primary_id = 'pkid';
+
+
     }
 
     public function generate()
     {
+        $this->_generateViewFile();
         $this->_generateModuleFile();
         $this->_generateAppAssetFile();
     }
@@ -97,6 +121,54 @@ class TemplateGenerator
                 echo 'Create File ' . $this->_module_name . 'Module.php Failed' . PHP_EOL;
             }
         }
+    }
+
+    private function _generateViewFile()
+    {
+        $camel_name = $this->_splitControllerName();
+        $folder_name = strtolower(implode('-', $camel_name));
+        if ($folder_name !== '')
+        {
+            $view_folder_path = __DIR__ . '/../'
+                . ($this->_module_name === '' ? '' : ('modules/' . strtolower($this->_module_name) . '/'))
+                . 'views/' . $folder_name;
+            $this->_createDirectory($view_folder_path);
+            //create view file
+            $template_path = __DIR__ . '/template/ViewTemplate.php';
+            $dest_path = $view_folder_path . '/index.php';
+            $params = [
+                'module_name' => $this->_module_name,
+                'controller_name' => $this->_controller_name,
+                'asset_name' => $this->_asset_name,
+                'page_title_name' => $this->_page_title,
+                'all_batch_id' => $this->_all_batch_id,
+                'batch_id' => $this->_batch_id,
+                'table_row_data' => $this->_table_row_data,
+                'primary_id' => $this->_primary_id,
+                'form_element_prefix' => strtolower(implode('_', $camel_name)),
+            ];
+            $create_result = $this->_renderFile($template_path, $dest_path, $params);
+            if ($create_result !== false)
+            {
+                echo 'Create View File index.php Successfully' . PHP_EOL;
+            }
+            else
+            {
+                echo 'Create View File index.php Failed' . PHP_EOL;
+            }
+        }
+    }
+
+    private function _splitControllerName()
+    {
+        $preg_camel_word = '/([A-Z][a-z]*)/';
+        $is_match = preg_match_all($preg_camel_word, $this->_controller_name, $camel_matches);
+        if ($is_match)
+        {
+            return $camel_matches[1];
+        }
+
+        return [];
     }
 
     private function _createDirectory($dir_path)
