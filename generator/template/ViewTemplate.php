@@ -62,9 +62,9 @@ echo "?>\n";
         <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <table class="table table-striped table-bordered bill_table text-center">
-                    <tr>
+                    <tr><?php if($all_batch_id !== ''){ echo PHP_EOL; ?>
                         <td><input type="checkbox" id="<?php echo $all_batch_id; ?>" name="<?php echo $all_batch_id; ?>"/></td>
-                        <td>序号</td><?php
+                        <?php } ?><td>序号</td><?php
                             echo PHP_EOL;
                             foreach ($table_row_data as $key => $value)
                             {
@@ -75,9 +75,9 @@ echo "?>\n";
                     </tr>
                     <tbody>
                     <?php echo '<?php for($i = 0, $len = count($data); $i < $len; $i++){ ?>' . PHP_EOL; ?>
-                        <tr>
+                        <tr><?php if($batch_id !== ''){ echo PHP_EOL; ?>
                             <td><input type="checkbox" value="<?php echo '<?php echo $data[$i][\'' . $primary_id . '\']; ?>'; ?>" name="<?php echo $batch_id; ?>"/></td>
-                            <td><?php echo '<?php echo ($js_data[\'start\'] + $i + 1); ?>'; ?></td><?php
+                            <?php } ?><td><?php echo '<?php echo ($js_data[\'start\'] + $i + 1); ?>'; ?></td><?php
                                 echo PHP_EOL;
                                 foreach ($table_row_data as $value)
                                 {
@@ -93,7 +93,7 @@ echo "?>\n";
 
                     <?php echo '<?php if (count($data) == 0) { ?>' . PHP_EOL; ?>
                         <tr>
-                            <td colspan="<?php echo (3 + count($table_row_data)); ?>" class="bill_table_no_data">对不起,没有符合条件的数据</td>
+                            <td colspan="<?php echo (2 + ($all_batch_id ==='' ? 0 : 1) + ($batch_id === '' ? 0 : 1) + count($table_row_data)); ?>" class="bill_table_no_data">对不起,没有符合条件的数据</td>
                         </tr>
                     <?php echo '<?php } ?>' . PHP_EOL; ?>
                     </tbody>
