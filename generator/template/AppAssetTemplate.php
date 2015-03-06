@@ -7,7 +7,7 @@
 echo "<?php\n";
 ?>
 
-namespace app\assets<?php echo ($module_name === '') ? '' : ('\\' . $module_name); ?>;
+namespace app\assets<?php echo ($module_name === '') ? '' : ('\\' . strtolower($module_name)); ?>;
 
 use yii\web\AssetBundle;
 class AppAsset<?php echo $controller_name; ?> extends AssetBundle
@@ -18,7 +18,7 @@ class AppAsset<?php echo $controller_name; ?> extends AssetBundle
         <?php
             foreach ($css as $value)
             {
-                echo $value, ",\n";
+                echo "'" , $value, "'", ",\n";
             }
         ?>
     ];
@@ -26,7 +26,7 @@ class AppAsset<?php echo $controller_name; ?> extends AssetBundle
         <?php
             foreach ($js as $value)
             {
-                echo $value, ",\n";
+                echo "'" , $value, "'", ",\n";
             }
         ?>
     ];
