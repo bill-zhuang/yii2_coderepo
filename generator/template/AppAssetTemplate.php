@@ -15,20 +15,21 @@ class AppAsset<?php echo $controller_name; ?> extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        <?php
-            foreach ($css as $value)
-            {
-                echo "'" , $value, "'", ",\n";
-            }
-        ?>
+
+<?php
+    foreach ($css as $value)
+    {
+        echo str_repeat(' ', 4 * 2) . "'" , $value, "'", ",\n";
+    }
+?>
     ];
     public $js = [
-        <?php
-            foreach ($js as $value)
-            {
-                echo "'" , $value, "'", ",\n";
-            }
-        ?>
+<?php
+    foreach ($js as $value)
+    {
+        echo str_repeat(' ', 4 * 2) . "'" , $value, "'", ",\n";
+    }
+?>
     ];
     public $depends = [
         'yii\web\YiiAsset',
