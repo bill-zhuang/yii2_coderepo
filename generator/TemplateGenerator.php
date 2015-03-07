@@ -359,13 +359,13 @@ class TemplateGenerator
         }
     }
 
-    private function _getDBConfig()
+    private function _getConfig($config_name)
     {
-        $db_ini_path = __DIR__ . '/configs/db.ini';
-        if (file_exists($db_ini_path))
+        $config_path = __DIR__ . '/configs/' . $config_name;
+        if (file_exists($config_path))
         {
-            $db_config = parse_ini_file($db_ini_path, true);
-            return $db_config;
+            $config = parse_ini_file($config_path, true);
+            return $config;
         }
 
         return null;
