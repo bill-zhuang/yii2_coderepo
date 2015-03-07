@@ -14,6 +14,10 @@ class TemplateGenerator
     private $_batch_id;
     private $_table_row_data;
     private $_primary_id;
+    private $_model_names;
+    private $_table_names;
+
+    private $_cache_table_info;
 
     public function __construct()
     {
@@ -39,13 +43,21 @@ class TemplateGenerator
             'create time' => 'create time',
             'update time' => 'update time',
         ];
-        $this->_primary_id = 'pkid';
+        //tables
+        $this->_table_names = [
+            'finance_category',
+        ];
+        $this->_primary_id = $this->_getTablePrimaryID($this->_table_names[0]);
+        //models
+        $this->_model_names = array_map([$this, '_getModelNameByTableName'], $this->_table_names);
 
-
+        //cache
+        $this->_cache_table_info = [];
     }
 
     public function generate()
     {
+        $this->_generateControllerFile();
         $this->_generateJsFile();
         $this->_generateViewFile();
         $this->_generateModuleFile();
@@ -195,6 +207,48 @@ class TemplateGenerator
         }
     }
 
+    private function _generateControllerFile()
+    {
+        if ($this->_controller_name === '' || empty($this->_table_names))
+        {
+            echo 'Controller Name or Table Name can\'t be empty.' . PHP_EOL;
+            exit;
+        }
+        $controller_folder_path = __DIR__ . '/../'
+            . ($this->_module_name === '' ? '' : ('modules/' . strtolower($this->_module_name) . '/'))
+            . 'controllers';
+        $this->_createDirectory($controller_folder_path);
+        //create controller
+        $params = [
+            'module_name' => $this->_module_name,
+            'model_names' => $this->_model_names,
+            'table_names' => $this->_table_names,
+            'controller_name' => $this->_controller_name,
+            'primary_id' => $this->_primary_id,
+            'table_data' => $this->_getTableInsertArrayForController($this->_table_names[0]),
+            'form_element_prefix' => strtolower(implode('_', $this->_splitControllerName())),
+        ];
+        $template_path = __DIR__ . '/template/ControllerTemplate.php';
+        $dest_path = $controller_folder_path . '/' . $this->_controller_name . '.php';
+
+        $create_result = $this->_renderFile($template_path, $dest_path, $params);
+        if ($create_result !== false)
+        {
+            echo 'Create Controller File ' . $this->_controller_name . '.php Successfully' . PHP_EOL;
+        }
+        else
+        {
+            echo 'Create Controller File ' . $this->_controller_name . '.php Failed' . PHP_EOL;
+        }
+    }
+
+    private function _getModelNameByTableName($table_name)
+    {
+        $camel_name = explode('_', $table_name);
+        $model_name = implode('', array_map('ucwords', $camel_name));
+        return $model_name;
+    }
+    
     private function _splitControllerName()
     {
         $preg_camel_word = '/([A-Z][a-z]*)/';
@@ -205,6 +259,116 @@ class TemplateGenerator
         }
 
         return [];
+    }
+
+    private function _getTableLabelsForModel($table_name)
+    {
+        $definitions = $this->_getTableInfo($table_name);
+        $labels = [];
+        foreach ($definitions as $definition)
+        {
+            $name = implode(
+                ' ',
+                array_map(
+                    'ucwords',
+                    explode(
+                        '_',
+                        str_replace('id', 'ID', $definition['Field'])
+                    )
+                )
+            );
+            $labels[$definition['Field']] = $name;
+        }
+
+        return $labels;
+    }
+
+    private function _getTableFieldsForModel($table_name)
+    {
+        $definitions = $this->_getTableInfo($table_name);
+        $table_fields = [];
+        foreach ($definitions as $definition)
+        {
+            $table_fields[$definition['Type']] = $definition['Field']; //integer => fc_weight
+            $type = preg_replace('/\(.*$', '', $definition['Type']);
+            switch($type)
+            {
+                //case ''
+            }
+        }
+
+        return $table_fields;
+    }
+
+    private function _getTablePrimaryID($table_name)
+    {
+        $definitions = $this->_getTableInfo($table_name);
+        $primary_id = '';
+        foreach ($definitions as $definition)
+        {
+            if ($definition['Key'] === 'PRI')
+            {
+                $primary_id = $definition['Field'];
+            }
+        }
+
+        return $primary_id;
+    }
+
+    private function _getTableInsertArrayForController($table_name)
+    {
+        $definitions = $this->_getTableInfo($table_name);
+        $table_data = [];
+        foreach ($definitions as $definition)
+        {
+            $table_data[$definition['Field']] = $definition['Default']; //fc_weight => 1
+        }
+
+        return $table_data;
+    }
+
+    private function _getTableInfo($table_name)
+    {
+        if (isset($this->_cache_table_info[$table_name]))
+        {
+            return $this->_cache_table_info[$table_name];
+        }
+
+        $db_config = $this->_getDBConfig();
+        if ($db_config !== null)
+        {
+            try
+            {
+                $adapter = new \PDO(
+                    "mysql:host={$db_config['db']['host']};dbname={$db_config['db']['dbname']}",
+                    $db_config['db']['username'],
+                    $db_config['db']['password'],
+                    []
+                );
+                $sql = 'desc ' . $table_name;
+                $desc = $adapter->query($sql)->fetchAll();
+                //cache & return sql result
+                $this->_cache_table_info[$table_name] = $desc;
+                return $desc;
+            }
+            catch (\PDOException $e)
+            {
+                echo 'Connection failed: ', $e->getMessage(), PHP_EOL;
+                exit;
+            }
+        }
+    }
+
+    private function _getDBConfig()
+    {
+        $db_ini_path = __DIR__ . '/configs/db.ini';
+        if (file_exists($db_ini_path))
+        {
+            $db_config = parse_ini_file($db_ini_path, true);
+            return $db_config;
+        }
+
+        return null;
     }
 
     private function _createDirectory($dir_path)
