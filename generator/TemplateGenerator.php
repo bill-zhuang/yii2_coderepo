@@ -267,7 +267,7 @@ class TemplateGenerator
             'form_element_prefix' => strtolower(implode('_', $this->_splitControllerName())),
         ];
         $template_path = __DIR__ . '/template/ControllerTemplate.php';
-        $dest_path = $controller_folder_path . '/' . $this->_controller_name . '.php';
+        $dest_path = $controller_folder_path . '/' . $this->_controller_name . 'Controller.php';
 
         $create_result = $this->_renderFile($template_path, $dest_path, $params);
         if ($create_result !== false)
