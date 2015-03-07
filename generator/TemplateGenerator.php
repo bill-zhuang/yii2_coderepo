@@ -106,6 +106,8 @@ class TemplateGenerator
         if ($this->_module_name !== '')
         {
             //create folder is not exist
+            $js_folder_path = __DIR__ . '/../web/js';
+            $this->_createDirectory($js_folder_path);
             $module_path = __DIR__ . '/../modules/' . strtolower($this->_module_name);
             $create_folder_path = [
                 $module_path,
