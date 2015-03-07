@@ -334,7 +334,7 @@ class TemplateGenerator
             return $this->_cache_table_info[$table_name];
         }
 
-        $db_config = $this->_getDBConfig();
+        $db_config = $this->_getConfig('db.ini');
         if ($db_config !== null)
         {
             try
