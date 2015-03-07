@@ -57,6 +57,7 @@ class TemplateGenerator
 
     public function generate()
     {
+        $this->_generateModelFile();
         $this->_generateControllerFile();
         $this->_generateJsFile();
         $this->_generateViewFile();
@@ -207,6 +208,41 @@ class TemplateGenerator
         }
     }
 
+    private function _generateModelFile()
+    {
+        $model_folder_path = __DIR__ . '/../'
+            . ($this->_module_name === '' ? '' : ('modules/' . strtolower($this->_module_name) . '/'))
+            . 'models';
+        $this->_createDirectory($model_folder_path);
+        //create table model
+        foreach ($this->_table_names as $table_name)
+        {
+            $model_name = $this->_getModelNameByTableName($table_name);
+
+            $params = [
+                'module_name' => $this->_module_name,
+                'model_name' => $model_name,
+                'table_name' => $table_name,
+                'table_fields' => $this->_getTableFieldsForModel($table_name),
+                'labels' => $this->_getTableLabelsForModel($table_name),
+                'rules' => $this->_getTableRulesForModal($table_name),
+                'controller_name' => $this->_controller_name,
+            ];
+            $template_path = __DIR__ . '/template/ModelTemplate.php';
+            $dest_path = $model_folder_path . '/' . $model_name . '.php';
+
+            $create_result = $this->_renderFile($template_path, $dest_path, $params);
+            if ($create_result !== false)
+            {
+                echo 'Create Model File ' . $model_name . '.php Successfully' . PHP_EOL;
+            }
+            else
+            {
+                echo 'Create Model File ' . $model_name . '.php Failed' . PHP_EOL;
+            }
+        }
+    }
+
     private function _generateControllerFile()
     {
         if ($this->_controller_name === '' || empty($this->_table_names))
@@ -289,15 +325,163 @@ class TemplateGenerator
         $table_fields = [];
         foreach ($definitions as $definition)
         {
-            $table_fields[$definition['Type']] = $definition['Field']; //integer => fc_weight
-            $type = preg_replace('/\(.*$', '', $definition['Type']);
-            switch($type)
-            {
-                //case ''
-            }
+            $type_name = $this->_getMySQLFieldType($definition['Type']);
+            $php_type = $this->_getPhpType($type_name, (stripos($definition['Type'], 'unsigned') !== false));
+
+            $table_fields[$definition['Field']] = $php_type; //fc_weight => integer
         }
 
         return $table_fields;
+    }
+
+    //copy & modify from
+    private function _getTableRulesForModal($table_name)
+    {
+        $definitions = $this->_getTableInfo($table_name);
+        $table_fields = [];
+        foreach ($definitions as $definition)
+        {
+            if ($definition['Key'] !== 'PRI')
+            {
+                $type_name = $this->_getMySQLFieldType($definition['Type']);
+                $table_fields[$definition['Field']] = $type_name;
+
+                //todo need update
+                /*if (($definition['Null'] === 'NO') && $definition['Default'] === null)
+                {
+                    $types['required'][] = $type_name;
+                }*/
+            }
+        }
+
+        $types = [];
+        foreach ($table_fields as $filed_name => $type)
+        {
+            switch ($type)
+            {
+                case 'smallint':
+                case 'integer':
+                case 'bigint':
+                    $types['integer'][] = $filed_name;
+                    break;
+                case 'boolean':
+                    $types['boolean'][] = $filed_name;
+                    break;
+                case 'float':
+                case 'decimal':
+                case 'money':
+                    $types['number'][] = $filed_name;
+                    break;
+                case 'date':
+                case 'time':
+                case 'datetime':
+                case 'timestamp':
+                    $types['safe'][] = $filed_name;
+                    break;
+                default: // strings
+                    $types['string'][] = $filed_name;
+                    //todo need update
+                    /*if ($column->size > 0) {
+                        $lengths[$column->size][] = $filed_name;
+                    } else {
+                        $types['string'][] = $filed_name;
+                    }*/
+            }
+        }
+
+        $rules = [];
+        foreach ($types as $type => $columns) {
+            $rules[] = "[['" . implode("', '", $columns) . "'], '$type']";
+        }
+        //todo need update
+        /*foreach ($lengths as $length => $columns) {
+            $rules[] = "[['" . implode("', '", $columns) . "'], 'string', 'max' => $length]";
+        }*/
+        //todo need update for unique index rule
+        return $rules;
+    }
+
+    //copy & modify from vendor\yiisoft\yii2\db\mysql\Schema.php
+    private function _getMySQLFieldType($type)
+    {
+        $mysql_data_types = $this->_getConfig('mysql_data_type.ini');
+        $type_name = '';
+        if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $type, $matches))
+        {
+            $type = strtolower($matches[1]);
+            if (isset($mysql_data_types[$type]))
+            {
+                $type_name = $mysql_data_types[$type];
+            }
+
+            if (!empty($matches[2]))
+            {
+                $values = explode(',', $matches[2]);
+                if ($type === 'enum')
+                {
+                    ;
+                }
+                else
+                {
+                    $size = intval($values[0]);
+                    $update_type = '';
+                    if ($size === 1 && $type === 'bit')
+                    {
+                        $update_type = 'boolean';
+                    }
+                    elseif ($type === 'bit')
+                    {
+                        if ($size > 32)
+                        {
+                            $update_type = 'bigint';
+                        }
+                        elseif ($size === 32)
+                        {
+                            $update_type = 'integer';
+                        }
+                    }
+                    if ($update_type !== '')
+                    {
+                        $type_name = $update_type;
+                    }
+                }
+            }
+        }
+
+        return $type_name;
+    }
+
+    //copy & modify from vendor\yiisoft\yii2\db\Schema.php
+    private function _getPhpType($type, $is_unsigned)
+    {
+        $typeMap = [
+            // abstract type => php type
+            'smallint' => 'integer',
+            'integer' => 'integer',
+            'bigint' => 'integer',
+            'boolean' => 'boolean',
+            'float' => 'double',
+            'binary' => 'resource',
+        ];
+        if (isset($typeMap[$type]))
+        {
+            if ($type === 'bigint')
+            {
+                return PHP_INT_SIZE == 8 && !$is_unsigned ? 'integer' : 'string';
+            }
+            elseif ($type === 'integer')
+            {
+                return PHP_INT_SIZE == 4 && $is_unsigned ? 'string' : 'integer';
+            }
+            else
+            {
+                return $typeMap[$type];
+            }
+        }
+        else
+        {
+            return 'string';
+        }
     }
 
     private function _getTablePrimaryID($table_name)
@@ -345,7 +529,7 @@ class TemplateGenerator
                     $db_config['db']['password'],
                     []
                 );
-                $sql = 'desc ' . $table_name;
+                $sql = 'SHOW FULL COLUMNS FROM ' . $table_name;
                 $desc = $adapter->query($sql)->fetchAll();
                 //cache & return sql result
                 $this->_cache_table_info[$table_name] = $desc;
