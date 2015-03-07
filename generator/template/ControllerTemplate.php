@@ -138,7 +138,7 @@ class <?php echo $controller_name; ?>Controller extends Controller
         if (isset($_GET['<?php echo $primary_id; ?>']))
         {
             $<?php echo $primary_id; ?> = intval(yii::$app->request->get('<?php echo $primary_id; ?>'));
-            if ($<?php echo $primary_id; ?> > yii::$app->params('invalid_primary_id'))
+            if ($<?php echo $primary_id; ?> > yii::$app->params['invalid_primary_id'])
             {
                 $data = <?php echo $model_names[0]; ?>::get<?php echo $controller_name; ?>ByID($<?php echo $primary_id; ?>);
             }
