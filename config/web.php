@@ -45,7 +45,7 @@ $config = [
     ],
     'params' => $params,
     'timeZone' => 'Asia/Shanghai',
-    //'defaultRoute' => 'index',
+    'defaultRoute' => 'index',
     'layout' => 'layout',
     'modules' => [
         'person' => [
