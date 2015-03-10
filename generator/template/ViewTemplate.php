@@ -26,6 +26,7 @@ echo "?>\n";
     <!-- panel body -->
     <div class="panel-body">
         <div class="row">
+<?php if ($primary_id !== ''){ ?>
             <form class="form-inline">
                 <div class="col-sm-10 col-md-10 col-lg-10">
                     关键字:
@@ -57,8 +58,10 @@ echo "?>\n";
                     &nbsp;<label>每页</label>
                 </div>
             </form>
+<?php } ?>
         </div><hr>
-
+    </div>
+<?php if($primary_id !== ''){ ?>
         <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <table class="table table-striped table-bordered bill_table text-center">
@@ -111,8 +114,9 @@ echo "?>\n";
             </div>
         </div>
     </div>
+<?php } ?>
 </div>
-
+<?php if ($primary_id !== ''){ ?>
 <!-- modal -->
 <div id="modal<?php echo $controller_name; ?>" class="modal fade">
     <div class="modal-dialog bill_modal_lg" >
@@ -148,3 +152,4 @@ echo "?>\n";
         </div>
     </div>
 </div>
+<?php } ?>
