@@ -250,9 +250,9 @@ class TemplateGenerator
 
     private function _generateControllerFile()
     {
-        if ($this->_controller_name === '' || empty($this->_table_names))
+        if ($this->_controller_name === '')
         {
-            echo 'Controller Name or Table Name can\'t be empty.' . PHP_EOL;
+            echo 'Controller Name can\'t be empty.' . PHP_EOL;
             exit;
         }
         $controller_folder_path = __DIR__ . '/../'
@@ -266,7 +266,7 @@ class TemplateGenerator
             'table_names' => $this->_table_names,
             'controller_name' => $this->_controller_name,
             'primary_id' => $this->_primary_id,
-            'table_data' => $this->_getTableInsertArrayForController($this->_table_names[0]),
+            'table_data' => empty($this->_table_names) ? [] : $this->_getTableInsertArrayForController($this->_table_names[0]),
             'form_element_prefix' => strtolower(implode('_', $this->_splitControllerName())),
         ];
         $template_path = __DIR__ . '/template/ControllerTemplate.php';
