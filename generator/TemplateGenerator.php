@@ -83,6 +83,9 @@ class TemplateGenerator
             $template_path = __DIR__ . '/template/AppAssetTemplate.php';
             $dest_path = __DIR__ . '/../assets/' . (($this->_module_name === '') ? '' : ($this->_module_name . '/') )
                 . 'AppAsset' . $this->_controller_name . '.php';
+            $js_name = strtolower(implode('-', $this->_splitControllerName()));
+            $this->_js[] = 'js/' . (($this->_module_name === '') ? '' : ($this->_module_name . '/'))
+                . $js_name . '/' . $js_name . '.js';
             $params = [
                 'module_name' => $this->_module_name,
                 'controller_name' => $this->_controller_name,
