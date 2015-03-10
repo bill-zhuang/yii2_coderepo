@@ -26,9 +26,10 @@ class <?php echo $controller_name; ?>Controller extends Controller
     {
 
     }
-<?php if(!empty($model_names)){ ?>
+
     public function actionIndex()
     {
+<?php if(!empty($model_names)){ ?>
         $current_page = intval(yii::$app->request->get('current_page', yii::$app->params['init_start_page']));
         $page_length = intval(yii::$app->request->get('page_length', yii::$app->params['init_page_length']));
         $start = ($current_page - yii::$app->params['init_start_page']) * $page_length;
@@ -57,8 +58,11 @@ class <?php echo $controller_name; ?>Controller extends Controller
             'js_data' => $js_data,
         ];
         return $this->render('index', $view_data);
+<?php }else{ ?>
+        return $this->render('index');
+<?php } ?>
     }
-
+<?php if(!empty($model_names)){ ?>
     public function actionAdd<?php echo $controller_name; ?>()
     {
         $affected_rows = yii::$app->params['init_affected_rows'];
