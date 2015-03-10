@@ -49,7 +49,6 @@ class GoogleMapController extends Controller
             ];
         }
 
-        return $this->render('index', json_encode($lng_lat));
-        //$this->view->lng_lat = json_encode($lng_lat);
+        return $this->render('multiple-location', ['js_data' =>json_encode($lng_lat)]);
     }
 }
