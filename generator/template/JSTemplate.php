@@ -10,6 +10,7 @@
 ?>
 
 $(document).ready(function(){
+<?php if ($primary_id !== ''){ ?>
     $('#keyword').val(js_data.keyword);
     $('#page_length').val(js_data.page_length);
     $('#pagination').twbsPagination({
@@ -24,8 +25,9 @@ $(document).ready(function(){
             search(page);
         }
     });
+<?php } ?>
 });
-
+<?php if ($primary_id !== ''){ ?>
 $('#keyword').on('keydown', function(event){
     if (event.keyCode == 13) {
         //enter key
@@ -162,3 +164,4 @@ function search(current_page, page_length, keyword)
 $('#page_length').on('change', function(){
     search(1, this.value);
 });
+<?php } ?>
