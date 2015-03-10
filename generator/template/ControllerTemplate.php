@@ -10,7 +10,7 @@
 echo "<?php\n";
 ?>
 
-namespace app\<?php echo ($module_name === '') ? '' : ('modules\\' . strtolower($module_name)); ?>\controllers;
+namespace app\<?php echo ($module_name === '') ? '' : ('modules\\' . strtolower($module_name)); ?>controllers;
 
 use yii;
 use yii\web\Controller;
@@ -26,7 +26,7 @@ class <?php echo $controller_name; ?>Controller extends Controller
     {
 
     }
-
+<?php if(!empty($model_names)){ ?>
     public function actionIndex()
     {
         $current_page = intval(yii::$app->request->get('current_page', yii::$app->params['init_start_page']));
@@ -181,5 +181,5 @@ class <?php echo $controller_name; ?>Controller extends Controller
 
         return $old_data->save();
     }
-
+<?php } ?>
 }
