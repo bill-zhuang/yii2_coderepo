@@ -168,12 +168,8 @@ class FinanceCategoryController extends Controller
             'fc_create_time' => date('Y-m-d H:i:s'),
             'fc_update_time' => date('Y-m-d H:i:s'),
         ];
-        $adapter_finance_category = new FinanceCategory();
-        foreach ($data as $key => $value)
-        {
-            $adapter_finance_category->$key = $value;
-        }
-        return $adapter_finance_category->insert();
+
+        return FinanceCategory::getDb()->createCommand()->insert(FinanceCategory::tableName(), $data)->execute();
     }
 
     private function _updateFinanceCategory()
