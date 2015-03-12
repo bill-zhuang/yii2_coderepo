@@ -41,7 +41,7 @@ class <?php echo $controller_name; ?>Controller extends Controller
                 'value' => ''
             ]
         ];
-        $order_by = '';
+        $order_by = [];
         $total = <?php echo $model_names[0]; ?>::get<?php echo $controller_name; ?>Count($conditions);
         $data = <?php echo $model_names[0]; ?>::get<?php echo $controller_name; ?>Data($conditions, $page_length, $start, $order_by);
 
