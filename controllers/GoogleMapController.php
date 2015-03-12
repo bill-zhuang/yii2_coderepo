@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use yii;
 use yii\web\Controller;
-use app\models\GoogleMap;
+use app\library\bill\GoogleMap;
 
 class GoogleMapController extends Controller
 {
