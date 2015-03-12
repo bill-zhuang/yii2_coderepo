@@ -46,6 +46,7 @@ class DreamHistoryController extends Controller
         ];
         return $this->render('index', $view_data);
     }
+
     public function actionAddDreamHistory()
     {
         $affected_rows = yii::$app->params['init_affected_rows'];

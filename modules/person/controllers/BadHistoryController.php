@@ -46,6 +46,7 @@ class BadHistoryController extends Controller
         ];
         return $this->render('index', $view_data);
     }
+
     public function actionAddBadHistory()
     {
         $affected_rows = yii::$app->params['init_affected_rows'];
