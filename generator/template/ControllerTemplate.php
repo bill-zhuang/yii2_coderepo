@@ -62,6 +62,7 @@ class <?php echo $controller_name; ?>Controller extends Controller
         return $this->render('index');
 <?php } ?>
     }
+
 <?php if(!empty($model_names)){ ?>
     public function actionAdd<?php echo $controller_name; ?>()
     {
