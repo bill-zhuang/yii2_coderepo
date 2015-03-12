@@ -89,7 +89,7 @@ class DreamHistory extends \yii\db\ActiveRecord
         return DreamHistory::find()
             ->select(['date_format(dh_happen_date, "%Y-%m") as period', 'count(dh_count) as number'])
             ->where(['dh_status' => 1])
-            ->groupBy('date_format(dh_happen_date, "%Y%m")')
+            ->groupBy(['date_format(dh_happen_date, "%Y%m")'])
             ->asArray()
             ->all();
     }
