@@ -157,16 +157,14 @@ class <?php echo $controller_name; ?>Controller extends Controller
         $data = [
 <?php foreach ($table_data as $key => $default_value)
 {
-    echo str_repeat(' ', 4 * 3) . "'" . $key . "' => '" . $default_value . "'," . PHP_EOL;
+    if ($key != $primary_id)
+    {
+        echo str_repeat(' ', 4 * 3) . "'" . $key . "' => '" . $default_value . "'," . PHP_EOL;
+    }
 }
 ?>
         ];
-        $adapter_<?php echo $table_names[0]; ?> = new <?php echo $model_names[0]; ?>();
-        foreach ($data as $key => $value)
-        {
-            $adapter_<?php echo $table_names[0]; ?>->$key = $value;
-        }
-        return $adapter_<?php echo $table_names[0]; ?>->insert();
+        return <?php echo $model_names[0]; ?>::getDb()->createCommand()->insert(<?php echo $model_names[0]; ?>::tableName(), $data)->execute();
     }
 
     private function _update<?php echo $controller_name; ?>()
