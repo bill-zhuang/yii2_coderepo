@@ -36,7 +36,7 @@ class FinancePaymentController extends Controller
                 'value' => $payment_date
             ];
         }
-        $order_by = 'fp_payment_date desc';
+        $order_by = ['fp_payment_date' => SORT_DESC];
         $total = FinancePayment::getFinancePaymentCount($conditions);
         $data = FinancePayment::getFinancePaymentData($conditions, $page_length, $start, $order_by);
         foreach ($data as $key => $value)

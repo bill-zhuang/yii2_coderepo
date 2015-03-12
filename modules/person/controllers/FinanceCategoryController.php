@@ -35,7 +35,7 @@ class FinanceCategoryController extends Controller
                 'value' => $keyword
             ];
         }
-        $order_by = 'fc_weight desc';
+        $order_by = ['fc_weight' => SORT_DESC];
         $total = FinanceCategory::getFinanceCategoryCount($conditions);
         $data = FinanceCategory::getFinanceCategoryData($conditions, $page_length, $start, $order_by);
 

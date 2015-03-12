@@ -28,7 +28,7 @@ class BadHistoryController extends Controller
                 'value' => yii::$app->params['valid_status']
             ]
         ];
-        $order_by = 'bh_create_time desc';
+        $order_by = ['bh_create_time' => SORT_DESC];
         $total = BadHistory::getBadHistoryCount($conditions);
         $data = BadHistory::getBadHistoryData($conditions, $page_length, $start, $order_by);
 

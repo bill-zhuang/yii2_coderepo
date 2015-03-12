@@ -28,7 +28,7 @@ class DreamHistoryController extends Controller
                 'value' => yii::$app->params['valid_status']
             ]
         ];
-        $order_by = 'dh_create_time desc';
+        $order_by = ['dh_create_time' => SORT_DESC];
         $total = DreamHistory::getDreamHistoryCount($conditions);
         $data = DreamHistory::getDreamHistoryData($conditions, $page_length, $start, $order_by);
 
