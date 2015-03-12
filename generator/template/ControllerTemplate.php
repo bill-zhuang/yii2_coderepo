@@ -112,9 +112,9 @@ class <?php echo $controller_name; ?>Controller extends Controller
         $affected_rows = yii::$app->params['init_affected_rows'];
         if (isset($_POST['<?php echo $primary_id; ?>']))
         {
+            $transaction = <?php echo $model_names[0]; ?>::getDb()->beginTransaction();
             try
             {
-                $transaction = <?php echo $model_names[0]; ?>::getDb()->beginTransaction();
                 $<?php echo $primary_id; ?> = intval(yii::$app->request->post('<?php echo $primary_id; ?>'));
                 $update_data = [
 
