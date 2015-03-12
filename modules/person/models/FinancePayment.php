@@ -89,4 +89,38 @@ class FinancePayment extends \yii\db\ActiveRecord
             ->asArray()
             ->one();
     }
+
+    public static function getTotalPaymentHistoryGroupData()
+    {
+        return FinancePayment::find()
+            ->select(['date_format(fp_payment_date, "%Y-%m") as period', 'sum(fp_payment) as payment'])
+            ->where(['fp_status' => 1])
+            ->groupBy(['date_format(fp_payment_date, "%Y%m")'])
+            ->orderBy(['fp_payment_date' => SORT_ASC])
+            ->asArray()
+            ->all();
+    }
+
+    public static function getTotalPaymentHistoryDataByDay($start_date)
+    {
+        return FinancePayment::find()
+            ->select(['fp_payment_date as period', 'sum(fp_payment) as payment'])
+            ->where(['fp_status' => 1])
+            ->andWhere(['>=', 'fp_payment_date', $start_date])
+            ->groupBy(['fp_payment_date'])
+            ->orderBy(['fp_payment_date' => SORT_ASC])
+            ->asArray()
+            ->all();
+    }
+
+    public static function getTotalPaymentHistoryDataByCategory($start_date)
+    {
+        return FinancePayment::find()
+            ->select(['fc_id', 'sum(fp_payment) as payment'])
+            ->where(['fp_status' => 1])
+            ->andWhere(['>=', 'fp_payment_date', $start_date])
+            ->groupBy(['fc_id'])
+            ->asArray()
+            ->all();
+    }
 }
