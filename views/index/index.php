@@ -20,7 +20,7 @@ AppAssetIndex::register($this);
                         Generate real download link
                     </button><br><br>
                     Real download link:(right click and save as.../other will failed!)&nbsp;&nbsp;
-                    <a href="#" id="generated_baidu_music_url"></a>
+                    <a href="#" id="generated_baidu_music_url" target="_blank"></a>
                     <hr>
                     Generate url with underline:&nbsp;&nbsp;
                     <input type="text" id="url" class="form-control" style="width: 800px;"/>&nbsp;&nbsp;
