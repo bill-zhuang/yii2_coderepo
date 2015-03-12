@@ -119,7 +119,7 @@ class FinanceCategory extends \yii\db\ActiveRecord
     {
         $data = FinanceCategory::find()
             ->select('fc_name')
-            ->where('fc_id=?', $fc_id)
+            ->where(['fc_id' => $fc_id])
             ->asArray()
             ->one();
         return isset($data['fc_name']) ? $data['fc_name'] : '';
