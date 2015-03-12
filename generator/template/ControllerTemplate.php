@@ -10,7 +10,7 @@
 echo "<?php\n";
 ?>
 
-namespace app\<?php echo ($module_name === '') ? '' : ('modules\\' . strtolower($module_name)); ?>controllers;
+namespace app\<?php echo ($module_name === '') ? '' : ('modules\\' . strtolower($module_name) . '\\'); ?>controllers;
 
 use yii;
 use yii\web\Controller;
