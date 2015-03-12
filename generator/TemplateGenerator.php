@@ -228,6 +228,7 @@ class TemplateGenerator
                 'module_name' => $this->_module_name,
                 'model_name' => $model_name,
                 'table_name' => $table_name,
+                'primary_id' => $this->_getTablePrimaryID($table_name),
                 'table_fields' => $this->_getTableFieldsForModel($table_name),
                 'labels' => $this->_getTableLabelsForModel($table_name),
                 'rules' => $this->_getTableRulesForModal($table_name),

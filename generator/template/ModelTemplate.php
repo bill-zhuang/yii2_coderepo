@@ -2,6 +2,7 @@
 /* @var $module_name string module name */
 /* @var $model_name string model name */
 /* @var $table_name string table name */
+/* @var $primary_id string table primary id */
 /* @var $table_fields array table fields */
 /* @var $labels array table field labels */
 /* @var $rules array table rules */
@@ -78,10 +79,10 @@ class <?php echo $model_name; ?> extends \yii\db\ActiveRecord
         return $data;
     }
 
-    public static function get<?php echo $model_name; ?>ByID($fc_id)
+    public static function get<?php echo $model_name; ?>ByID($<?php echo $primary_id; ?>)
     {
         return <?php echo $model_name; ?>::find()
-            ->where(['fc_id' => $fc_id])
+            ->where(['<?php echo $primary_id; ?>' => $<?php echo $primary_id; ?>])
             ->asArray()
             ->one();
     }
