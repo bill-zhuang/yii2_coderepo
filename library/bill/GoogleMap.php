@@ -1,5 +1,5 @@
 <?php
-namespace app\models;
+namespace app\library\bill;
 
 class GoogleMap
 {
