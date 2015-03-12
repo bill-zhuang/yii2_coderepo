@@ -109,9 +109,9 @@ $('a[id^=delete_]').on('click', function(){
 function validInput()
 {
     var error_num = 0;
-    var name = $.trim($('#' + '_<?php echo $form_element_prefix; ?>_name').val());
-    var weight = $('#' + '_<?php echo $form_element_prefix; ?>_weight').val();
-    var image = $('#' + '_<?php echo $form_element_prefix; ?>_image').val();
+    var name = $.trim($('#<?php echo $form_element_prefix; ?>_name').val());
+    var weight = $('#<?php echo $form_element_prefix; ?>_weight').val();
+    var image = $('#<?php echo $form_element_prefix; ?>_image').val();
     var content = $.trim(CKEDITOR.instances.ck_<?php echo $form_element_prefix; ?>_intro.getData());
     if(name == '') {
         error_num = error_num + 1;
