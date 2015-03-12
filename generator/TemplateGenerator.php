@@ -47,9 +47,17 @@ class TemplateGenerator
         $this->_table_names = [
             'finance_category',
         ];
-        $this->_primary_id = $this->_getTablePrimaryID($this->_table_names[0]);
-        //models
-        $this->_model_names = array_map([$this, '_getModelNameByTableName'], $this->_table_names);
+        if (!empty($this->_table_names))
+        {
+            $this->_primary_id = $this->_getTablePrimaryID($this->_table_names[0]);
+            //models
+            $this->_model_names = array_map([$this, '_getModelNameByTableName'], $this->_table_names);
+        }
+        else
+        {
+            $this->_primary_id = '';
+            $this->_model_names = [];
+        }
 
         //cache
         $this->_cache_table_info = [];
