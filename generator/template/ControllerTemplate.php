@@ -36,12 +36,12 @@ class <?php echo $controller_name; ?>Controller extends Controller
         $keyword = trim(yii::$app->request->get('keyword', ''));
 
         $conditions = [
-            'table_field' => [
+            '<?php echo str_replace('id', 'status', $primary_id); ?>' => [
                 'compare_type' => '=',
-                'value' => ''
+                'value' => yii::$app->params['valid_status']
             ]
         ];
-        $order_by = [];
+        $order_by = ['<?php echo str_replace('id', 'update_time', $primary_id); ?>' => SORT_DESC];
         $total = <?php echo $model_names[0]; ?>::get<?php echo $controller_name; ?>Count($conditions);
         $data = <?php echo $model_names[0]; ?>::get<?php echo $controller_name; ?>Data($conditions, $page_length, $start, $order_by);
 
