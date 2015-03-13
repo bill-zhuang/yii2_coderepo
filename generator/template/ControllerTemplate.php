@@ -160,7 +160,7 @@ class <?php echo $controller_name; ?>Controller extends Controller
 {
     if ($key != $primary_id)
     {
-        echo str_repeat(' ', 4 * 3) . "'" . $key . "' => '" . $default_value . "'," . PHP_EOL;
+        echo str_repeat(' ', 4 * 3) . "'" . $key . "' => " . $default_value . "," . PHP_EOL;
     }
 }
 ?>
@@ -177,7 +177,7 @@ class <?php echo $controller_name; ?>Controller extends Controller
 {
     if ($key !== $primary_id)
     {
-        echo str_repeat(' ', 4 * 2) . '$old_data->' . $key . " = '" . $default_value . "';" . PHP_EOL;
+        echo str_repeat(' ', 4 * 2) . '$old_data->' . $key . " = " . $default_value . ";" . PHP_EOL;
     }
 }
 ?>
