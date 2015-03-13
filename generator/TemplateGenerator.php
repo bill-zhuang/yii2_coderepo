@@ -517,9 +517,50 @@ class TemplateGenerator
     {
         $definitions = $this->_getTableInfo($table_name);
         $table_data = [];
+        $element_prefix = strtolower(implode('_', $this->_splitControllerName()));
         foreach ($definitions as $definition)
         {
-            $table_data[$definition['Field']] = $definition['Default']; //fc_weight => 1
+            //replace fp_payment to finance_payment_payment
+            //replace fc_id to finance_payment_fc_id
+            if (strpos($definition['Field'], str_replace('_id', '', $this->_primary_id)) !== false)
+            {
+                $element_name = preg_replace('/^([^_]+)/', $element_prefix, $definition['Field']);
+            }
+            else
+            {
+                $element_name = $element_prefix . '_' . $definition['Field'];
+            }
+            $type = $this->_getMySQLFieldType($definition['Type']);
+            switch ($type)
+            {
+                case 'smallint':
+                case 'integer':
+                case 'bigint':
+                    $field_value = 'intval(yii::$app->request->post(\'' . $element_name .  '\'))';
+                    break;
+                case 'boolean':
+                    $field_value = 'intval(yii::$app->request->post(\'' . $element_name .  '\'))';
+                    break;
+                case 'float':
+                case 'decimal':
+                case 'money':
+                    $field_value = 'floatval(yii::$app->request->post(\'' . $element_name .  '\'))';
+                    break;
+                case 'date':
+                    $field_value = 'date(\'Y-m-d\')';
+                    break;
+                case 'time':
+                    $field_value = 'date(\'H:i:s\')';
+                    break;
+                case 'datetime':
+                case 'timestamp':
+                    $field_value = 'date(\'Y-m-d H:i:s\')';
+                    break;
+                default: // strings
+                    $field_value = 'trim(yii::$app->request->post(\'' . $element_name .  '\'))';;
+                    break;
+            }
+            $table_data[$definition['Field']] = $field_value; //fc_weight => 1
         }
 
         return $table_data;
