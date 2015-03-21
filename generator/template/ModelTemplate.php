@@ -63,7 +63,7 @@ class <?php echo $model_name; ?> extends \yii\db\ActiveRecord
         return $count;
     }
 
-    public static function get<?php echo $model_name; ?>Data(array $conditions, $count, $offset, $order_by)
+    public static function get<?php echo $model_name; ?>Data(array $conditions, $limit, $offset, $order_by)
     {
         $select = <?php echo $model_name; ?>::find();
         foreach ($conditions as $key => $content)
@@ -71,7 +71,7 @@ class <?php echo $model_name; ?> extends \yii\db\ActiveRecord
             $select->andWhere([$content['compare_type'], $key, $content['value']]);
         }
         $data = $select
-            ->limit($count)
+            ->limit($limit)
             ->offset($offset)
             ->orderBy($order_by)
             ->asArray()
