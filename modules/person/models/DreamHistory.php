@@ -60,7 +60,7 @@ class DreamHistory extends \yii\db\ActiveRecord
         return $count;
     }
 
-    public static function getDreamHistoryData(array $conditions, $count, $offset, $order_by)
+    public static function getDreamHistoryData(array $conditions, $limit, $offset, $order_by)
     {
         $select = DreamHistory::find();
         foreach ($conditions as $key => $content)
@@ -68,7 +68,7 @@ class DreamHistory extends \yii\db\ActiveRecord
             $select->andWhere([$content['compare_type'], $key, $content['value']]);
         }
         $data = $select
-            ->limit($count)
+            ->limit($limit)
             ->offset($offset)
             ->orderBy($order_by)
             ->asArray()
