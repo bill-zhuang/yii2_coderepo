@@ -5,14 +5,32 @@ namespace app\modules\person\controllers;
 use yii;
 use yii\web\Controller;
 use app\modules\person\models\DreamHistory;
+use yii\filters\AccessControl;
 
 class DreamHistoryController extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function init()
+    public function behaviors()
     {
-
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => [
+                            'index',
+                            'add-dream-history',
+                            'modify-dream-history',
+                            'delete-dream-history',
+                            'get-dream-history',
+                        ],
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function actionIndex()

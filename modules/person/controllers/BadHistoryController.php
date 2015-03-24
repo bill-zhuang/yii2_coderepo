@@ -5,14 +5,32 @@ namespace app\modules\person\controllers;
 use yii;
 use yii\web\Controller;
 use app\modules\person\models\BadHistory;
+use yii\filters\AccessControl;
 
 class BadHistoryController extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function init()
+    public function behaviors()
     {
-
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => [
+                            'index',
+                            'add-bad-history',
+                            'modify-bad-history',
+                            'delete-bad-history',
+                            'get-bad-history',
+                        ],
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function actionIndex()

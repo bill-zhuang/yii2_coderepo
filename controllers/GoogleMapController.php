@@ -5,14 +5,30 @@ namespace app\controllers;
 use yii;
 use yii\web\Controller;
 use app\library\bill\GoogleMap;
+use yii\filters\AccessControl;
 
 class GoogleMapController extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function init()
+    public function behaviors()
     {
-
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => [
+                            'index',
+                            'mark-location',
+                            'multiple-location',
+                        ],
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function actionIndex()

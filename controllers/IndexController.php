@@ -6,14 +6,29 @@ use yii;
 use yii\web\Controller;
 use app\library\bill\Curl;
 use app\library\bill\Regex;
+use yii\filters\AccessControl;
 
 class IndexController extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function init()
+    public function behaviors()
     {
-
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => [
+                            'index',
+                            'download-baidu-music',
+                        ],
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function actionIndex()
