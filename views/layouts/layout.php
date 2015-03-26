@@ -24,6 +24,24 @@ AppAssetLayout::register($this);
                 <ul class="nav navbar-nav">
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-user"></span>Person center
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="/index.php/main/modify-password">
+                                    <span class="glyphicon glyphicon-wrench"></span>Modify Password
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/index.php/login/logout">
+                                    <span class="glyphicon glyphicon-log-out"></span>Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             Variety<b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
