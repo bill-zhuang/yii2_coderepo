@@ -1,4 +1,6 @@
 <?php
+/* @var $content string */
+use yii\helpers\Html;
 use app\assets\AppAssetLayout;
 AppAssetLayout::register($this);
 ?>
@@ -11,6 +13,7 @@ AppAssetLayout::register($this);
         <meta charset="utf-8">
         <title>Bill Coderepo</title>
         <!-- read css file in AppAssetLayout.php -->
+        <?php Html::csrfMetaTags() ?>
         <?php $this->head() ?>
     </head>
 
