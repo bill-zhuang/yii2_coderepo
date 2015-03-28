@@ -24,7 +24,11 @@ AppAssetLayout::register($this);
                 <a class="navbar-brand" href="#">Bill</a>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+            </div>
+        </div>
+        <div class="row bill-layout-width">
+            <div class="col-sm-3 col-md-3 col-lg-2 well bill-sidebar bill_div_scroll" id="main">
+                <ul class="nav nav-sidebar">
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <span class="glyphicon glyphicon-user"></span>Person center
@@ -88,12 +92,6 @@ AppAssetLayout::register($this);
                             <li class="nav-divider"></li>
                         </ul>
                     </li>
-                </ul>
-            </div>
-        </div>
-        <div class="row bill-layout-width">
-            <div class="col-sm-3 col-md-3 col-lg-2 well bill-sidebar" id="main">
-                <ul class="nav nav-sidebar">
                 </ul>
             </div>
             <!-- below is for show action view file. -->
