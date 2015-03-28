@@ -31,7 +31,7 @@ AppAssetLayout::register($this);
                 <ul class="nav nav-sidebar">
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-user"></span>Person center
+                            <span class="glyphicon glyphicon-user"></span> Person center
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
@@ -49,7 +49,7 @@ AppAssetLayout::register($this);
                     </li>
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Variety<b class="caret"></b>
+                            <span class="glyphicon glyphicon-leaf"></span> Variety<b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="/index.php/index/index">Other</a></li>
@@ -70,7 +70,7 @@ AppAssetLayout::register($this);
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            History<b class="caret"></b>
+                            <span class="glyphicon glyphicon-stats"></span> History<b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="/index.php/person/dream-history/index">Dream History</a></li>
