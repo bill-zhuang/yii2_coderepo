@@ -77,7 +77,6 @@ AppAssetLayout::register($this);
                             <li><a href="/index.php/person/dream-history-chart/index">Dream History Chart</a></li>
                             <li><a href="/index.php/person/bad-history/index">Bad History</a></li>
                             <li><a href="/index.php/person/bad-history-chart/index">Bad History Chart</a></li>
-                            <li class="nav-divider"></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -89,7 +88,6 @@ AppAssetLayout::register($this);
                             <li><a href="/index.php/person/finance-category/index">Finance Category</a></li>
                             <li><a href="/index.php/person/finance-payment/index">Finance Payment</a></li>
                             <li><a href="/index.php/person/finance-history/index">Finance History</a></li>
-                            <li class="nav-divider"></li>
                         </ul>
                     </li>
                 </ul>
