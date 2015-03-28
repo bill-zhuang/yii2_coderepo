@@ -14,6 +14,7 @@ namespace app\<?php echo ($module_name === '') ? '' : ('modules\\' . strtolower(
 
 use yii;
 use yii\web\Controller;
+use yii\filters\AccessControl;
 <?php foreach($model_names as $model_name){ ?>
 use app\<?php echo ($module_name === '') ? '' : ('modules\\' . strtolower($module_name)); ?>models\<?php echo $model_name; ?>;<?php echo PHP_EOL; ?>
 <?php } ?>
@@ -22,9 +23,22 @@ class <?php echo $controller_name; ?>Controller extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function init()
+    public function behaviors()
     {
-
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'actions' => [
+                                'index',
+                        ],
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function actionIndex()
