@@ -13,6 +13,7 @@ echo "<?php\n";
 namespace app<?php echo ($module_name === '') ? '' : ('\\modules\\' . strtolower($module_name)); ?>\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 /**
  * This is the model class for table "<?php echo $table_name; ?>".
  *
@@ -20,7 +21,7 @@ use Yii;
  * @property <?php echo $type .  ' $' . $field . PHP_EOL; ?>
 <?php } ?>
  */
-class <?php echo $model_name; ?> extends \yii\db\ActiveRecord
+class <?php echo $model_name; ?> extends ActiveRecord
 {
     /**
      * @inheritdoc
