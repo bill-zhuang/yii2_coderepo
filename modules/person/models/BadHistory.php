@@ -3,6 +3,7 @@
 namespace app\modules\person\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 /**
  * This is the model class for table "bad_history".
  *
@@ -13,7 +14,7 @@ use Yii;
  * @property string $bh_create_time
  * @property string $bh_update_time
  */
-class BadHistory extends \yii\db\ActiveRecord
+class BadHistory extends ActiveRecord
 {
     /**
      * @inheritdoc

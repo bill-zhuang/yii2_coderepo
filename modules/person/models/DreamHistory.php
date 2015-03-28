@@ -3,6 +3,7 @@
 namespace app\modules\person\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 /**
  * This is the model class for table "dream_history".
  *
@@ -13,7 +14,7 @@ use Yii;
  * @property string $dh_create_time
  * @property string $dh_update_time
  */
-class DreamHistory extends \yii\db\ActiveRecord
+class DreamHistory extends ActiveRecord
 {
     /**
      * @inheritdoc

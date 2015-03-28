@@ -3,6 +3,7 @@
 namespace app\modules\person\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 /**
  * This is the model class for table "finance_category".
  *
@@ -14,7 +15,7 @@ use Yii;
  * @property string $fc_create_time
  * @property string $fc_update_time
  */
-class FinanceCategory extends \yii\db\ActiveRecord
+class FinanceCategory extends ActiveRecord
 {
     /**
      * @inheritdoc
