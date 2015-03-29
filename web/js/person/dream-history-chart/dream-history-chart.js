@@ -1,9 +1,7 @@
 
 $(document).ready(function(){
-    console.log(js_data);
     var chart_data = js_data['chart_data'];
-    //console.log(chart_data);
-    /*var data_period = chart_data['period'];
+    var data_period = chart_data['period'];
     var data_number = chart_data['number'];
     if (data_period.length != 0) {
         initLineChart(data_period, data_number);
@@ -12,7 +10,7 @@ $(document).ready(function(){
         initDoughnut(data_period, data_number);
         }
     //all dream history data by day
-    initLineChartAll();*/
+    initLineChartAll();
 });
 
 function initLineChartAll()

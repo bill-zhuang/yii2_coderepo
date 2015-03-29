@@ -43,8 +43,8 @@ class DreamHistoryChartController extends Controller
         $all_chart_data = $this->_getAllDreamHistoryDataByDay();
         $view_data = [
             'js_data' => [
-                'chart_data' => json_encode($chart_data),
-                'all_chart_data' => json_encode($all_chart_data),
+                'chart_data' => $chart_data,
+                'all_chart_data' => $all_chart_data,
             ],
         ];
         return $this->render('index', $view_data);
@@ -55,6 +55,7 @@ class DreamHistoryChartController extends Controller
         $all_chart_data = [
             'period' => [],
             'number' => [],
+            'interval' => [],
         ];
         $all_data = DreamHistory::getTotalDreamHistoryDataByDay();
         foreach ($all_data as $key => $all_value)
