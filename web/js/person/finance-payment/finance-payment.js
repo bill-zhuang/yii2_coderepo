@@ -32,7 +32,7 @@ $('#btn_search').on('click', function(){
 
 $('#btn_add').on('click', function(){
     window.formFinancePayment.reset();
-    $('#payment_date').val(getCurrentDate());
+    $('#finance_payment_payment_date').val(getCurrentDate());
     $('#btn_submit_finance_payment').attr('disabled', false);
     $('#modalFinancePayment').modal('show');
 });

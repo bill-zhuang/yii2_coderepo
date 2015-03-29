@@ -50,7 +50,7 @@ class FinancePaymentController extends Controller
         if ('' != $payment_date)
         {
             $conditions['fp_payment_date'] = [
-                'compare_type' => '= ?',
+                'compare_type' => '=',
                 'value' => $payment_date
             ];
         }
