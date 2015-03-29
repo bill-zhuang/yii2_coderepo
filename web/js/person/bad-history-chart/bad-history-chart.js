@@ -6,7 +6,6 @@ $(document).ready(function(){
 function initLineChartAll()
 {
     var chart_data = js_data;
-    console.log(chart_data);
     var data_period = chart_data['period'];
     var data_number = chart_data['interval'];
     if (data_period.length != 0) {
