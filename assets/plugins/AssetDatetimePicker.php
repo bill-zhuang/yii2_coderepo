@@ -1,6 +1,6 @@
 <?php
 
-namespace app\assets;
+namespace app\assets\plugins;
 
 use yii\web\AssetBundle;
 class AssetDatetimePicker extends AssetBundle
