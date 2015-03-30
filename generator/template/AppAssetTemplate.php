@@ -32,7 +32,6 @@ class AppAsset<?php echo $controller_name; ?> extends AssetBundle
 ?>
     ];
     public $depends = [
-        'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
     ];
