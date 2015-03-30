@@ -18,6 +18,6 @@ class AppAssetFinancePayment extends AssetBundle
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
-        'app\assets\AssetDatetimePicker',
+        'app\assets\plugins\AssetDatetimePicker',
     ];
 }
