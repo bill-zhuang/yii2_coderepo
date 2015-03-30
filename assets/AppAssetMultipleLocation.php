@@ -17,7 +17,6 @@ class AppAssetMultipleLocation extends AssetBundle
         'http://maps.googleapis.com/maps/api/js?key=AIzaSyCefZle2DqxF9i51PTfoZsZoOmvWzKYhF4&sensor=true',
     ];
     public $depends = [
-        'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
     ];

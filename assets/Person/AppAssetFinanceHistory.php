@@ -14,7 +14,6 @@ class AppAssetFinanceHistory extends AssetBundle
         'js/person/finance-history/finance-history.js',
     ];
     public $depends = [
-        'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
         'app\assets\plugins\AssetChart',

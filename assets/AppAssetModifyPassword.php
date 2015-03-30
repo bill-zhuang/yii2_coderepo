@@ -14,7 +14,6 @@ class AppAssetModifyPassword extends AssetBundle
         'js/main/modify-password.js',
     ];
     public $depends = [
-        'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
     ];

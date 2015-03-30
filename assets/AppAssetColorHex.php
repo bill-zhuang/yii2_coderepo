@@ -17,7 +17,6 @@ class AppAssetColorHex extends AssetBundle
         'js/color-hex/color-hex.js',
     ];
     public $depends = [
-        'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
     ];

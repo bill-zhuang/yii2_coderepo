@@ -14,7 +14,6 @@ class AppAssetBadHistoryChart extends AssetBundle
         'js/person/bad-history-chart/bad-history-chart.js',
     ];
     public $depends = [
-        'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
         'app\assets\plugins\AssetChart',

@@ -15,7 +15,6 @@ class AppAssetFinanceCategory extends AssetBundle
         'js/person/finance-category/finance-category.js',
     ];
     public $depends = [
-        'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
     ];
