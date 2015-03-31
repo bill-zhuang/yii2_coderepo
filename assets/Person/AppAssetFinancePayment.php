@@ -11,7 +11,6 @@ class AppAssetFinancePayment extends AssetBundle
 
     ];
     public $js = [
-        'js/pagination/jquery.twbsPagination.min.js',
         'js/person/finance-payment/finance-payment.js',
         'js/common/alertInfo.js',
         'js/common/util.js',
@@ -20,5 +19,6 @@ class AppAssetFinancePayment extends AssetBundle
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
         'app\assets\plugins\AssetDatetimePicker',
+        'app\assets\plugins\PaginationAsset',
     ];
 }
