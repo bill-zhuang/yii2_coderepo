@@ -11,7 +11,6 @@ class AppAssetLayout extends AssetBundle
         'css/layout.css',
     ];
     public $js = [
-        'js/common/jquery.cookie.js',
         'js/common/layout.js',
         'js/common/alertInfo.js',
         'js/common/common.js',
@@ -21,5 +20,6 @@ class AppAssetLayout extends AssetBundle
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
+        'app\assets\plugins\jQueryCookieAsset',
     ];
 }
