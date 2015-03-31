@@ -34,5 +34,6 @@ class AppAsset<?php echo $controller_name; ?> extends AssetBundle
     public $depends = [
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
+        'app\assets\plugins\PaginationAsset',
     ];
 }
