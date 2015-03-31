@@ -12,6 +12,7 @@ class AppAssetIndex extends AssetBundle
     ];
     public $js = [
         'js/index/index.js',
+        'js/common/util.js',
     ];
     public $depends = [
         'yii\bootstrap\BootstrapAsset', //bootstrap css

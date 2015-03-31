@@ -12,9 +12,6 @@ class AppAssetLayout extends AssetBundle
     ];
     public $js = [
         'js/common/layout.js',
-        'js/common/alertInfo.js',
-        'js/common/common.js',
-        'js/common/util.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

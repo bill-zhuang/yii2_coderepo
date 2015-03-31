@@ -13,6 +13,8 @@ class AppAssetBadHistory extends AssetBundle
     public $js = [
         'js/pagination/jquery.twbsPagination.min.js',
         'js/person/bad-history/bad-history.js',
+        'js/common/alertInfo.js',
+        'js/common/util.js',
     ];
     public $depends = [
         'yii\bootstrap\BootstrapAsset', //bootstrap css

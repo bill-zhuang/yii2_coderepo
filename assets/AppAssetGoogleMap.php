@@ -11,6 +11,7 @@ class AppAssetGoogleMap extends AssetBundle
 
     ];
     public $js = [
+        'js/common/util.js',
         'js/google-map/google-map.js',
         'js/google-map/gmaprepo.js',
         'http://maps.googleapis.com/maps/api/js?key=AIzaSyCefZle2DqxF9i51PTfoZsZoOmvWzKYhF4&sensor=true',

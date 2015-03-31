@@ -13,6 +13,8 @@ class AppAssetDreamHistory extends AssetBundle
     public $js = [
         'js/pagination/jquery.twbsPagination.min.js',
         'js/person/dream-history/dream-history.js',
+        'js/common/alertInfo.js',
+        'js/common/util.js',
     ];
     public $depends = [
         'yii\bootstrap\BootstrapAsset', //bootstrap css
