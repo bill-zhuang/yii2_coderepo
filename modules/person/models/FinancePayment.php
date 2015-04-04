@@ -121,6 +121,7 @@ class FinancePayment extends ActiveRecord
             ->where(['fp_status' => 1])
             ->andWhere(['>=', 'fp_payment_date', $start_date])
             ->groupBy(['fc_id'])
+            ->orderBy(['payment' => SORT_DESC])
             ->asArray()
             ->all();
     }
