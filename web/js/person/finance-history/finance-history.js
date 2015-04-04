@@ -5,7 +5,9 @@ $(document).ready(function(){
     //all payment history data by day
     initLineChartAll();
     //payment by category last year
-    initCategoryChart();
+    initYearCategoryChart();
+    //payment by category last 30 days
+    initMonthCategoryChart();
 });
 
 function initMonthChart()
@@ -21,13 +23,28 @@ function initMonthChart()
     }
 }
 
-function initCategoryChart()
+function initYearCategoryChart()
 {
-    var category_chart_data = js_data['category_chart_data'];
+    var category_chart_data = js_data['year_category_chart_data'];
     var data_category = category_chart_data['category'];
     var data_payment = category_chart_data['payment'];
+    $('#year_spent').text('(' + js_data['year_spent'] + ')');
     var line_canvas_id = 'category_payment_history_line_chart';
     var bar_canvas_id = 'category_payment_history_bar_chart';
+    if (data_category.length != 0) {
+        initLineChart(data_category, data_payment, line_canvas_id);
+        initBarChart(data_category, data_payment, bar_canvas_id);
+    }
+}
+
+function initMonthCategoryChart()
+{
+    var category_chart_data = js_data['month_category_chart_data'];
+    var data_category = category_chart_data['category'];
+    var data_payment = category_chart_data['payment'];
+    $('#month_spent').text('(' + js_data['month_spent'] + ')');
+    var line_canvas_id = 'month_category_payment_history_line_chart';
+    var bar_canvas_id = 'month_category_payment_history_bar_chart';
     if (data_category.length != 0) {
         initLineChart(data_category, data_payment, line_canvas_id);
         initBarChart(data_category, data_payment, bar_canvas_id);

@@ -22,6 +22,19 @@ Yii::$app->view->registerJs('var js_data = ' . json_encode($js_data) . ';', \yii
                 </div>
             </div>
 
+            <span class="bill-margin-left bill_font_bold_green">All category payment history data in last 30 days</span>
+            <span id="month_spent"></span>
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="bill-chart-canvas">
+                    <canvas id="month_category_payment_history_line_chart"></canvas>
+                </div>
+                <div class="bill-chart-canvas bill-margin-left">
+                    <canvas id="month_category_payment_history_bar_chart"></canvas>
+                </div>
+            </div>
+
+            <br/>
+
             <span class="bill-margin-left bill_font_bold_green">All payment history data by month</span>
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="bill-chart-canvas">
@@ -34,7 +47,8 @@ Yii::$app->view->registerJs('var js_data = ' . json_encode($js_data) . ';', \yii
 
             <br/>
 
-            <span class="bill-margin-left bill_font_bold_green">All category payment history data in latest year</span>
+            <span class="bill-margin-left bill_font_bold_green">All category payment history data in last one year</span>
+            <span id="year_spent"></span>
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="bill-chart-canvas">
                     <canvas id="category_payment_history_line_chart"></canvas>

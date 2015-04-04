@@ -67,13 +67,18 @@ class FinanceHistoryController extends Controller
         }
         //choose last one year data.
         $start_date = date('Y-m-d', strtotime('- 1 year'));
-        $category_data = $this->_getAllPaymentHistoryDataByCategory($start_date);
+        $year_category_data = $this->_getAllPaymentHistoryDataByCategory($start_date);
+        $start_date = date('Y-m-d', strtotime('- 30 day'));
+        $month_category_data = $this->_getAllPaymentHistoryDataByCategory($start_date);
 
         $view_data = [
             'js_data' => [
                 'chart_data' => $chart_data,
                 'all_chart_data' => $all_chart_data,
-                'category_chart_data' => $category_data,
+                'year_category_chart_data' => $year_category_data,
+                'month_category_chart_data' => $month_category_data,
+                'year_spent' => array_sum($year_category_data['payment']),
+                'month_spent' => array_sum($month_category_data['payment']),
             ],
         ];
         return $this->render('index', $view_data);
