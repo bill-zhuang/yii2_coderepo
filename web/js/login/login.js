@@ -10,13 +10,6 @@ $('#login').on('submit', function(event){
     loginCheck();
 });
 
-$('#login').on('keydown', function(event){
-    if(event.keyCode == 13) {
-        event.preventDefault();
-        loginCheck();
-    }
-});
-
 function loginCheck()
 {
     var name = $.trim($('#username').val());
@@ -24,10 +17,8 @@ function loginCheck()
 
     if (name == '') {
         alert('用户名不能为空！');
-        return false;
     } else if (password == '') {
         alert('密码不能为空！');
-        return false;
     } else {
         $('#login').get(0).submit();
     }
