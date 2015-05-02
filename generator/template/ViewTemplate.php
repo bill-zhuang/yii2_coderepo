@@ -7,8 +7,14 @@
 /* @var $batch_id string checkbox id */
 /* @var $table_row_data array html table, key is name, value is data key */
 /* @var $primary_id string primary key name */
+/* @var $table_data array table fields and default value */
 /* @var $form_element_prefix string prefix of form element */
+/* @var $controller_url string controller name in url format */
+/* @var $view_modal_size string modal size */
+/* @var $is_blacklist bool use blacklist or not */
+/* @var $is_ckeditor bool use ckeditor or not */
 
+$table_keys = array_keys($table_data);
 echo "<?php\n";
 echo 'use app\assets' . (($module_name === '') ? '' : ('\\' . strtolower($module_name))) . '\\AppAsset' . $asset_name . ';' . PHP_EOL;
 
@@ -27,10 +33,10 @@ echo "?>\n";
     <div class="panel-body">
         <div class="row">
 <?php if ($primary_id !== ''){ ?>
-            <form class="form-inline">
+            <form action="/index.php<?php echo '/' . strtolower($module_name); ?>/<?php echo $controller_url; ?>/index" method="get" id="formSearch" class="form-inline">
                 <div class="col-sm-10 col-md-10 col-lg-10">
                     关键字:
-                    <input type="text" class="form-control" id="keyword"/>
+                    <input type="text" class="form-control" id="keyword" name="keyword"/>
                     <button class="btn btn-primary" type="button" id="btn_search">
                         <span class="glyphicon glyphicon-search"></span>
                         <span>搜索</span>
@@ -39,14 +45,18 @@ echo "?>\n";
                         <span class="glyphicon glyphicon-plus"></span>
                         <span>新增</span>
                     </button>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button class="btn btn-warning" type="button" id="btn_blacklist">
-                        <span class="glyphicon glyphicon-warning-sign"></span>
-                        <span>黑名单</span>
-                    </button>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button class="btn btn-danger" type="button" id="btn_delete">
-                        <span class="glyphicon glyphicon-trash"></span>
-                        <span>删除</span>
-                    </button>&nbsp;&nbsp;&nbsp;&nbsp;
+<?php if ($is_blacklist){ ?>
+                        <button class="btn btn-warning" type="button" id="btn_blacklist">
+                            <span class="glyphicon glyphicon-warning-sign"></span>
+                            <span>黑名单</span>
+                        </button>&nbsp;&nbsp;&nbsp;&nbsp;
+<?php } ?>
+<?php if($all_batch_id !== ''){ ?>
+                        <button class="btn btn-danger" type="button" id="btn_batch_delete">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            <span>批量删除</span>
+                        </button>&nbsp;&nbsp;&nbsp;&nbsp;
+<?php } ?>
                 </div>
                 <div class="col-sm-2 col-md-2 col-lg-2 text-right">
                     <select name="page_length" id="page_length" class="form-control">
@@ -60,15 +70,15 @@ echo "?>\n";
             </form>
 <?php } ?>
         </div><hr>
-    </div>
 <?php if($primary_id !== ''){ ?>
         <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <table class="table table-striped table-bordered bill_table text-center">
                     <tr><?php if($all_batch_id !== ''){ echo PHP_EOL; ?>
                         <td><input type="checkbox" id="<?php echo $all_batch_id; ?>" name="<?php echo $all_batch_id; ?>"/></td>
-                        <?php } ?><td>序号</td><?php
-                            echo PHP_EOL;
+                        <?php } ?>
+                        <?php
+                            echo PHP_EOL . str_repeat(' ', 4 * 6) . '<td>序号</td>' . PHP_EOL;
                             foreach ($table_row_data as $key => $value)
                             {
                                 echo str_repeat(' ', 4 * 6) . '<td>' . $key . '</td>' . PHP_EOL;
@@ -80,8 +90,9 @@ echo "?>\n";
                     <?php echo '<?php for($i = 0, $len = count($data); $i < $len; $i++){ ?>' . PHP_EOL; ?>
                         <tr><?php if($batch_id !== ''){ echo PHP_EOL; ?>
                             <td><input type="checkbox" value="<?php echo '<?php echo $data[$i][\'' . $primary_id . '\']; ?>'; ?>" name="<?php echo $batch_id; ?>"/></td>
-                            <?php } ?><td><?php echo '<?php echo ($js_data[\'start\'] + $i + 1); ?>'; ?></td><?php
-                                echo PHP_EOL;
+                            <?php } ?>
+                            <?php
+                                echo PHP_EOL . str_repeat(' ', 4 * 7) . '<td><?php echo ($js_data[\'start\'] + $i + 1); ?></td>' . PHP_EOL;
                                 foreach ($table_row_data as $value)
                                 {
                                     echo str_repeat(' ', 4 * 7) . '<td><?php echo $data[$i][\'' . $value . '\']; ?></td>' . PHP_EOL;
@@ -119,7 +130,7 @@ echo "?>\n";
 <?php if ($primary_id !== ''){ ?>
 <!-- modal -->
 <div id="modal<?php echo $controller_name; ?>" class="modal fade">
-    <div class="modal-dialog bill_modal_lg" >
+    <div class="modal-dialog bill_modal_<?php echo $view_modal_size; ?>" >
         <div class="modal-content">
             <div class="modal-header">
                 <span>新增/修改</span>
@@ -128,19 +139,26 @@ echo "?>\n";
 
             <form id="form<?php echo $controller_name; ?>" action="#" method="post" enctype="multipart/form-data" class="form-inline">
                 <div class="modal-body">
-                    <div class="input-group">
-                        <span class="input-group-addon">名称：</span>
-                        <input type="text" name="<?php echo $form_element_prefix; ?>_name" id="<?php echo $form_element_prefix; ?>_name" class="form-control"/>
-                    </div><br />
-                    图片：
-                    <input type="file" name="<?php echo $form_element_prefix; ?>_image" id="<?php echo $form_element_prefix; ?>_image" accept="image/*"/><br /><br />
-                    <div class="input-group">
-                        <span class="input-group-addon">权重：</span>
-                        <input type="text" name="<?php echo $form_element_prefix; ?>_weight" id="<?php echo $form_element_prefix; ?>_weight" class="form-control" value='0'/>
-                    </div><br />
-                    简介：
-                    <textarea class="ckeditor" id="ck_<?php echo $form_element_prefix; ?>_intro"></textarea>
-                    <input type="hidden" id="<?php echo $form_element_prefix; ?>_intro" name="<?php echo $form_element_prefix; ?>_intro"/>
+<?php foreach ($table_data as $key => $default_value)
+{
+    if ($key != $primary_id)
+    {
+        echo str_repeat(' ', 4 * 5) . '<div class="input-group">' . PHP_EOL;
+        echo str_repeat(' ', 4 * 6) . '<span class="input-group-addon">' . $key . '：</span>' . PHP_EOL;
+        echo str_repeat(' ', 4 * 6) . '<input type="text" name="' . $form_element_prefix . '_' . $key . '" id="' . $form_element_prefix. '_'  . $key . '" class="form-control"/>' . PHP_EOL;
+        echo str_repeat(' ', 4 * 5) . '</div><br />' . PHP_EOL;
+    }
+}
+?>
+<?php if(strpos(implode('', $table_keys), 'img') !== false || strpos(implode('', $table_keys), 'image') !== false){ ?>
+                        图片：
+                        <input type="file" name="<?php echo $form_element_prefix; ?>_image" id="<?php echo $form_element_prefix; ?>_image" accept="image/*"/><br /><br />
+<?php } ?>
+<?php if ($is_ckeditor){ ?>
+                        简介：
+                        <textarea class="ckeditor" id="ck_<?php echo $form_element_prefix; ?>_intro"></textarea>
+                        <input type="hidden" id="<?php echo $form_element_prefix; ?>_intro" name="<?php echo $form_element_prefix; ?>_intro"/>
+<?php } ?>
                     <input type="hidden" id="<?php echo $form_element_prefix; ?>_<?php echo $primary_id; ?>" name="<?php echo $form_element_prefix; ?>_<?php echo $primary_id; ?>"/>
                 </div>
 

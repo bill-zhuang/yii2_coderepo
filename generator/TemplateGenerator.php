@@ -16,6 +16,10 @@ class TemplateGenerator
     private $_primary_id;
     private $_model_names;
     private $_table_names;
+    private $_table_prefix;
+    private $_view_modal_size;
+    private $_is_blacklist;
+    private $_is_ckeditor;
 
     private $_cache_table_info;
 
@@ -27,10 +31,12 @@ class TemplateGenerator
         $this->_controller_name = 'DefaultTest';
         //asset
         $this->_css = [
-            'test.css'
+            'css/common/test.css',
         ];
         $this->_js = [
-            'test.js',
+            'js/common/datetime-picker.js',
+            'js/common/alertInfo.js',
+            'js/common/util.js',
         ];
         //view
         $this->_asset_name = $this->_controller_name;
@@ -40,13 +46,17 @@ class TemplateGenerator
         $this->_table_row_data = [
             'name' => 'name',
             'weight' => 'weight',
-            'create time' => 'create time',
-            'update time' => 'update time',
+            'create time' => 'create_time',
+            'update time' => 'update_time',
         ];
+        $this->_view_modal_size = 'md'; //optional: sm/md/lg, refer to small/middle/large
+        $this->_is_blacklist = false;
+        $this->_is_ckeditor = false;
         //tables
         $this->_table_names = [
             'finance_category',
         ];
+        $this->_table_prefix = ''; //like bill_
         if (!empty($this->_table_names))
         {
             $this->_primary_id = $this->_getTablePrimaryID($this->_table_names[0]);
@@ -172,7 +182,12 @@ class TemplateGenerator
                 'batch_id' => $this->_batch_id,
                 'table_row_data' => $this->_table_row_data,
                 'primary_id' => $this->_primary_id,
+                'table_data' => empty($this->_table_names) ? [] : $this->_getTableInsertArrayForController($this->_table_names[0]),
+                'controller_url' => $folder_name,
                 'form_element_prefix' => strtolower(implode('_', $camel_name)),
+                'view_modal_size' => $this->_view_modal_size,
+                'is_blacklist' => $this->_is_blacklist,
+                'is_ckeditor' => $this->_is_ckeditor,
             ];
             $create_result = $this->_renderFile($template_path, $dest_path, $params);
             if ($create_result !== false)
@@ -208,6 +223,8 @@ class TemplateGenerator
                 'table_row_data' => $this->_table_row_data,
                 'primary_id' => $this->_primary_id,
                 'form_element_prefix' => strtolower(implode('_', $camel_name)),
+                'table_data' => empty($this->_table_names) ? [] : $this->_getTableInsertArrayForController($this->_table_names[0]),
+                'is_ckeditor' => $this->_is_ckeditor,
             ];
             $create_result = $this->_renderFile($template_path, $dest_path, $params);
             if ($create_result !== false)
@@ -294,6 +311,7 @@ class TemplateGenerator
 
     private function _getModelNameByTableName($table_name)
     {
+        $table_name = str_replace($this->_table_prefix, '', $table_name);
         $camel_name = explode('_', $table_name);
         $model_name = implode('', array_map('ucwords', $camel_name));
         return $model_name;

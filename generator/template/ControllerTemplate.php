@@ -7,6 +7,16 @@
 /* @var $table_data array table fields and default value */
 /* @var $form_element_prefix string prefix of form element */
 
+$table_keys = array_keys($table_data);
+$status_name = '';
+foreach ($table_keys as $table_key)
+{
+    if (strpos($table_key, 'status') !== false)
+    {
+        $status_name = $table_key;
+        break;
+    }
+}
 echo "<?php\n";
 ?>
 
@@ -16,7 +26,7 @@ use yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 <?php foreach($model_names as $model_name){ ?>
-use app\<?php echo ($module_name === '') ? '' : ('modules\\' . strtolower($module_name)); ?>models\<?php echo $model_name; ?>;<?php echo PHP_EOL; ?>
+use app\<?php echo ($module_name === '') ? '' : ('modules\\' . strtolower($module_name) . '\\'); ?>models\<?php echo $model_name; ?>;<?php echo PHP_EOL; ?>
 <?php } ?>
 
 class <?php echo $controller_name; ?>Controller extends Controller
@@ -50,12 +60,12 @@ class <?php echo $controller_name; ?>Controller extends Controller
         $keyword = trim(yii::$app->request->get('keyword', ''));
 
         $conditions = [
-            '<?php echo str_replace('id', 'status', $primary_id); ?>' => [
+            '<?php echo ($status_name === '') ? 'todo status' : $status_name; ?>' => [
                 'compare_type' => '=',
                 'value' => yii::$app->params['valid_status']
             ]
         ];
-        $order_by = ['<?php echo str_replace('id', 'update_time', $primary_id); ?>' => SORT_DESC];
+        $order_by = ['<?php echo $primary_id; ?>' => SORT_DESC];
         $total = <?php echo $model_names[0]; ?>::get<?php echo $controller_name; ?>Count($conditions);
         $data = <?php echo $model_names[0]; ?>::get<?php echo $controller_name; ?>Data($conditions, $page_length, $start, $order_by);
 
@@ -132,7 +142,7 @@ class <?php echo $controller_name; ?>Controller extends Controller
             {
                 $<?php echo $primary_id; ?> = intval(yii::$app->request->post('<?php echo $primary_id; ?>'));
                 $update_data = [
-
+                    //TODO set update data
                 ];
                 $where = [
                     '<?php echo $primary_id; ?>' => $<?php echo $primary_id; ?>,
