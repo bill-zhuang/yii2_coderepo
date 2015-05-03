@@ -32,10 +32,11 @@ class FinancePayment extends ActiveRecord
     public function rules()
     {
         return [
+            [['fp_payment', 'fp_payment_date', 'fc_id'], 'required'],
             [['fp_payment'], 'number'],
             [['fp_payment_date', 'fp_create_time', 'fp_update_time'], 'safe'],
             [['fc_id', 'fp_status'], 'integer'],
-            [['fp_detail'], 'string']
+            [['fp_detail'], 'string', 'max' => 255]
         ];
     }
 

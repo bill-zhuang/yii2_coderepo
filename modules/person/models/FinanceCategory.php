@@ -31,9 +31,9 @@ class FinanceCategory extends ActiveRecord
     public function rules()
     {
         return [
-            [['fc_name'], 'string'],
             [['fc_parent_id', 'fc_weight', 'fc_status'], 'integer'],
-            [['fc_create_time', 'fc_update_time'], 'safe']
+            [['fc_create_time', 'fc_update_time'], 'safe'],
+            [['fc_name'], 'string', 'max' => 255]
         ];
     }
 

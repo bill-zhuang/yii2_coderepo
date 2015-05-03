@@ -30,6 +30,7 @@ class DreamHistory extends ActiveRecord
     public function rules()
     {
         return [
+            [['dh_happen_date'], 'required'],
             [['dh_happen_date', 'dh_create_time', 'dh_update_time'], 'safe'],
             [['dh_count', 'dh_status'], 'integer']
         ];

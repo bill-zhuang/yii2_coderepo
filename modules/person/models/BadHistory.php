@@ -30,6 +30,7 @@ class BadHistory extends ActiveRecord
     public function rules()
     {
         return [
+            [['bh_happen_date'], 'required'],
             [['bh_happen_date', 'bh_create_time', 'bh_update_time'], 'safe'],
             [['bh_count', 'bh_status'], 'integer']
         ];
