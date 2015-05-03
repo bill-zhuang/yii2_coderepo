@@ -31,7 +31,7 @@ AppAssetModifyPassword::register($this);
                     </div>
                     <br/><br/>
                     <div class="form-group">
-                        <button type="button" class="btn btn-success" id="btn_modify_password">确认修改</button>
+                        <button type="submit" class="btn btn-success" id="btn_modify_password">确认修改</button>
                     </div>
                 </form>
             </div>

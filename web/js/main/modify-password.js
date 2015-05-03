@@ -2,14 +2,7 @@ $(document).ready(function(){
     window.formModifyPassword.reset();
 });
 
-$('#formModifyPassword').on('keydown', function(event){
-    if(event.keyCode == 13) {
-        event.preventDefault();
-        modifyPassword();
-    }
-});
-
-$('#btn_modify_password').on('click', function(event){
+$('#formModifyPassword').on('submit', function(event){
     event.preventDefault();
     modifyPassword();
 });
