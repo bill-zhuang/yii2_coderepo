@@ -9,8 +9,8 @@ use yii\db\ActiveRecord;
  *
  * @property string $bu_id
  * @property string $bu_name
- * @property string $bu_password
- * @property string $bu_salt
+ * @property string $bu_password_hash
+ * @property string $bu_auth_key
  * @property string $bu_role
  * @property integer $bu_status
  * @property string $bu_create_time
@@ -32,9 +32,11 @@ class BackendUser extends ActiveRecord
     public function rules()
     {
         return [
-            [['bu_name', 'bu_password', 'bu_salt'], 'string'],
+            [['bu_password_hash', 'bu_auth_key', 'bu_role'], 'required'],
             [['bu_role', 'bu_status'], 'integer'],
-            [['bu_create_time', 'bu_update_time'], 'safe']
+            [['bu_create_time', 'bu_update_time'], 'safe'],
+            [['bu_name'], 'string', 'max' => 128],
+            [['bu_password_hash', 'bu_auth_key'], 'string', 'max' => 255],
         ];
     }
 
@@ -46,8 +48,8 @@ class BackendUser extends ActiveRecord
         return [
             'bu_id' => 'Bu ID',
             'bu_name' => 'Bu Name',
-            'bu_password' => 'Bu Password',
-            'bu_salt' => 'Bu Salt',
+            'bu_password_hash' => 'Bu Password Hash',
+            'bu_auth_key' => 'Bu Auth Key',
             'bu_role' => 'Bu Role',
             'bu_status' => 'Bu Status',
             'bu_create_time' => 'Bu Create Time',
