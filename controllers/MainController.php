@@ -2,9 +2,9 @@
 
 namespace app\controllers;
 
+use app\models\User;
 use yii;
 use yii\web\Controller;
-use app\models\BackendUser;
 use yii\filters\AccessControl;
 
 class MainController extends Controller
@@ -41,17 +41,15 @@ class MainController extends Controller
             $new_password = addslashes(yii::$app->request->post('new_password'));
             if ($user_id !== null)
             {
-                $where = [
-                    'bu_id' => $user_id,
-                    'bu_password' => md5($old_password),
-                    'bu_status' => yii::$app->params['valid_status']
-                ];
-                $update_data = [
-                    'bu_password' => md5($new_password),
-                    'bu_update_time' => date('Y-m-d H:i:s')
-                ];
-                $affect_rows = BackendUser::updateAll($update_data, $where);
-                if ($affect_rows > 0)
+                $affected_rows = 0;
+                $user = User::findOne($user_id);
+                if ($user->validatePassword($old_password))
+                {
+                    $user->setPassword($new_password);
+                    $user->bu_update_time = date('Y-m-d H:i:s');
+                    $affected_rows = $user->save();
+                }
+                if ($affected_rows > 0)
                 {
                     Yii::$app->user->logout();
                     //redirect to login page & set layout to login

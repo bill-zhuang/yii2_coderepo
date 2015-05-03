@@ -1,3 +1,6 @@
+$(document).ready(function(){
+    window.formModifyPassword.reset();
+});
 
 $('#formModifyPassword').on('keydown', function(event){
     if(event.keyCode == 13) {

@@ -12,8 +12,8 @@ use yii\web\IdentityInterface;
  *
  * @property string $bu_id
  * @property string $bu_name
- * @property string $bu_password
- * @property string $bu_salt
+ * @property string $bu_password_hash
+ * @property string $bu_auth_key
  * @property string $bu_role
  * @property integer $bu_status
  * @property string $bu_create_time
@@ -37,9 +37,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['bu_name', 'bu_password', 'bu_salt'], 'string'],
+            [['bu_password_hash', 'bu_auth_key', 'bu_role'], 'required'],
             [['bu_role', 'bu_status'], 'integer'],
-            [['bu_create_time', 'bu_update_time'], 'safe']
+            [['bu_create_time', 'bu_update_time'], 'safe'],
+            [['bu_name'], 'string', 'max' => 128],
+            [['bu_password_hash', 'bu_auth_key'], 'string', 'max' => 255],
         ];
     }
 
@@ -51,8 +53,8 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             'bu_id' => 'Bu ID',
             'bu_name' => 'Bu Name',
-            'bu_password' => 'Bu Password',
-            'bu_salt' => 'Bu Salt',
+            'bu_password_hash' => 'Bu Password Hash',
+            'bu_auth_key' => 'Bu Auth Key',
             'bu_role' => 'Bu Role',
             'bu_status' => 'Bu Status',
             'bu_create_time' => 'Bu Create Time',
@@ -100,8 +102,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        //return $this->auth_key;
-        return null;
+        return $this->bu_auth_key;
     }
 
     /**
@@ -120,8 +121,25 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        //return Yii::$app->security->validatePassword($password, $this->password_hash);
-        return $this->bu_password === md5($password);
+        return Yii::$app->security->validatePassword($password, $this->bu_password_hash);
+    }
+
+    /**
+     * Generates password hash from password and sets it to the model
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->bu_password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * Generates "remember me" authentication key
+     */
+    public function generateAuthKey()
+    {
+        $this->bu_auth_key = Yii::$app->security->generateRandomString();
     }
 
 }
