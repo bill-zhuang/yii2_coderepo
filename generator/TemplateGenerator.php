@@ -244,10 +244,17 @@ class TemplateGenerator
             . ($this->_module_name === '' ? '' : ('modules/' . strtolower($this->_module_name) . '/'))
             . 'models';
         $this->_createDirectory($model_folder_path);
+        //!!!IMPORTANT!!!
+        //use & modify from yii2 gii class: /vendor/yiisoft/yii2-gii/generators/model/Generator.php
+        require_once __DIR__ . '/YiiModelGenerator.php';
+        $yii2_generator = new YiiModelGenerator();
+        $yii2_db = $yii2_generator->getDbConnection();
+        $relations = $yii2_generator->generateRelations();
         //create table model
         foreach ($this->_table_names as $table_name)
         {
             $model_name = $this->_getModelNameByTableName($table_name);
+            $tableSchema = $yii2_db->getTableSchema($table_name);
 
             $params = [
                 'module_name' => $this->_module_name,
@@ -255,8 +262,9 @@ class TemplateGenerator
                 'table_name' => $table_name,
                 'primary_id' => $this->_getTablePrimaryID($table_name),
                 'table_fields' => $this->_getTableFieldsForModel($table_name),
-                'labels' => $this->_getTableLabelsForModel($table_name),
-                'rules' => $this->_getTableRulesForModal($table_name),
+                'labels' => $yii2_generator->generateLabels($tableSchema), //$this->_getTableLabelsForModel($table_name),
+                'rules' => $yii2_generator->generateRules($tableSchema), //$this->_getTableRulesForModel($table_name),
+                'relations' => isset($relations[$model_name]) ? $relations[$model_name] : [],
                 'controller_name' => $this->_controller_name,
             ];
             $template_path = __DIR__ . '/template/ModelTemplate.php';
@@ -367,7 +375,7 @@ class TemplateGenerator
     }
 
     //copy & modify from
-    private function _getTableRulesForModal($table_name)
+    private function _getTableRulesForModel($table_name)
     {
         $definitions = $this->_getTableInfo($table_name);
         $table_fields = [];
@@ -655,6 +663,13 @@ class TemplateGenerator
     }
 
 }
+
+/* require yii config & file for generator model */
+defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
+
+require(__DIR__ . '/../vendor/autoload.php');
+require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
 $generator = new TemplateGenerator();
 $generator->generate();

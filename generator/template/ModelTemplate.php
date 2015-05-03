@@ -6,6 +6,7 @@
 /* @var $table_fields array table fields */
 /* @var $labels array table field labels */
 /* @var $rules array table rules */
+/* @var $relations array list of relations (name => relation declaration) */
 
 echo "<?php\n";
 ?>
@@ -20,6 +21,9 @@ use yii\db\ActiveRecord;
 <?php foreach($table_fields as $field => $type){ ?>
  * @property <?php echo $type .  ' $' . $field . PHP_EOL; ?>
 <?php } ?>
+<?php if(!empty($relations)){foreach($relations as $name => $relation){ ?>
+* @property <?php echo $relation[1] . ($relation[2] ? '[]' : '') . ' $' . lcfirst($name) . "\n" ?>
+<?php }} ?>
  */
 class <?php echo $model_name; ?> extends ActiveRecord
 {
