@@ -15,18 +15,20 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.4.0",
-        "yiisoft/yii2": "*",
-        "yiisoft/yii2-bootstrap": "*",
-        "yiisoft/yii2-swiftmailer": "*",
+        "yiisoft/yii2": "2.0.*@dev",
+        "yiisoft/yii2-bootstrap": "2.0.*@dev",
+        "yiisoft/yii2-swiftmailer": "2.0.*@dev",
         "components/jquery-cookie": "1.4.1.2",
-        "nnnick/chartjs": "*",
+        "components/bootstrap-datetimepicker": "dev-master",
+        "nnnick/chartjs": "1.0.1.*@dev",
         "ckeditor/ckeditor": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
-        "yiisoft/yii2-faker": "*"
+        "yiisoft/yii2-faker": "*",
+        "bower-asset/typeahead.js": "0.10.*"
     },
     "config": {
         "process-timeout": 1800
