@@ -42,7 +42,7 @@ class MainController extends Controller
             if ($user_id !== null)
             {
                 $affected_rows = 0;
-                $user = User::findOne($user_id);
+                $user = User::findIdentity($user_id);
                 if ($user->validatePassword($old_password))
                 {
                     $user->setPassword($new_password);
