@@ -5,7 +5,7 @@ namespace app\assets\plugins;
 use yii\web\AssetBundle;
 class AssetCKEditor extends AssetBundle
 {
-    public $sourcePath = '@bower/ckeditor';
+    public $sourcePath = '@vendor/ckeditor/ckeditor';
     public $baseUrl = '@web';
     public $css = [
 

@@ -5,7 +5,7 @@ namespace app\assets\plugins;
 use yii\web\AssetBundle;
 class AssetDatetimePicker extends AssetBundle
 {
-    public $sourcePath = '@bower/datetimepicker';
+    public $sourcePath = '@vendor/components/bootstrap-datetimepicker';
     public $baseUrl = '@web';
     public $css = [
         'css/bootstrap-datetimepicker.min.css'
