@@ -96,7 +96,16 @@ class <?php echo $controller_name; ?>Controller extends Controller
             $transaction = <?php echo $model_names[0]; ?>::getDb()->beginTransaction();
             try
             {
-                $affected_rows = $this->_add<?php echo $controller_name; ?>();
+                $<?php echo $form_element_prefix; ?> = new <?php echo $model_names[0]; ?>();
+<?php foreach ($table_data as $key => $default_value)
+{
+    if ($key != $primary_id)
+    {
+        echo str_repeat(' ', 4 * 4) . '$' . $form_element_prefix . '->' . $key . " = " . $default_value . ";" . PHP_EOL;
+    }
+}
+?>
+                $affected_rows = intval($<?php echo $form_element_prefix; ?>->save());
                 $transaction->commit();
             }
             catch (\Exception $e)
@@ -175,21 +184,6 @@ class <?php echo $controller_name; ?>Controller extends Controller
 
         echo json_encode($data);
         exit;
-    }
-
-    private function _add<?php echo $controller_name; ?>()
-    {
-        $data = [
-<?php foreach ($table_data as $key => $default_value)
-{
-    if ($key != $primary_id)
-    {
-        echo str_repeat(' ', 4 * 3) . "'" . $key . "' => " . $default_value . "," . PHP_EOL;
-    }
-}
-?>
-        ];
-        return <?php echo $model_names[0]; ?>::getDb()->createCommand()->insert(<?php echo $model_names[0]; ?>::tableName(), $data)->execute();
     }
 
     private function _update<?php echo $controller_name; ?>()
