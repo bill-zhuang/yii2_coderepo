@@ -2,6 +2,7 @@
 $(document).ready(function(){
     $('#payment_date').val(js_data.payment_date);
     $('#page_length').val(js_data.page_length);
+    $('#current_page').val(js_data.current_page);
     $('#pagination').twbsPagination({
         totalPages: js_data.total_pages,
         startPage: js_data.current_page,
@@ -11,23 +12,10 @@ $(document).ready(function(){
         next: '下一页',
         last: '尾页',
         onPageClick: function (event, page) {
-            search(page);
+            $('#current_page').val(page);
+            $('#formSearch')[0].submit();
         }
     });
-});
-$('#payment_date').on('keydown', function(event){
-    if (event.keyCode == 13) {
-        //enter key
-        event.preventDefault();
-        $('#btn_search').click();
-    }
-});
-
-$('#btn_search').on('click', function(){
-    var payment_date = $.trim($('#payment_date').val());
-    var current_page = js_data.current_page;
-    var page_length = js_data.page_length;
-    search(current_page, page_length, payment_date);
 });
 
 $('#btn_add').on('click', function(){
@@ -120,16 +108,8 @@ $('.form_date').datetimepicker({
 
 
 /*  --------------------------------------------------------------------------------------------------------  */
-function search(current_page, page_length, payment_date)
-{
-    var params = {
-        'payment_date': payment_date || $.trim($('#payment_date').val()),
-        'current_page': current_page || js_data.current_page,
-        'page_length': page_length || js_data.page_length
-    };
-    location.href = '/index.php/person/finance-payment/index?' + $.param(params);
-}
-
 $('#page_length').on('change', function(){
-    search(1, this.value);
+    $('#current_page').val(1);
+    $('#page_length').val(this.value);
+    $('#formSearch')[0].submit();
 });

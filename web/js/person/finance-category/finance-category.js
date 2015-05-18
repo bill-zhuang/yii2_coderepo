@@ -2,6 +2,7 @@
 $(document).ready(function(){
     $('#keyword').val(js_data.keyword);
     $('#page_length').val(js_data.page_length);
+    $('#current_page').val(js_data.current_page);
     $('#pagination').twbsPagination({
         totalPages: js_data.total_pages,
         startPage: js_data.current_page,
@@ -11,24 +12,10 @@ $(document).ready(function(){
         next: '下一页',
         last: '尾页',
         onPageClick: function (event, page) {
-            search(page);
+            $('#current_page').val(page);
+            $('#formSearch')[0].submit();
         }
     });
-});
-
-$('#keyword').on('keydown', function(event){
-    if (event.keyCode == 13) {
-        //enter key
-        event.preventDefault();
-        $('#btn_search').click();
-    }
-});
-
-$('#btn_search').on('click', function(){
-    var keyword = $.trim($('#keyword').val());
-    var current_page = js_data.current_page;
-    var page_length = js_data.page_length;
-    search(current_page, page_length, keyword);
 });
 
 $('#btn_add').on('click', function(){
@@ -107,16 +94,8 @@ function validInput()
 }
 
 /*  --------------------------------------------------------------------------------------------------------  */
-function search(current_page, page_length, keyword)
-{
-    var params = {
-        'keyword': keyword || $.trim($('#keyword').val()),
-        'current_page': current_page || js_data.current_page,
-        'page_length': page_length || js_data.page_length
-    };
-    location.href = '/index.php/person/finance-category/index?' + $.param(params);
-}
-
 $('#page_length').on('change', function(){
-    search(1, this.value);
+    $('#current_page').val(1);
+    $('#page_length').val(this.value);
+    $('#formSearch')[0].submit();
 });

@@ -12,10 +12,10 @@ Yii::$app->view->registerJs('var js_data = ' . json_encode($js_data) . ';', \yii
     <!-- panel body -->
     <div class="panel-body">
         <div class="row">
-            <form class="form-inline">
+            <form id="formSearch" action="/index.php/person/finance-payment/index" method="get" class="form-inline">
                 <div class="col-sm-10 col-md-10 col-lg-10">
-                    日期: <input type="text" class="form-control form_date" id="payment_date"/>
-                    <button class="btn btn-primary" type="button" id="btn_search">
+                    日期: <input type="text" class="form-control form_date" id="payment_date" name="payment_date"/>
+                    <button class="btn btn-primary" type="submit" id="btn_search">
                         <span class="glyphicon glyphicon-search"></span>
                         <span>搜索</span>
                     </button>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -32,6 +32,7 @@ Yii::$app->view->registerJs('var js_data = ' . json_encode($js_data) . ';', \yii
                         <option value="100">100</option>
                     </select>
                     &nbsp;<label>每页</label>
+                    <input type="hidden" id="current_page" name="current_page"/>
                 </div>
             </form>
         </div><hr>
