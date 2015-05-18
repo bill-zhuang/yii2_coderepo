@@ -70,16 +70,19 @@ class BadHistoryController extends Controller
         $affected_rows = yii::$app->params['init_affected_rows'];
         if (isset($_POST['bad_history_date']))
         {
-            $transaction = BadHistory::getDb()->beginTransaction();
             try
             {
-                $affected_rows = $this->_addBadHistory();
-                $transaction->commit();
+                $bad_history = new BadHistory();
+                $bad_history->bh_happen_date = trim(yii::$app->request->post('bad_history_date'));
+                $bad_history->bh_count = intval(yii::$app->request->post('bad_history_count'));
+                $bad_history->bh_status = yii::$app->params['valid_status'];
+                $bad_history->bh_create_time = date('Y-m-d H:i:s');
+                $bad_history->bh_update_time = date('Y-m-d H:i:s');
+                $affected_rows  = intval($bad_history->save());
             }
             catch (\Exception $e)
             {
                 $affected_rows = yii::$app->params['init_affected_rows'];
-                $transaction->rollBack();
             }
         }
 
@@ -92,16 +95,13 @@ class BadHistoryController extends Controller
         $affected_rows = yii::$app->params['init_affected_rows'];
         if (isset($_POST['bad_history_bh_id']))
         {
-            $transaction = BadHistory::getDb()->beginTransaction();
             try
             {
                 $affected_rows = $this->_updateBadHistory();
-                $transaction->commit();
             }
             catch (\Exception $e)
             {
                 $affected_rows = yii::$app->params['init_affected_rows'];
-                $transaction->rollBack();
             }
         }
         
@@ -114,7 +114,6 @@ class BadHistoryController extends Controller
         $affected_rows = yii::$app->params['init_affected_rows'];
         if (isset($_POST['bh_id']))
         {
-            $transaction = BadHistory::getDb()->beginTransaction();
             try
             {
                 $bh_id = intval(yii::$app->request->post('bh_id'));
@@ -126,12 +125,10 @@ class BadHistoryController extends Controller
                     'bh_id' => $bh_id,
                 ];
                 $affected_rows = BadHistory::updateAll($update_data, $where);
-                $transaction->commit();
             }
             catch (\Exception $e)
             {
                 $affected_rows = yii::$app->params['init_affected_rows'];
-                $transaction->rollBack();
             }
         }
 
@@ -153,18 +150,6 @@ class BadHistoryController extends Controller
 
         echo json_encode($data);
         exit;
-    }
-
-    private function _addBadHistory()
-    {
-        $data = [
-            'bh_happen_date' => trim(yii::$app->request->post('bad_history_date')),
-            'bh_count' => intval(yii::$app->request->post('bad_history_count')),
-            'bh_status' => yii::$app->params['valid_status'],
-            'bh_create_time' => date('Y-m-d H:i:s'),
-            'bh_update_time' => date('Y-m-d H:i:s'),
-        ];
-        return BadHistory::getDb()->createCommand()->insert(BadHistory::tableName(), $data)->execute();
     }
 
     private function _updateBadHistory()
