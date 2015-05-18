@@ -10,8 +10,10 @@ var MESSAGE_DELETE_SUCCESS = '删除成功';
 var MESSAGE_DELETE_ERROR = '删除失败';
 
 var MESSAGE_BATCH_SELECT_EMPTY = '请至少选择一个';
+var MESSAGE_RESET_PASSWROD_CONFIRM = '确认重设密码？';
 var MESSAGE_DELETE_CONFIRM = '确认删除？';
 
+var MESSAGE_USER_NAME_EMPTY = '用户名不能为空';
 var MESSAGE_START_TIME_ERROR = '开始时间不能为空';
 var MESSAGE_END_TIME_ERROR = '结束时间不能为空';
 var MESSAGE_DATE_ERROR = '时间不能为空';
