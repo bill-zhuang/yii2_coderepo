@@ -79,16 +79,13 @@ class FinanceCategoryController extends Controller
         $affected_rows = yii::$app->params['init_affected_rows'];
         if (isset($_POST['finance_category_name']))
         {
-            $transaction = FinanceCategory::getDb()->beginTransaction();
             try
             {
                 $affected_rows = $this->_addFinanceCategory();
-                $transaction->commit();
             }
             catch (\Exception $e)
             {
                 $affected_rows = yii::$app->params['init_affected_rows'];
-                $transaction->rollBack();
             }
         }
 
@@ -101,16 +98,13 @@ class FinanceCategoryController extends Controller
         $affected_rows = yii::$app->params['init_affected_rows'];
         if (isset($_POST['finance_category_fc_id']))
         {
-            $transaction = FinanceCategory::getDb()->beginTransaction();
             try
             {
                 $affected_rows = $this->_updateFinanceCategory();
-                $transaction->commit();
             }
             catch (\Exception $e)
             {
                 $affected_rows = yii::$app->params['init_affected_rows'];
-                $transaction->rollBack();
             }
         }
         
@@ -123,7 +117,6 @@ class FinanceCategoryController extends Controller
         $affected_rows = yii::$app->params['init_affected_rows'];
         if (isset($_POST['fc_id']))
         {
-            $transaction = FinanceCategory::getDb()->beginTransaction();
             try
             {
                 $fc_id = intval(yii::$app->request->post('fc_id'));
@@ -135,12 +128,10 @@ class FinanceCategoryController extends Controller
                     'and', 'fc_status=1', ['or', 'fc_id=' . $fc_id, 'fc_parent_id=' . $fc_id],
                 ];
                 $affected_rows = FinanceCategory::updateAll($update_data, $where);
-                $transaction->commit();
             }
             catch (\Exception $e)
             {
                 $affected_rows = yii::$app->params['init_affected_rows'];
-                $transaction->rollBack();
             }
         }
 

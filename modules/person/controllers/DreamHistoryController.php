@@ -70,16 +70,13 @@ class DreamHistoryController extends Controller
         $affected_rows = yii::$app->params['init_affected_rows'];
         if (isset($_POST['dream_history_date']))
         {
-            $transaction = DreamHistory::getDb()->beginTransaction();
             try
             {
                 $affected_rows = $this->_addDreamHistory();
-                $transaction->commit();
             }
             catch (\Exception $e)
             {
                 $affected_rows = yii::$app->params['init_affected_rows'];
-                $transaction->rollBack();
             }
         }
 
@@ -92,16 +89,13 @@ class DreamHistoryController extends Controller
         $affected_rows = yii::$app->params['init_affected_rows'];
         if (isset($_POST['dream_history_dh_id']))
         {
-            $transaction = DreamHistory::getDb()->beginTransaction();
             try
             {
                 $affected_rows = $this->_updateDreamHistory();
-                $transaction->commit();
             }
             catch (\Exception $e)
             {
                 $affected_rows = yii::$app->params['init_affected_rows'];
-                $transaction->rollBack();
             }
         }
         
@@ -114,7 +108,6 @@ class DreamHistoryController extends Controller
         $affected_rows = yii::$app->params['init_affected_rows'];
         if (isset($_POST['dh_id']))
         {
-            $transaction = DreamHistory::getDb()->beginTransaction();
             try
             {
                 $dh_id = intval(yii::$app->request->post('dh_id'));
@@ -126,12 +119,10 @@ class DreamHistoryController extends Controller
                     'dh_id' => $dh_id,
                 ];
                 $affected_rows = DreamHistory::updateAll($update_data, $where);
-                $transaction->commit();
             }
             catch (\Exception $e)
             {
                 $affected_rows = yii::$app->params['init_affected_rows'];
-                $transaction->rollBack();
             }
         }
 
