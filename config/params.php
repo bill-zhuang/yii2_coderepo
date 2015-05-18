@@ -2,6 +2,8 @@
 
 return [
     'adminEmail' => 'admin@example.com',
+    //auth time out(second)
+    'auth_time_out' => 1800,
     //controller global variable
     'init_start_page' => 1,
     'init_page_length' => 25,

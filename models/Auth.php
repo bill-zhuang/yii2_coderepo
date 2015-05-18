@@ -54,7 +54,7 @@ class Auth extends Model
     {
         if ($this->validate())
         {
-            return Yii::$app->user->login($this->getUser(), 30);
+            return Yii::$app->user->login($this->getUser());
         }
         else
         {

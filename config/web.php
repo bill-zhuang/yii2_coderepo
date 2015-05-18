@@ -17,6 +17,7 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
+            'authTimeout' => $params['auth_time_out'],
             'loginUrl' => ['login/login'],
         ],
         'errorHandler' => [
