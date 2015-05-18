@@ -47,6 +47,8 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @inheritdoc
+     * 
+     * @return \app\models\User|null
      */
     public static function findIdentity($id)
     {
