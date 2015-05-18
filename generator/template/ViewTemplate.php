@@ -37,7 +37,7 @@ echo "?>\n";
                 <div class="col-sm-10 col-md-10 col-lg-10">
                     关键字:
                     <input type="text" class="form-control" id="keyword" name="keyword"/>
-                    <button class="btn btn-primary" type="button" id="btn_search">
+                    <button class="btn btn-primary" type="submit" id="btn_search">
                         <span class="glyphicon glyphicon-search"></span>
                         <span>搜索</span>
                     </button>&nbsp;&nbsp;&nbsp;&nbsp;
