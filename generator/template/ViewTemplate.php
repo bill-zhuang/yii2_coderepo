@@ -147,7 +147,7 @@ echo "?>\n";
         echo str_repeat(' ', 4 * 5) . '<div class="input-group">' . PHP_EOL;
         echo str_repeat(' ', 4 * 6) . '<span class="input-group-addon">' . $key . '：</span>' . PHP_EOL;
         echo str_repeat(' ', 4 * 6) . '<input type="text" name="' . $form_element_prefix . '_' . $key . '" id="' . $form_element_prefix. '_'  . $key . '" class="form-control"/>' . PHP_EOL;
-        echo str_repeat(' ', 4 * 5) . '</div><br />' . PHP_EOL;
+        echo str_repeat(' ', 4 * 5) . '</div><br /><br />' . PHP_EOL;
     }
 }
 ?>
