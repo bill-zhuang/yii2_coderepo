@@ -21,9 +21,9 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `backend_user`;
 CREATE TABLE `backend_user` (
   `bu_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `bu_name` varchar(128) NOT NULL DEFAULT '',
+  `bu_name` varchar(255) NOT NULL DEFAULT '',
   `bu_password_hash` varchar(255) NOT NULL COMMENT 'password hash',
-  `bu_auth_key` varchar(255) NOT NULL COMMENT 'remember me auth key',
+  `bu_auth_key` varchar(32) NOT NULL COMMENT 'remember me auth key',
   `bu_role` int(11) unsigned NOT NULL COMMENT 'user role',
   `bu_status` tinyint(4) unsigned NOT NULL DEFAULT '1' COMMENT '1:valid, 0: invalid',
   `bu_create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',

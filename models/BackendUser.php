@@ -35,8 +35,8 @@ class BackendUser extends ActiveRecord
             [['bu_password_hash', 'bu_auth_key', 'bu_role'], 'required'],
             [['bu_role', 'bu_status'], 'integer'],
             [['bu_create_time', 'bu_update_time'], 'safe'],
-            [['bu_name'], 'string', 'max' => 128],
-            [['bu_password_hash', 'bu_auth_key'], 'string', 'max' => 255],
+            [['bu_name', 'bu_password_hash'], 'string', 'max' => 255],
+            [['bu_auth_key'], 'string', 'max' => 32]
         ];
     }
 
