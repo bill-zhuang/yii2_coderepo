@@ -81,7 +81,14 @@ class FinanceCategoryController extends Controller
         {
             try
             {
-                $affected_rows = $this->_addFinanceCategory();
+                $finance_category = new FinanceCategory();
+                $finance_category->fc_name = trim(yii::$app->request->post('finance_category_name'));
+                $finance_category->fc_parent_id = intval(yii::$app->request->post('finance_category_parent_id'));
+                $finance_category->fc_weight = intval(yii::$app->request->post('finance_category_weight'));
+                $finance_category->fc_status = yii::$app->params['valid_status'];
+                $finance_category->fc_create_time = date('Y-m-d H:i:s');
+                $finance_category->fc_update_time = date('Y-m-d H:i:s');
+                $affected_rows = intval($finance_category->save());
             }
             catch (\Exception $e)
             {
@@ -166,20 +173,6 @@ class FinanceCategoryController extends Controller
 
         echo json_encode($data);
         exit;
-    }
-
-    private function _addFinanceCategory()
-    {
-        $data = [
-            'fc_name' => trim(yii::$app->request->post('finance_category_name')),
-            'fc_parent_id' => intval(yii::$app->request->post('finance_category_parent_id')),
-            'fc_weight' => intval(yii::$app->request->post('finance_category_weight')),
-            'fc_status' => yii::$app->params['valid_status'],
-            'fc_create_time' => date('Y-m-d H:i:s'),
-            'fc_update_time' => date('Y-m-d H:i:s'),
-        ];
-
-        return FinanceCategory::getDb()->createCommand()->insert(FinanceCategory::tableName(), $data)->execute();
     }
 
     private function _updateFinanceCategory()

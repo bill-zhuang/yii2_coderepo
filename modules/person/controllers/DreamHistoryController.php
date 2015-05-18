@@ -72,7 +72,13 @@ class DreamHistoryController extends Controller
         {
             try
             {
-                $affected_rows = $this->_addDreamHistory();
+                $dream_history = new DreamHistory();
+                $dream_history->dh_happen_date = trim(yii::$app->request->post('dream_history_date'));
+                $dream_history->dh_count = intval(yii::$app->request->post('dream_history_count'));
+                $dream_history->dh_status = yii::$app->params['valid_status'];
+                $dream_history->dh_create_time = date('Y-m-d H:i:s');
+                $dream_history->dh_update_time = date('Y-m-d H:i:s');
+                $affected_rows = intval($dream_history->save());
             }
             catch (\Exception $e)
             {
@@ -144,18 +150,6 @@ class DreamHistoryController extends Controller
 
         echo json_encode($data);
         exit;
-    }
-
-    private function _addDreamHistory()
-    {
-        $data = [
-            'dh_happen_date' => trim(yii::$app->request->post('dream_history_date')),
-            'dh_count' => intval(yii::$app->request->post('dream_history_count')),
-            'dh_status' => yii::$app->params['valid_status'],
-            'dh_create_time' => date('Y-m-d H:i:s'),
-            'dh_update_time' => date('Y-m-d H:i:s'),
-        ];
-        return DreamHistory::getDb()->createCommand()->insert(DreamHistory::tableName(), $data)->execute();
     }
 
     private function _updateDreamHistory()
