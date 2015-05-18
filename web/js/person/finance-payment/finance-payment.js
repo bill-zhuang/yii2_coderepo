@@ -97,17 +97,6 @@ function validInput()
 }
 
 /*  --------------------------------------------------------------------------------------------------------  */
-$('.form_date').datetimepicker({
-    format: 'yyyy-mm-dd',
-    todayBtn:  'linked',
-    todayHighlight: 1,
-    language: 'zh-CN',
-    autoclose: 1,
-    minView: 2 //needed, or show time
-});
-
-
-/*  --------------------------------------------------------------------------------------------------------  */
 $('#page_length').on('change', function(){
     $('#current_page').val(1);
     $('#page_length').val(this.value);

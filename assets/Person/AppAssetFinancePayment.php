@@ -12,6 +12,7 @@ class AppAssetFinancePayment extends AssetBundle
     ];
     public $js = [
         'js/person/finance-payment/finance-payment.js',
+        'js/common/datetime-picker.js',
         'js/common/alertInfo.js',
         'js/common/util.js',
     ];

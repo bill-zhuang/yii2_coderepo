@@ -12,6 +12,7 @@ class AppAssetDreamHistory extends AssetBundle
     ];
     public $js = [
         'js/person/dream-history/dream-history.js',
+        'js/common/datetime-picker.js',
         'js/common/alertInfo.js',
         'js/common/util.js',
     ];

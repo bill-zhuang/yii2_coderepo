@@ -12,6 +12,7 @@ class AppAssetBadHistory extends AssetBundle
     ];
     public $js = [
         'js/person/bad-history/bad-history.js',
+        'js/common/datetime-picker.js',
         'js/common/alertInfo.js',
         'js/common/util.js',
     ];
