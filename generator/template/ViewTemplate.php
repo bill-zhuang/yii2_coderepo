@@ -33,7 +33,7 @@ echo "?>\n";
     <div class="panel-body">
         <div class="row">
 <?php if ($primary_id !== ''){ ?>
-            <form action="/index.php<?php echo '/' . strtolower($module_name); ?>/<?php echo $controller_url; ?>/index" method="get" id="formSearch" class="form-inline">
+            <form action="/index.php<?php echo ($module_name === '') ? '' : '/' . strtolower($module_name); ?>/<?php echo $controller_url; ?>/index" method="get" id="formSearch" class="form-inline">
                 <div class="col-sm-10 col-md-10 col-lg-10">
                     关键字:
                     <input type="text" class="form-control" id="keyword" name="keyword"/>

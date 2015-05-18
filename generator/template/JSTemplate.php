@@ -55,7 +55,7 @@ $('#form<?php echo $controller_name; ?>').on('submit', (function(event){
         $('#<?php echo $form_element_prefix; ?>_intro').val(content);
 <?php } ?>
 
-        var post_url = '/index.php<?php echo '/' . strtolower($module_name); ?>/<?php echo $controller_url; ?>/' + type + '-<?php echo $controller_url; ?>';
+        var post_url = '/index.php<?php echo ($module_name === '') ? '' : '/' . strtolower($module_name); ?>/<?php echo $controller_url; ?>/' + type + '-<?php echo $controller_url; ?>';
         var post_data = new FormData(this);
         var msg_success = (<?php echo $primary_id; ?> == '') ? MESSAGE_ADD_SUCCESS : MESSAGE_MODIFY_SUCCESS;
         var msg_error = (<?php echo $primary_id; ?> == '') ? MESSAGE_ADD_ERROR : MESSAGE_MODIFY_ERROR;
@@ -66,7 +66,7 @@ $('#form<?php echo $controller_name; ?>').on('submit', (function(event){
 
 $('a[id^=modify_]').on('click', function(){
     var <?php echo $primary_id; ?> = $(this).attr('id').substr('modify_'.length);
-    var post_url = '/index.php<?php echo '/' . strtolower($module_name); ?>/<?php echo $controller_url; ?>/get-<?php echo $controller_url; ?>';
+    var post_url = '/index.php<?php echo ($module_name === '') ? '' : '/' . strtolower($module_name); ?>/<?php echo $controller_url; ?>/get-<?php echo $controller_url; ?>';
     var post_data = {
         '<?php echo $primary_id; ?>' : <?php echo $primary_id, PHP_EOL; ?>
     };
@@ -89,7 +89,7 @@ $('a[id^=modify_]').on('click', function(){
 $('a[id^=delete_]').on('click', function(){
     if (confirm(MESSAGE_DELETE_CONFIRM)) {
         var <?php echo $primary_id; ?> = $(this).attr('id').substr('delete_'.length);
-        var url = '/index.php<?php echo '/' . strtolower($module_name); ?>/<?php echo $controller_url; ?>/delete-<?php echo $controller_url; ?>';
+        var url = '/index.php<?php echo ($module_name === '') ? '' : '/' . strtolower($module_name); ?>/<?php echo $controller_url; ?>/delete-<?php echo $controller_url; ?>';
         var data = {
             '<?php echo $primary_id; ?>' : <?php echo $primary_id, PHP_EOL; ?>
         };
