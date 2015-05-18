@@ -66,6 +66,7 @@ echo "?>\n";
                         <option value="100">100</option>
                     </select>
                     &nbsp;<label>每页</label>
+                    <input type="hidden" id="current_page" name="current_page"/>
                 </div>
             </form>
 <?php } ?>
