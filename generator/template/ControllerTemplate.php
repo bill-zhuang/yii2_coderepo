@@ -128,7 +128,20 @@ class <?php echo $controller_name; ?>Controller extends Controller
             $transaction = <?php echo $model_names[0]; ?>::getDb()->beginTransaction();
             try
             {
-                $affected_rows = $this->_update<?php echo $controller_name; ?>();
+                $<?php echo $primary_id; ?> = intval(yii::$app->request->post('<?php echo $primary_id; ?>'));
+                $<?php echo $model_param_name; ?> = <?php echo $model_names[0]; ?>::findOne($<?php echo $primary_id; ?>);
+                if ($<?php echo $model_param_name; ?> instanceof <?php echo $model_names[0]; ?>)
+                {
+<?php foreach ($table_data as $key => $default_value)
+{
+    if ($key !== $primary_id)
+    {
+        echo str_repeat(' ', 4 * 5) . '$' . $model_param_name . '->' . $key . " = " . $default_value . ";" . PHP_EOL;
+    }
+}
+?>
+                    $affected_rows = intval($<?php echo $model_param_name; ?>->save());
+                }
                 $transaction->commit();
             }
             catch (\Exception $e)
@@ -186,21 +199,5 @@ class <?php echo $controller_name; ?>Controller extends Controller
         exit;
     }
 
-    private function _update<?php echo $controller_name; ?>()
-    {
-        $<?php echo $primary_id; ?> = intval(yii::$app->request->post('<?php echo $form_element_prefix; ?>_<?php echo $primary_id; ?>'));
-        $old_data = <?php echo $model_names[0]; ?>::findOne($<?php echo $primary_id; ?>);
-
-<?php foreach ($table_data as $key => $default_value)
-{
-    if ($key !== $primary_id)
-    {
-        echo str_repeat(' ', 4 * 2) . '$old_data->' . $key . " = " . $default_value . ";" . PHP_EOL;
-    }
-}
-?>
-
-        return $old_data->save();
-    }
 <?php } ?>
 }
