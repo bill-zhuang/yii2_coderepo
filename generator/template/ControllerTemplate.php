@@ -6,6 +6,7 @@
 /* @var $primary_id string table primary key */
 /* @var $table_data array table fields and default value */
 /* @var $form_element_prefix string prefix of form element */
+/* @var $model_param_name string main table model parameter name */
 
 $table_keys = array_keys($table_data);
 $status_name = '';
@@ -96,16 +97,16 @@ class <?php echo $controller_name; ?>Controller extends Controller
             $transaction = <?php echo $model_names[0]; ?>::getDb()->beginTransaction();
             try
             {
-                $<?php echo $form_element_prefix; ?> = new <?php echo $model_names[0]; ?>();
+                $<?php echo $model_param_name; ?> = new <?php echo $model_names[0]; ?>();
 <?php foreach ($table_data as $key => $default_value)
 {
     if ($key != $primary_id)
     {
-        echo str_repeat(' ', 4 * 4) . '$' . $form_element_prefix . '->' . $key . " = " . $default_value . ";" . PHP_EOL;
+        echo str_repeat(' ', 4 * 4) . '$' . $model_param_name . '->' . $key . " = " . $default_value . ";" . PHP_EOL;
     }
 }
 ?>
-                $affected_rows = intval($<?php echo $form_element_prefix; ?>->save());
+                $affected_rows = intval($<?php echo $model_param_name; ?>->save());
                 $transaction->commit();
             }
             catch (\Exception $e)
@@ -150,13 +151,12 @@ class <?php echo $controller_name; ?>Controller extends Controller
             try
             {
                 $<?php echo $primary_id; ?> = intval(yii::$app->request->post('<?php echo $primary_id; ?>'));
-                $update_data = [
+                $<?php echo $model_param_name; ?> = <?php echo $model_names[0]; ?>::findOne($<?php echo $primary_id; ?>);
+                if ($<?php echo $model_param_name; ?> instanceof <?php echo $model_names[0]; ?>)
+                {
                     //TODO set update data
-                ];
-                $where = [
-                    '<?php echo $primary_id; ?>' => $<?php echo $primary_id; ?>,
-                ];
-                $affected_rows = <?php echo $model_names[0]; ?>::updateAll($update_data, $where);
+                    $affected_rows = intval($<?php echo $model_param_name; ?>->save());
+                }
                 $transaction->commit();
             }
             catch (\Exception $e)

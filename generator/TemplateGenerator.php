@@ -294,6 +294,7 @@ class TemplateGenerator
             . 'controllers';
         $this->_createDirectory($controller_folder_path);
         //create controller
+        $model_param_name = strtolower(implode('_', $this->_splitControllerName()));
         $params = [
             'module_name' => $this->_module_name,
             'model_names' => $this->_model_names,
@@ -301,7 +302,8 @@ class TemplateGenerator
             'controller_name' => $this->_controller_name,
             'primary_id' => $this->_primary_id,
             'table_data' => empty($this->_table_names) ? [] : $this->_getTableInsertArrayForController($this->_table_names[0]),
-            'form_element_prefix' => strtolower(implode('_', $this->_splitControllerName())),
+            'form_element_prefix' => $model_param_name,
+            'model_param_name' => $model_param_name,
         ];
         $template_path = __DIR__ . '/template/ControllerTemplate.php';
         $dest_path = $controller_folder_path . '/' . $this->_controller_name . 'Controller.php';
