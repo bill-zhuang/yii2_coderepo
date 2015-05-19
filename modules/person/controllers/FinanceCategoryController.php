@@ -107,7 +107,16 @@ class FinanceCategoryController extends Controller
         {
             try
             {
-                $affected_rows = $this->_updateFinanceCategory();
+                $fc_id = intval(yii::$app->request->post('finance_category_fc_id'));
+                $finance_category = FinanceCategory::findOne($fc_id);
+                if ($finance_category instanceof FinanceCategory)
+                {
+                    $finance_category->fc_name = trim(yii::$app->request->post('finance_category_name'));
+                    $finance_category->fc_parent_id = intval(yii::$app->request->post('finance_category_parent_id'));
+                    $finance_category->fc_weight = intval(yii::$app->request->post('finance_category_weight'));
+                    $finance_category->fc_update_time = date('Y-m-d H:i:s');
+                    $affected_rows = intval($finance_category->save());
+                }
             }
             catch (\Exception $e)
             {
@@ -174,18 +183,4 @@ class FinanceCategoryController extends Controller
         echo json_encode($data);
         exit;
     }
-
-    private function _updateFinanceCategory()
-    {
-        $fc_id = intval(yii::$app->request->post('finance_category_fc_id'));
-        $old_data = FinanceCategory::findOne($fc_id);
-
-        $old_data->fc_name = trim(yii::$app->request->post('finance_category_name'));
-        $old_data->fc_parent_id = intval(yii::$app->request->post('finance_category_parent_id'));
-        $old_data->fc_weight = intval(yii::$app->request->post('finance_category_weight'));
-        $old_data->fc_update_time = date('Y-m-d H:i:s');
-
-        return $old_data->save();
-    }
-
 }

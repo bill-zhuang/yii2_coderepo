@@ -104,7 +104,17 @@ class FinancePaymentController extends Controller
         {
             try
             {
-                $affected_rows = $this->_updateFinancePayment();
+                $fp_id = intval(yii::$app->request->post('finance_payment_fp_id'));
+                $finance_payment = FinancePayment::findOne($fp_id);
+                if ($finance_payment instanceof FinancePayment)
+                {
+                    $finance_payment->fp_payment = yii::$app->request->post('finance_payment_payment');
+                    $finance_payment->fp_payment_date = trim(yii::$app->request->post('finance_payment_payment_date'));
+                    $finance_payment->fc_id = intval(yii::$app->request->post('finance_payment_fc_id'));
+                    $finance_payment->fp_detail = trim(yii::$app->request->post('finance_payment_intro'));
+                    $finance_payment->fp_update_time = date('Y-m-d H:i:s');
+                    $affected_rows = intval($finance_payment->save());
+                }
             }
             catch (\Exception $e)
             {
@@ -180,19 +190,5 @@ class FinancePaymentController extends Controller
             }
         }
         return $affected_rows;
-    }
-
-    private function _updateFinancePayment()
-    {
-        $fp_id = intval(yii::$app->request->post('finance_payment_fp_id'));
-        $old_data = FinancePayment::findOne($fp_id);
-
-        $old_data->fp_payment = yii::$app->request->post('finance_payment_payment');
-        $old_data->fp_payment_date = trim(yii::$app->request->post('finance_payment_payment_date'));
-        $old_data->fc_id = intval(yii::$app->request->post('finance_payment_fc_id'));
-        $old_data->fp_detail = trim(yii::$app->request->post('finance_payment_intro'));
-        $old_data->fp_update_time = date('Y-m-d H:i:s');
-
-        return $old_data->save();
     }
 }

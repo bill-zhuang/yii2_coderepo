@@ -97,7 +97,15 @@ class BadHistoryController extends Controller
         {
             try
             {
-                $affected_rows = $this->_updateBadHistory();
+                $bh_id = intval(yii::$app->request->post('bad_history_bh_id'));
+                $bad_history = BadHistory::findOne($bh_id);
+                if ($bad_history instanceof BadHistory)
+                {
+                    $bad_history->bh_happen_date = trim(yii::$app->request->post('bad_history_date'));
+                    $bad_history->bh_count = intval(yii::$app->request->post('bad_history_count'));
+                    $bad_history->bh_update_time = date('Y-m-d H:i:s');
+                    $affected_rows = intval($bad_history->save());
+                }
             }
             catch (\Exception $e)
             {
@@ -149,17 +157,5 @@ class BadHistoryController extends Controller
 
         echo json_encode($data);
         exit;
-    }
-
-    private function _updateBadHistory()
-    {
-        $bh_id = intval(yii::$app->request->post('bad_history_bh_id'));
-        $old_data = BadHistory::findOne($bh_id);
-
-        $old_data->bh_happen_date = trim(yii::$app->request->post('bad_history_date'));
-        $old_data->bh_count = intval(yii::$app->request->post('bad_history_count'));
-        $old_data->bh_update_time = date('Y-m-d H:i:s');
-
-        return $old_data->save();
     }
 }

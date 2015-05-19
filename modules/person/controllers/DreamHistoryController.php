@@ -97,7 +97,15 @@ class DreamHistoryController extends Controller
         {
             try
             {
-                $affected_rows = $this->_updateDreamHistory();
+                $dh_id = intval(yii::$app->request->post('dream_history_dh_id'));
+                $dream_history = DreamHistory::findOne($dh_id);
+                if ($dream_history instanceof DreamHistory)
+                {
+                    $dream_history->dh_happen_date = trim(yii::$app->request->post('dream_history_date'));
+                    $dream_history->dh_count = intval(yii::$app->request->post('dream_history_count'));
+                    $dream_history->dh_update_time = date('Y-m-d H:i:s');
+                    $affected_rows = intval($dream_history->save());
+                }
             }
             catch (\Exception $e)
             {
@@ -149,17 +157,5 @@ class DreamHistoryController extends Controller
 
         echo json_encode($data);
         exit;
-    }
-
-    private function _updateDreamHistory()
-    {
-        $dh_id = intval(yii::$app->request->post('dream_history_dh_id'));
-        $old_data = DreamHistory::findOne($dh_id);
-
-        $old_data->dh_happen_date = trim(yii::$app->request->post('dream_history_date'));
-        $old_data->dh_count = intval(yii::$app->request->post('dream_history_count'));
-        $old_data->dh_update_time = date('Y-m-d H:i:s');
-
-        return $old_data->save();
     }
 }
