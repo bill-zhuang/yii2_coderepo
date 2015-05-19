@@ -124,15 +124,13 @@ class FinancePaymentController extends Controller
             try
             {
                 $fp_id = intval(yii::$app->request->post('fp_id'));
-                $update_data = [
-                    'fp_status' => yii::$app->params['invalid_status'],
-                    'fp_update_time' => date('Y-m-d H:i:s'),
-                ];
-                $where = [
-                    'fp_id' => $fp_id,
-                    'fp_status' => yii::$app->params['valid_status'],
-                ];
-                $affected_rows = FinancePayment::updateAll($update_data, $where);
+                $finance_payment = FinancePayment::findOne($fp_id);
+                if ($finance_payment instanceof FinancePayment)
+                {
+                    $finance_payment->fp_status = yii::$app->params['invalid_status'];
+                    $finance_payment->fp_update_time = date('Y-m-d H:i:s');
+                    $affected_rows = intval($finance_payment->save());
+                }
             }
             catch (\Exception $e)
             {

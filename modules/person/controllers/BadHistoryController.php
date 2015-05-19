@@ -117,14 +117,13 @@ class BadHistoryController extends Controller
             try
             {
                 $bh_id = intval(yii::$app->request->post('bh_id'));
-                $update_data = [
-                    'bh_status' => yii::$app->params['invalid_status'],
-                    'bh_update_time' => date('Y-m-d H:i:s'),
-                ];
-                $where = [
-                    'bh_id' => $bh_id,
-                ];
-                $affected_rows = BadHistory::updateAll($update_data, $where);
+                $bad_history = BadHistory::findOne($bh_id);
+                if ($bad_history instanceof BadHistory)
+                {
+                    $bad_history->bh_status = yii::$app->params['invalid_status'];
+                    $bad_history->bh_update_time = date('Y-m-d H:i:s');
+                    $affected_rows = intval($bad_history->save());
+                }
             }
             catch (\Exception $e)
             {

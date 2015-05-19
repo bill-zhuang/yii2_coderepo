@@ -117,14 +117,13 @@ class DreamHistoryController extends Controller
             try
             {
                 $dh_id = intval(yii::$app->request->post('dh_id'));
-                $update_data = [
-                    'dh_status' => yii::$app->params['invalid_status'],
-                    'dh_update_time' => date('Y-m-d H:i:s'),
-                ];
-                $where = [
-                    'dh_id' => $dh_id,
-                ];
-                $affected_rows = DreamHistory::updateAll($update_data, $where);
+                $dream_history = DreamHistory::findOne($dh_id);
+                if ($dream_history instanceof DreamHistory)
+                {
+                    $dream_history->dh_status = yii::$app->params['invalid_status'];
+                    $dream_history->dh_update_time = date('Y-m-d H:i:s');
+                    $affected_rows = intval($dream_history->save());
+                }
             }
             catch (\Exception $e)
             {
