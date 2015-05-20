@@ -4,8 +4,44 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6a48e78cb9040ba91859f370171ce91a",
+    "hash": "e725476884e35a7905606cb91054b754",
     "packages": [
+        {
+            "name": "abeautifulsite/jquery-minicolors",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/claviska/jquery-minicolors.git",
+                "reference": "2446bb636528ced536c09b0b9fe52fb3198511e8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/claviska/jquery-minicolors/zipball/2446bb636528ced536c09b0b9fe52fb3198511e8",
+                "reference": "2446bb636528ced536c09b0b9fe52fb3198511e8",
+                "shasum": ""
+            },
+            "type": "component",
+            "extra": {
+                "component": {
+                    "scripts": [
+                        "jquery.minicolors.js"
+                    ],
+                    "files": [
+                        "jquery.minicolors.js",
+                        "jquery.minicolors.min.js",
+                        "jquery.minicolors.css",
+                        "jquery.minicolors.png"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "jQuery MiniColors Plugin",
+            "homepage": "http://www.abeautifulsite.net/",
+            "time": "2015-04-09 20:19:54"
+        },
         {
             "name": "bower-asset/bootstrap",
             "version": "v3.3.4",
@@ -841,12 +877,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "492aeb766b30eb00747c54096f790d2afd1090c8"
+                "reference": "88fb54dc7114c2563e171f725ddea9843860f6ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/492aeb766b30eb00747c54096f790d2afd1090c8",
-                "reference": "492aeb766b30eb00747c54096f790d2afd1090c8",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/88fb54dc7114c2563e171f725ddea9843860f6ab",
+                "reference": "88fb54dc7114c2563e171f725ddea9843860f6ab",
                 "shasum": ""
             },
             "require": {
@@ -921,7 +957,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2015-05-11 09:52:29"
+            "time": "2015-05-20 09:05:53"
         },
         {
             "name": "yiisoft/yii2-bootstrap",
@@ -929,12 +965,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-bootstrap.git",
-                "reference": "29ed43dd05df05cb15431503b66cd5ef2fab8a0d"
+                "reference": "53db15c3792c968edb9181160d9b2602d02d0738"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-bootstrap/zipball/29ed43dd05df05cb15431503b66cd5ef2fab8a0d",
-                "reference": "29ed43dd05df05cb15431503b66cd5ef2fab8a0d",
+                "url": "https://api.github.com/repos/yiisoft/yii2-bootstrap/zipball/53db15c3792c968edb9181160d9b2602d02d0738",
+                "reference": "53db15c3792c968edb9181160d9b2602d02d0738",
                 "shasum": ""
             },
             "require": {
@@ -971,7 +1007,7 @@
                 "bootstrap",
                 "yii2"
             ],
-            "time": "2015-05-12 08:39:27"
+            "time": "2015-05-19 10:46:19"
         },
         {
             "name": "yiisoft/yii2-composer",
@@ -1382,7 +1418,8 @@
         "yiisoft/yii2-swiftmailer": 20,
         "components/bootstrap-datetimepicker": 20,
         "nnnick/chartjs": 20,
-        "ckeditor/ckeditor": 20
+        "ckeditor/ckeditor": 20,
+        "abeautifulsite/jquery-minicolors": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
