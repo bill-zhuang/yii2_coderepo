@@ -22,9 +22,9 @@ class BackendUserController extends Controller
                             'allow' => true,
                             'actions' => [
                                 'index', 'add-backend-user', 'reset-password', 'get-backend-user', 'delete-backend-user'
+                            ],
                         ],
-                        'roles' => ['@'],
-                    ],
+                    'roles' => ['@'],
                 ],
             ],
         ];
