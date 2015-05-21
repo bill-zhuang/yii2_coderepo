@@ -102,3 +102,8 @@ $('#page_length').on('change', function(){
     $('#page_length').val(this.value);
     $('#formSearch')[0].submit();
 });
+
+$('#btn_search').on('click', function(){
+    $('#current_page').val(1);
+    $('#formSearch')[0].submit();
+});
