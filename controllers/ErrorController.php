@@ -25,4 +25,9 @@ class ErrorController extends Controller
         return $this->render('index');
     }
 
+    public function actionNoPermission()
+    {
+        return $this->render('no-permission');
+    }
+
 }

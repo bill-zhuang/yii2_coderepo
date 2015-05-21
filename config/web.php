@@ -51,6 +51,9 @@ $config = [
             'enablePrettyUrl' => true,
             //'enableStrictParsing' => true,
         ],
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
+        ],
     ],
     'params' => $params,
     'timeZone' => 'Asia/Shanghai',

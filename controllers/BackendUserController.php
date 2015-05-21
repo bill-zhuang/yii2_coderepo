@@ -17,15 +17,18 @@ class BackendUserController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                    'rules' => [
-                        [
-                            'allow' => true,
-                            'actions' => [
-                                'index', 'add-backend-user', 'reset-password', 'get-backend-user', 'delete-backend-user'
-                            ],
-                            'roles' => ['admin'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => [
+                            'index', 'add-backend-user', 'reset-password', 'get-backend-user', 'delete-backend-user'
                         ],
+                        'roles' => ['admin'],
+                    ],
                 ],
+                'denyCallback' => function($rule, $action) {
+                    return $this->redirect('/index.php/error/no-permission');
+                },
             ],
         ];
     }
@@ -81,6 +84,10 @@ class BackendUserController extends Controller
                     $user->bu_create_time = date('Y-m-d H:i:s');
                     $user->bu_update_time = date('Y-m-d H:i:s');
                     $affected_rows = intval($user->save());
+
+                    $auth = Yii::$app->authManager;
+                    $authorRole = $auth->getRole('normal');
+                    $auth->assign($authorRole, $user->getId());
                 }
             }
             catch (\Exception $e)
