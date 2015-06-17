@@ -116,10 +116,12 @@ class FinancePayment extends ActiveRecord
     public static function getTotalPaymentHistoryDataByCategory($start_date)
     {
         return FinancePayment::find()
-            ->select(['fc_id', 'sum(fp_payment) as payment'])
-            ->where(['fp_status' => 1])
-            ->andWhere(['>=', 'fp_payment_date', $start_date])
-            ->groupBy(['fc_id'])
+            ->innerJoin(FinancePaymentMap::tableName(), 'finance_payment.fp_id=finance_payment_map.fp_id')
+            ->select(['finance_payment_map.fc_id', 'sum(finance_payment.fp_payment) as payment'])
+            ->where(['finance_payment.fp_status' => 1])
+            ->andWhere(['>=', 'finance_payment.fp_payment_date', $start_date])
+            ->andWhere(['finance_payment_map.status' => 1])
+            ->groupBy(['finance_payment_map.fc_id'])
             ->orderBy(['payment' => SORT_DESC])
             ->asArray()
             ->all();
