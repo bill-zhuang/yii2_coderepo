@@ -16,6 +16,8 @@ $(document).ready(function(){
             $('#formSearch')[0].submit();
         }
     });
+
+    $('#finance_payment_fc_id').selectpicker();
 });
 
 $('#btn_add').on('click', function(){
@@ -57,7 +59,7 @@ $('a[id^=modify_]').on('click', function(){
     var success_function = function(result){
         $('#finance_payment_payment_date').val(result.fp_payment_date);
         $('#finance_payment_payment').val(result.fp_payment);
-        $('#finance_payment_fc_id').val(result.fc_id);
+        $('#finance_payment_fc_id').selectpicker('val', result.fc_ids);
         $('#finance_payment_intro').val(result.fp_detail);
         $('#finance_payment_fp_id').val(result.fp_id);
         $('#btn_submit_finance_payment').attr('disabled', false);

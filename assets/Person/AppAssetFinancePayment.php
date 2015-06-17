@@ -21,5 +21,6 @@ class AppAssetFinancePayment extends AssetBundle
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
         'app\assets\plugins\AssetDatetimePicker',
         'app\assets\plugins\PaginationAsset',
+        'app\assets\plugins\AssetBootstrapSelect',
     ];
 }

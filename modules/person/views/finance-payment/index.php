@@ -113,7 +113,7 @@ Yii::$app->view->registerJs('var js_data = ' . json_encode($js_data) . ';', \yii
                     </div><br /><br />
                     <div class="input-group">
                         <span class="input-group-addon">分类：</span>
-                        <select name="finance_payment_fc_id" id="finance_payment_fc_id" class="form-control">
+                        <select name="finance_payment_fc_id[]" id="finance_payment_fc_id" class="form-control" multiple="multiple">
                             <?php foreach($parent_categories as $key => $value){ ?>
                                 <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                             <?php } ?>

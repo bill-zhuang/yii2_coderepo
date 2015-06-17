@@ -126,6 +126,23 @@ class FinanceCategory extends ActiveRecord
         return isset($data['fc_name']) ? $data['fc_name'] : '';
     }
 
+    public static function getFinanceCategoryNames(array $fc_ids)
+    {
+        $data = FinanceCategory::find()
+            ->select('fc_name')
+            ->where(['in', 'fc_id', $fc_ids])
+            ->andWhere(['fc_status' => 1])
+            ->asArray()
+            ->all();
+        $names = [];
+        foreach ($data as $value)
+        {
+            $names[] = $value['fc_name'];
+        }
+
+        return $names;
+    }
+
     public static function getFinanceSubcategory($parent_id)
     {
         $subcategory_data = FinanceCategory::find()

@@ -10,7 +10,6 @@ use yii\db\ActiveRecord;
  * @property string $fp_id
  * @property double $fp_payment
  * @property string $fp_payment_date
- * @property string $fc_id
  * @property string $fp_detail
  * @property integer $fp_status
  * @property string $fp_create_time
@@ -32,10 +31,10 @@ class FinancePayment extends ActiveRecord
     public function rules()
     {
         return [
-            [['fp_payment', 'fp_payment_date', 'fc_id'], 'required'],
+            [['fp_payment', 'fp_payment_date'], 'required'],
             [['fp_payment'], 'number'],
             [['fp_payment_date', 'fp_create_time', 'fp_update_time'], 'safe'],
-            [['fc_id', 'fp_status'], 'integer'],
+            [['fp_status'], 'integer'],
             [['fp_detail'], 'string', 'max' => 255]
         ];
     }
@@ -49,7 +48,6 @@ class FinancePayment extends ActiveRecord
             'fp_id' => 'Fp ID',
             'fp_payment' => 'Fp Payment',
             'fp_payment_date' => 'Fp Payment Date',
-            'fc_id' => 'Fc ID',
             'fp_detail' => 'Fp Detail',
             'fp_status' => 'Fp Status',
             'fp_create_time' => 'Fp Create Time',
