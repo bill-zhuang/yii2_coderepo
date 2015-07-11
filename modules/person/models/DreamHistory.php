@@ -89,7 +89,7 @@ class DreamHistory extends ActiveRecord
     public static function getTotalDreamHistoryGroupData()
     {
         return DreamHistory::find()
-            ->select(['date_format(dh_happen_date, "%Y-%m") as period', 'count(dh_count) as number'])
+            ->select(['date_format(dh_happen_date, "%Y-%m") as period', 'sum(dh_count) as number'])
             ->where(['dh_status' => 1])
             ->groupBy(['date_format(dh_happen_date, "%Y%m")'])
             ->asArray()
