@@ -1,11 +1,21 @@
-
-$(document).ready(function(){
-    plotMarkers();
+$(document).ready(function () {
+    initPlotMarkers();
 });
 
-function plotMarkers()
-{
-    var lng_lat = js_data;
-    markMultiPosition(lng_lat, 'map_canvas_no_cluster');
-    markMultiPostionAndCluster(lng_lat, 'map_canvas_cluster');
+function initPlotMarkers() {
+    var getUrl = '/index.php/google-map/ajax-multiple-location';
+    var getData = {
+        "params": {}
+    };
+    var method = 'get';
+    var successFunc = function (result) {
+        if (typeof result.data != "undefined") {
+            markMultiPosition(result.data.coordinates, 'map_canvas_nocluster');
+            markMultiPostionAndCluster(result.data.coordinates, 'map_canvas_cluster');
+        } else {
+            alert(result.error.message);
+        }
+    };
+    jAjaxWidget.additionFunc(getUrl, getData, successFunc, method);
+
 }
