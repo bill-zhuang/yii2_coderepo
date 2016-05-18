@@ -6,26 +6,22 @@ class File
 {
     public static function getFileExtension($filename)
     {
-        $path_info = pathinfo($filename);
-
-        return $path_info['extension'];
+        return pathinfo($filename, PATHINFO_EXTENSION);
     }
 
-    public static function moveUploadFile($upload_id, $destination_directory)
+    public static function moveUploadFile($uploadId, $destinationDirectory)
     {
-        if($_FILES && array_key_exists($upload_id, $_FILES) && $_FILES[$upload_id]['size'] != 0)
-        {
-            $upload_path=$_FILES[$upload_id]['tmp_name'];
+        if ($_FILES && array_key_exists($uploadId, $_FILES) && $_FILES[$uploadId]['size'] != 0) {
+            $uploadPath = $_FILES[$uploadId]['tmp_name'];
             //!!!!!!filename with non-ascii character will failed use move_uploaded_file function, here rename.
-            //use $dest_file_name = mb_convert_encoding($_FILES[$upload_id]['name'], 'utf-8');
+            //use $destFileName = mb_convert_encoding($_FILES[$uploadId]['name'], 'utf-8');
             //or use unix timestamp to rename filename.
-            $dest_filename = time() . '.' . self::getFileExtension($_FILES[$upload_id]['name']);
+            $destFilename = time() . '.' . self::getFileExtension($_FILES[$uploadId]['name']);
 
-            $move_ok = move_uploaded_file($upload_path, $destination_directory . $dest_filename);
+            $moveOk = move_uploaded_file($uploadPath, $destinationDirectory . $destFilename);
 
-            if($move_ok)
-            {
-                return $dest_filename;
+            if ($moveOk) {
+                return $destFilename;
             }
         }
 
@@ -34,11 +30,9 @@ class File
 
     public static function inArrayMulti($needle, $haystack, $strict = false)
     {
-        foreach ($haystack as $item)
-        {
+        foreach ($haystack as $item) {
             if (($strict ? $item === $needle : $item == $needle)
-                || (is_array($item) && self::inArrayMulti($needle, $item, $strict)))
-            {
+                || (is_array($item) && self::inArrayMulti($needle, $item, $strict))) {
                 return true;
             }
         }
@@ -46,21 +40,33 @@ class File
         return false;
     }
 
-    public static function deleteDirectory($dir_path)
+    public static function createDirectory($dir, $mode = 0777, $recursive = true, $content = null)
     {
-        if(file_exists($dir_path))
-        {
-            //scandir can retrive hidden files
-            $files = array_diff(scandir($dir_path), array('.', '..'));
-
-            foreach($files as $file)
-            {
-                $path = $dir_path . DIRECTORY_SEPARATOR . $file;
-                (is_dir($path)) ? self::deleteDirectory($path) : unlink($path);
-            }
-
-            return rmdir($dir_path);//rmdir success when dir is empty.
+        if (!file_exists($dir)) {
+            mkdir($dir, $mode, $recursive, $content);
         }
     }
 
+    public static function deleteDirectory($dirPath)
+    {
+        if (file_exists($dirPath)) {
+            $files = array_diff(scandir($dirPath), array('.', '..')); //scandir can retrive hidden files
+
+            foreach ($files as $file) {
+                $path = $dirPath . DIRECTORY_SEPARATOR . $file;
+                (is_dir($path)) ? self::deleteDirectory($path) : unlink($path);
+            }
+
+            return rmdir($dirPath); //rmdir success when dir is empty.
+        }
+    }
+
+    public static function getTempDir()
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            return 'C:' . DIRECTORY_SEPARATOR . 'Windows' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR;
+        } else {
+            return DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR;
+        }
+    }
 }

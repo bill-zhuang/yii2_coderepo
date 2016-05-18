@@ -4,60 +4,45 @@ namespace app\library\bill;
 
 class Zip
 {
-    private $zip_archive;
+    /**
+     * @var \ZipArchive
+     */
+    private $_zipArchive;
 
     public function __construct()
     {
-        $this->zip_archive = new ZipArchive();
+        $this->_zipArchive = new \ZipArchive();
     }
 
-    public function unZipFile($zip_path, $unzip_path)
+    public function unzip($zipPath, $unzipPath)
     {
-        $open_zip_info = $this->_openZip($zip_path);
-
-        if($open_zip_info === true)
-        {
-            if($this->zip_archive->extractTo($unzip_path) === true)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
+        if (file_exists($zipPath)) {
+            if ($this->_zipArchive->open($zipPath) === true) {
+                File::createDirectory($unzipPath);
+                return $this->_zipArchive->extractTo($unzipPath);
+            } else {
+                $this->_zipArchive->close();
             }
         }
-        else
-        {
-            $this->zip_archive->close();
 
-            return $open_zip_info;
-        }
+        return false;
     }
 
-    private function _openZip($zip_path)
+    //tarball/dll src: http://pecl.php.net/package/rar
+    public function unrar($rarPath, $unrarPath)
     {
-        if(!file_exists($zip_path))
-        {
-            return 'file not exist.';
-        }
-        else
-        {
-            if(strtolower(Bill_File::getFileExtension($zip_path)) != 'zip')
-            {
-                return 'not zip file.';
+        if (function_exists('rar_open')) {
+            $rarFile = rar_open($rarPath);
+            $list = rar_list($rarFile);
+            File::createDirectory($unrarPath);
+            foreach ($list as $file) {
+                $entry = rar_entry_get($rarFile, $file->getName());
+                $entry->extract($unrarPath);
             }
-            else
-            {
-                if($this->zip_archive->open($zip_path) === true)
-                {
-                    return true;
-                }
-                else
-                {
-                    return 'open zip file failed.';
-                }
-            }
+            return true;
+        } else {
+            echo 'rar extension not exist.';
+            return false;
         }
     }
-
 }

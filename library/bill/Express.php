@@ -4,36 +4,33 @@ namespace app\library\bill;
 
 class Express
 {
-    public function getExpressInfo($express_code)
+    public function getExpressInfo($expressCode)
     {
-        $request_url = 'http://www.kuaidi100.com/query';
+        $requestUrl = 'http://www.kuaidi100.com/query';
         $method = 'GET';
-        $express_company = $this->_getExpressCompanyName($express_code);
-        if ($express_company !== false)
-        {
-            $param = array('type' => $express_company, 'postid' => $express_code);
-            $json_data = Curl::sendRequestByCurl($request_url, $param, $method);
-            $decode_data = json_decode($json_data, true);
-            if ($decode_data['message'] == 'ok')
-            {
-                return $decode_data['data'];
+        $expressCompany = $this->_getExpressCompanyName($expressCode);
+        if ($expressCompany !== false) {
+            $param = array('type' => $expressCompany, 'postid' => $expressCode);
+            $jsonData = Bill_Curl::sendRequestByCurl($requestUrl, $param, $method);
+            $decodeData = json_decode($jsonData, true);
+            if ($decodeData['message'] == 'ok') {
+                return $decodeData['data'];
             }
         }
 
         return false;
     }
 
-    private function _getExpressCompanyName($express_code)
+    private function _getExpressCompanyName($expressCode)
     {
-        $request_url = 'http://www.kuaidi100.com/autonumber/auto';
-        $param = array('num' => $express_code);
-        $method = 'GET';
+        $requestUrl = 'http://www.kuaidi100.com/autonumber/auto';
+        $param = array('num' => $expressCode);
+        $method = Constant::HTTP_METHOD_GET;
 
-        $json_data = Curl::sendRequestByCurl($request_url, $param, $method);
-        $decode_data = json_decode($json_data, true);
-        if (!empty($decode_data))
-        {
-            return $decode_data[0]['comCode'];
+        $jsonData = Curl::sendRequestByCurl($requestUrl, $param, $method);
+        $decodeData = json_decode($jsonData, true);
+        if (!empty($decodeData)) {
+            return $decodeData[0]['comCode'];
         }
 
         return false;

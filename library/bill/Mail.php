@@ -26,47 +26,7 @@ class Mail
             //'ssl' => 'ssl',
             'port' => $this->_port
         ];
-        $transport = new Zend_Mail_Transport_Smtp($this->_host, $config);
-
-        $mail = new Zend_Mail($charset);
-        $mail->setBodyText($body);
-        $mail->setFrom($this->_username, 'Admin');
-
-        if(is_array($receiver))
-        {
-            if(count($receiver) == 0)
-            {
-                return false;
-            }
-
-            for($i = 0, $len = count($receiver); $i < $len; $i++)
-            {
-                $mail->addTo($receiver[$i]);
-            }
-        }
-        else
-        {
-            if($receiver == null)
-            {
-                $receiver = $this->_receiver;
-            }
-
-            $mail->addTo($receiver);
-        }
-
-        if($attachment != null)
-        {
-            $mail->createAttachment(
-                file_get_contents($attachment),
-                Zend_Mime::TYPE_OCTETSTREAM,
-                Zend_Mime::DISPOSITION_ATTACHMENT,
-                Zend_Mime::ENCODING_BASE64,
-                $attachment
-            );
-        }
-
-        $mail->setSubject($title);
-        $mail->send($transport);
+        //TODO
 
         return true;
     }

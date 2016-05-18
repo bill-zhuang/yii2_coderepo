@@ -6,84 +6,62 @@ class Pdo
 {
     private $dbh;
 
-    public function __construct($host_name, $database_name, $user_name, $password, $option = array())
+    public function __construct($hostName, $databaseName, $userName, $password, $option = array())
     {
-        try
-        {
-            $this->dbh = new PDO("mysql:host={$host_name};dbname={$database_name}", $user_name, $password, $option);
-        }
-        catch(Exception $ex)
-        {
+        try {
+            $this->dbh = new \PDO("mysql:host={$hostName};dbname={$databaseName}", $userName, $password, $option);
+        } catch (\Exception $ex) {
             return 'Database connected failed: ' . $ex->getMessage();
         }
     }
 
-    public function sqlQuery($sql_statement)
+    public function sqlQuery($sqlStatement)
     {
-        if(isset($this->dbh))
-        {
-            $query_results = $this->dbh->query($sql_statement)->fetchAll();
+        if (isset($this->dbh)) {
+            $queryResults = $this->dbh->query($sqlStatement)->fetchAll();
 
-            if($query_results !== false)
-            {
-                return $query_results;
-            }
-            else
-            {
+            if ($queryResults !== false) {
+                return $queryResults;
+            } else {
                 return 'sql query error.';
             }
-        }
-        else
-        {
+        } else {
             return 'connect database first.';
         }
     }
 
-    public function sqlExecute($sql_statement, $bind_parameters = array())
+    public function sqlExecute($sqlStatement, $bindParameters = array())
     {
-        if(isset($this->dbh))
-        {
-            $query = $this->dbh->prepare($sql_statement);
-            $query->execute($bind_parameters);
-        }
-        else
-        {
+        if (isset($this->dbh)) {
+            $query = $this->dbh->prepare($sqlStatement);
+            $query->execute($bindParameters);
+        } else {
             return 'connect database first.';
         }
     }
 
-    public function sqlExecuteWithTransaction($sql_statements)
+    public function sqlExecuteWithTransaction($sqlStatements)
     {
-        if(isset($this->dbh))
-        {
-            try
-            {
+        if (isset($this->dbh)) {
+            try {
                 $this->dbh->beginTransaction();
 
-                if(is_array($sql_statements))
-                {
-                    foreach($sql_statements as $sql_statement)
-                    {
-                        $this->dbh->exec($sql_statement);
+                if (is_array($sqlStatements)) {
+                    foreach ($sqlStatements as $sqlStatement) {
+                        $this->dbh->exec($sqlStatement);
                     }
-                }
-                else
-                {
-                    $this->dbh->exec($sql_statements);
+                } else {
+                    $this->dbh->exec($sqlStatements);
                 }
 
                 $this->dbh->commit();
 
                 return 'success';
-            }
-            catch(Exception $ex)
-            {
+            } catch (\Exception $ex) {
                 $this->dbh->rollBack();
                 return 'error: ' . $ex->getMessage();
             }
-        }
-        else
-        {
+        } else {
             return 'connect database first.';
         }
     }

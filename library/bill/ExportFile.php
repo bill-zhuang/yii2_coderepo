@@ -4,19 +4,20 @@ namespace app\library\bill;
 
 class ExportFile
 {
-    public static function exportCsv($filename, $csv_content)
+    //recommend
+    public static function exportCsv($filename, $csvContent)
     {
         ob_clean();
         self::_setHeaderInfo();
         header("Content-Type: text/csv; charset=utf-8;");
         header("Content-Disposition: attachment; filename=" . $filename);
 
-        echo self::_getBomHeader(). $csv_content;
+        echo self::_getBomHeader() . $csvContent;
         exit;
     }
 
     //char only with alphabetic will save success. chinese or other failed.
-    public static function exportExcel($filename, $xls_content)
+    public static function exportExcel($filename, $xlsContent)
     {
         ob_clean();
         self::_setHeaderInfo();
@@ -24,25 +25,17 @@ class ExportFile
         header("Content-Disposition: attachment; filename=" . $filename);
 
         //add (chr(0xEF) . chr(0xBB) . chr(0xBF)) will failed, each row data in one cell.
-        echo $xls_content;
+        echo $xlsContent;
         exit;
     }
 
     //work with chinese character, but \t failed.
-    public static function saveExcel($filename, $xls_content)
+    public static function saveExcel($filename, $xlsContent)
     {
         $fp = fopen($filename, 'w+');
         fwrite($fp, self::_getBomHeader());
-        fwrite($fp, $xls_content);
+        fwrite($fp, $xlsContent);
         fclose($fp);
-    }
-
-    public static function exprotPDF($filename, $pdf_content)
-    {
-        ob_clean();
-        self::_setHeaderInfo();
-        header("Content-Type: application/pdf;");
-        header("Content-Disposition: attachment; filename=" . $filename);
     }
 
     private static function _setHeaderInfo()

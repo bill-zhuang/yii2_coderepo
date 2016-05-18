@@ -4,40 +4,30 @@ namespace app\library\bill;
 
 class Curl
 {
-    private $_url;
-    
-    public function __construct($url)
+    public static function getResponseHeaders($requestUrl)
     {
-        $this->_url = $url;
-    }
-    
-    public function getResponseHeaders()
-    {
-        $ch = curl_init($this->_url);
+        $ch = curl_init($requestUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, TRUE);
-        
+
         $response = curl_exec($ch);
         return curl_getinfo($ch);
     }
-	
-	public static function sendRequestByCurl($request_url, array $data, $method = 'POST')
+
+    public static function sendRequestByCurl($requestUrl, array $data, $method = Constant::HTTP_METHOD_POST)
     {
         $ch = curl_init();
         //curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        if (strtolower($method) == 'get')
-        {
-            curl_setopt($ch, CURLOPT_URL, $request_url . '?' . http_build_query($data));
-        }
-        else 
-        {
-            curl_setopt($ch, CURLOPT_URL, $request_url);
+        if (strtoupper($method) == Constant::HTTP_METHOD_GET) {
+            curl_setopt($ch, CURLOPT_URL, $requestUrl . '?' . http_build_query($data));
+        } else {
+            curl_setopt($ch, CURLOPT_URL, $requestUrl);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         }
-        
+
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        
+
         $result = curl_exec($ch);
         return $result;
     }
