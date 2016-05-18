@@ -6,7 +6,9 @@ use yii;
 use yii\web\Controller;
 use app\library\bill\Curl;
 use app\library\bill\Regex;
+use app\library\bill\Util;
 use yii\filters\AccessControl;
+use yii\web\Response;
 
 class IndexController extends Controller
 {
@@ -22,7 +24,7 @@ class IndexController extends Controller
                         'allow' => true,
                         'actions' => [
                             'index',
-                            'download-baidu-music',
+                            'get-baidu-music-link',
                         ],
                         'roles' => ['@'],
                     ],
@@ -36,26 +38,35 @@ class IndexController extends Controller
         return $this->render('index');
     }
 
-    public function actionDownloadBaiduMusic()
+    public function actionGetBaiduMusicLink()
     {
-        $real_downloadlink = '';
-        $download_link = trim(yii::$app->request->get('downlink', ''));
-        if($download_link !== '')
-        {
-            $match_count = preg_match(Regex::BAIDU_MUSIC_DOWNLOAD_LINK, $download_link, $match_id);
-            if($match_count)
-            {
-                $real_downloadlink = 'http://music.baidu.com/data/music/file?link=&song_id=' . $match_id[1];
-                $bill_curl = new Curl($real_downloadlink);
-                $header_info = $bill_curl->getResponseHeaders();
-                if ($header_info['http_code'] == 302)
-                {
-                    $real_downloadlink = $header_info['redirect_url'] . '&song_id=' . $match_id[1];
+        $jsonArray = [];
+        $params = yii::$app->request->get('params', array());
+        if (isset($params['downloadLink'])) {
+            $downloadLink = trim($params['downloadLink']);
+            if($downloadLink !== '') {
+                $matchCount = preg_match(Regex::BAIDU_MUSIC_DOWNLOAD_LINK, $downloadLink, $matchId);
+                if($matchCount) {
+                    $realDownloadLink = 'http://music.baidu.com/data/music/file?link=&song_id=' . $matchId[1];
+                    $headerInfo = Curl::getResponseHeaders($realDownloadLink);
+                    if ($headerInfo['http_code'] == 302) {
+                        $jsonArray['data'] = [
+                            'downloadUrl' => $headerInfo['redirect_url'] . '&song_id=' . $matchId[1]
+                        ];
+                    } else {
+                        $jsonArray['error'] = Util::getJsonResponseErrorArray(200, 'Fail to get baidu download music url.');
+                    }
+                } else {
+                    $jsonArray['error'] = Util::getJsonResponseErrorArray(200, 'Request param downloadLink is invalid.');
                 }
+            } else {
+                $jsonArray['error'] = Util::getJsonResponseErrorArray(200, 'Request param downloadLink not empty.');
             }
+        } else {
+            $jsonArray['error'] = Util::getJsonResponseErrorArray(200, 'Request param downloadLink not set.');
         }
 
-        echo json_encode($real_downloadlink);
-        exit;
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return json_encode($jsonArray);
     }
 }
