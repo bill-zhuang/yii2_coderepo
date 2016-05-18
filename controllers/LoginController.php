@@ -37,22 +37,17 @@ class LoginController extends Controller
 
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest)
-        {
+        if (!Yii::$app->user->isGuest) {
             //return $this->goHome();
             return $this->redirect('/index.php/main/index');
         }
 
-        if (Yii::$app->request->isPost)
-        {
+        if (Yii::$app->request->isPost) {
             $auth = new Auth();
-            if ($auth->load(Yii::$app->request->post()) && $auth->login())
-            {
+            if ($auth->load(Yii::$app->request->post()) && $auth->login()) {
                 //return $this->goBack();
                 return $this->redirect('/index.php/main/index');
-            }
-            else
-            {
+            } else {
                 return $this->render('login', ['content' => '帐号或密码错误']);
             }
         }

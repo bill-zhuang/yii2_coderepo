@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\library\bill\Constant;
 use app\models\User;
 use yii;
 use yii\web\Controller;
@@ -34,30 +35,25 @@ class MainController extends Controller
 
     public function actionModifyPassword()
     {
-        if (yii::$app->request->isPost)
-        {
-            $user_id = Yii::$app->getUser()->getId();
-            $old_password = addslashes(yii::$app->request->post('old_password'));
-            $new_password = addslashes(yii::$app->request->post('new_password'));
-            if ($user_id !== null)
-            {
-                $affected_rows = 0;
-                $user = User::findIdentity($user_id);
-                if ($user->validatePassword($old_password))
-                {
-                    $user->setPassword($new_password);
+        if (yii::$app->request->isPost) {
+            $userID = Yii::$app->getUser()->getId();
+            $params = yii::$app->request->get('params', array());
+            $oldPassword = isset($params['old_password']) ? addslashes($params['old_password']) : '';
+            $newPassword = isset($params['new_password']) ? addslashes($params['new_password']) : '';
+            if ($userID !== null) {
+                $affectedRows = Constant::INVALID_PRIMARY_ID;
+                $user = User::findIdentity($userID);
+                if ($user->validatePassword($oldPassword)) {
+                    $user->setPassword($newPassword);
                     $user->bu_update_time = date('Y-m-d H:i:s');
-                    $affected_rows = $user->save();
+                    $affectedRows = $user->save();
                 }
-                if ($affected_rows > 0)
-                {
+                if ($affectedRows > 0) {
                     Yii::$app->user->logout();
                     //redirect to login page & set layout to login
                     $this->layout = 'layout-login';
                     return $this->render('@app/views/login/login', ['content' => '修改成功!请登录!']);
-                }
-                else
-                {
+                } else {
                     $content = '修改失败！';
                     return $this->render('index', ['content' => $content]);
                 }
@@ -66,5 +62,4 @@ class MainController extends Controller
 
         return $this->render('modify-password');
     }
-
 }
