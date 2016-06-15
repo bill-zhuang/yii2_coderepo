@@ -101,7 +101,7 @@ class FinancePayment extends ActiveRecord
             $select->andWhere(['<=', 'payment_date', $endDate]);
         }
         return $select
-            ->groupBy('date_format(payment_date, "%Y%m")')
+            ->groupBy(['date_format(payment_date, "%Y%m")'])
             ->orderBy(['payment_date' => SORT_ASC])
             ->asArray()->all();
     }
@@ -112,9 +112,9 @@ class FinancePayment extends ActiveRecord
             return FinancePayment::find()
                 ->select(['payment_date as period', 'sum(payment) as payment'])
                 ->andWhere(['status' => Constant::VALID_STATUS])
-                ->andWhere(['>=', 'payment_date?', $startDate])
+                ->andWhere(['>=', 'payment_date', $startDate])
                 ->andWhere(['<=', 'payment_date', $endDate])
-                ->groupBy('payment_date')
+                ->groupBy(['payment_date'])
                 ->orderBy(['payment_date' => SORT_ASC])
                 ->asArray()->all();
         } else {
@@ -124,8 +124,8 @@ class FinancePayment extends ActiveRecord
                 ->andWhere([FinancePayment::tableName() . '.status' => Constant::VALID_STATUS])
                 ->andWhere(['>=', FinancePayment::tableName() . '.payment_date', $startDate])
                 ->andWhere(['<=', FinancePayment::tableName() . '.payment_date', $endDate])
-                ->andWhere('finance_payment_map.fcid=?', $fcid)
-                ->groupBy(FinancePayment::tableName() . '.payment_date')
+                ->andWhere(['finance_payment_map.fcid' => $fcid])
+                ->groupBy([FinancePayment::tableName() . '.payment_date'])
                 ->orderBy([FinancePayment::tableName() . '.payment_date' => SORT_ASC])
                 ->asArray()->all();
         }
@@ -134,12 +134,12 @@ class FinancePayment extends ActiveRecord
     public static function getTotalPaymentHistoryDataByCategory($startDate)
     {
         return FinancePayment::find()
-            ->select(['sum(payment) as payment'])
-            ->innerJoin('finance_payment_map', 'finance_payment.fpid=finance_payment_map.fpid', 'fcid')
-            ->andWhere([FinancePayment::tableName() . '.status', Constant::VALID_STATUS])
+            ->select(['sum(payment) as payment', 'fcid'])
+            ->innerJoin('finance_payment_map', 'finance_payment.fpid=finance_payment_map.fpid', [])
+            ->andWhere([FinancePayment::tableName() . '.status' => Constant::VALID_STATUS])
             ->andWhere(['>=', FinancePayment::tableName() . '.payment_date', $startDate])
             ->andWhere(['finance_payment_map.status' => Constant::VALID_STATUS])
-            ->groupBy('finance_payment_map.fcid')
+            ->groupBy(['finance_payment_map.fcid'])
             ->orderBy(['payment' => SORT_DESC])
             ->asArray()->all();
     }

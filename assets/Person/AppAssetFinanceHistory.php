@@ -11,11 +11,17 @@ class AppAssetFinanceHistory extends AssetBundle
 
     ];
     public $js = [
-        'js/person/finance-history/finance-history.js',
+        'js/public/jAjaxWidget.js',
+        'js/public/datetimepicker.js',
+        'js/person/finance-history.js',
+        'js/person/load-finance-category.js',
     ];
     public $depends = [
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
-        'app\assets\plugins\AssetChart',
+        'app\assets\plugins\HighChartsAsset',
+        'app\assets\plugins\jQuerySerializeObjectAsset',
+        'app\assets\plugins\AssetDatetimePicker',
+        'app\assets\plugins\jQuerySerializeObjectAsset',
     ];
 }

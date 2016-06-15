@@ -1,9 +1,9 @@
 <?php
 use app\assets\person\AppAssetFinanceHistory;
 AppAssetFinanceHistory::register($this);
-Yii::$app->view->registerJs('var js_data = ' . json_encode($js_data) . ';', \yii\web\View::POS_END);
 ?>
 
+<title>Bill Coderepo - Finance History</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">
@@ -12,50 +12,58 @@ Yii::$app->view->registerJs('var js_data = ' . json_encode($js_data) . ';', \yii
     <!-- panel body -->
     <div class="panel-body">
         <div class="row">
-        </div><hr>
-    </div>
+        </div>
+
         <div class="row">
+            <div class="col-sm-12 col-md-10 col-lg-12">
+                <form action="#" method="get" id="formSearchDay" class="form-inline">
+                    Start Date: <input type="text" class="form-control form_date bill-ime-disabled"
+                                       id="day_start_date" name="day_start_date"/>
+                    End Date: <input type="text" class="form-control form_date bill-ime-disabled"
+                                     id="day_end_date" name="day_end_date"/>
+                    Category: <select class="form-control" id="day_category_id" name="day_category_id"></select>
+                    <button class="btn btn-primary" type="submit" id="btn_search_day">
+                        <span class="glyphicon glyphicon-search"></span>
+                        <span>Search</span>
+                    </button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                </form>
+            </div>
             <div class="col-sm-12 col-md-12 col-lg-12">
-                <span class="bill_font_bold_green">All payment history data by day</span>
-                <div class="bill-chart-canvas_all">
-                    <canvas id="payment_history_line_chart_all"></canvas>
+                <div class="bill-chart-canvas_all" id="payment_history_line_chart_all">
                 </div>
             </div>
 
-            <span class="bill-margin-left bill_font_bold_green">All category payment history data in last 30 days</span>
-            <span id="month_spent"></span>
             <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="bill-chart-canvas">
-                    <canvas id="month_category_payment_history_line_chart"></canvas>
-                </div>
-                <div class="bill-chart-canvas bill-margin-left">
-                    <canvas id="month_category_payment_history_bar_chart"></canvas>
-                </div>
-            </div>
-
-            <br/>
-
-            <span class="bill-margin-left bill_font_bold_green">All payment history data by month</span>
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="bill-chart-canvas">
-                    <canvas id="payment_history_line_chart"></canvas>
-                </div>
-                <div class="bill-chart-canvas bill-margin-left">
-                    <canvas id="payment_history_bar_chart"></canvas>
-                </div>
+                <div id="category_payment_history_month_chart"></div>
             </div>
 
             <br/>
 
-            <span class="bill-margin-left bill_font_bold_green">All category payment history data in last one year</span>
-            <span id="year_spent"></span>
+            <div class="col-sm-12 col-md-10 col-lg-12">
+                <hr>
+                <form action="#" method="get" id="formSearchMonth" class="form-inline">
+                    Start Date: <input type="text" class="form-control form_date bill-ime-disabled"
+                                       id="month_start_date" name="month_start_date"/>
+                    End Date: <input type="text" class="form-control form_date bill-ime-disabled"
+                                     id="month_end_date" name="month_end_date"/>
+                    <button class="btn btn-primary" type="submit" id="btn_search_month">
+                        <span class="glyphicon glyphicon-search"></span>
+                        <span>Search</span>
+                    </button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                </form>
+            </div>
+
             <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="bill-chart-canvas">
-                    <canvas id="category_payment_history_line_chart"></canvas>
-                </div>
-                <div class="bill-chart-canvas bill-margin-left">
-                    <canvas id="category_payment_history_bar_chart"></canvas>
-                </div>
+                <div id="payment_history_month_chart"></div>
+            </div>
+
+            <br/>
+
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <hr>
+                <div id="category_payment_history_year_chart"></div>
             </div>
         </div>
     </div>

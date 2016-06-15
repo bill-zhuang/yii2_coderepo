@@ -7,9 +7,12 @@ use yii\web\Controller;
 use app\modules\person\models\FinancePayment;
 use app\modules\person\models\FinanceCategory;
 use yii\filters\AccessControl;
+use app\library\bill\Util;
+use yii\web\Response;
 
 class FinanceHistoryController extends Controller
 {
+    private $_categories;
     public $enableCsrfValidation = false;
 
     public function behaviors()
@@ -20,7 +23,14 @@ class FinanceHistoryController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index'],
+                        'actions' => [
+                            'index',
+                            'ajax-finance-history-period',
+                            'ajax-finance-history-month',
+                            'ajax-finance-history-month-category',
+                            'ajax-finance-history-year-category',
+                            'ajax-finance-history-year-category',
+                        ],
                         'roles' => ['@'],
                     ],
                 ],
@@ -30,90 +40,116 @@ class FinanceHistoryController extends Controller
 
     public function actionIndex()
     {
+        return $this->render('index');
+    }
 
-        $chart_data = [
-            'period' => [],
-            'payment' => [],
-        ];
-        $month_data = FinancePayment::getTotalPaymentHistoryGroupData();
-        foreach ($month_data as $month_value)
-        {
-            $chart_data['period'][] = $month_value['period'];
-            $chart_data['payment'][] = $month_value['payment'];
+    public function actionAjaxFinanceHistoryPeriod()
+    {
+        $params = yii::$app->request->get('params', array());
+        $startDate = (isset($params['day_start_date']) && Util::validDate($params['day_start_date']))
+            ? trim($params['day_start_date']) : date('Y-m-d', strtotime('-1 month'));
+        $endDate = (isset($params['day_end_date']) && Util::validDate($params['day_end_date']))
+            ? trim($params['day_end_date']) : date('Y-m-d');
+        $fcid = (isset($params['day_category_id'])) ? intval($params['day_category_id']) : 0;
+        $data = [];
+        $dayInterval = intval((strtotime($endDate) - strtotime($startDate)) / 86400);
+        for($i = 0; $i <= $dayInterval; $i++) {
+            $periodDate = date('Y-m-d', strtotime($startDate . " + {$i} day"));
+            $data[$periodDate] = 0.00;
         }
-
-        //choose last 30 days data.
-        $fetch_days = 30;
-        $start_date = date('Y-m-d', strtotime('- ' . $fetch_days . ' day'));
-        $all_chart_data = $this->_getAllPaymentHistoryDataByDay($start_date);
-        $sort_chart_data = [];
-        if (count($all_chart_data['period']) != $fetch_days)
-        {
-            for($i = 1; $i <= $fetch_days; $i++)
-            {
-                $period_date = date('Y-m-d', strtotime($start_date . ' + ' . $i . ' day'));
-                $sort_chart_data['period'][] = $period_date;
-                if (!in_array($period_date, $all_chart_data['period']))
-                {
-                    $sort_chart_data['payment'][] = 0;
-                }
-                else
-                {
-                    $period_key = array_search($period_date, $all_chart_data['period']);
-                    $sort_chart_data['payment'][] = $all_chart_data['payment'][$period_key];
-                }
+        $dayData = FinancePayment::getTotalPaymentHistoryDataByDay($startDate, $endDate, $fcid);
+        foreach ($dayData as $dayValue) {
+            if (isset($data[$dayValue['period']])) {
+                $data[$dayValue['period']] = floatval($dayValue['payment']);
             }
-            $all_chart_data = $sort_chart_data;
         }
-        //choose last one year data.
-        $start_date = date('Y-m-d', strtotime('- 1 year'));
-        $year_category_data = $this->_getAllPaymentHistoryDataByCategory($start_date);
-        $start_date = date('Y-m-d', strtotime('- 30 day'));
-        $month_category_data = $this->_getAllPaymentHistoryDataByCategory($start_date);
-
-        $view_data = [
-            'js_data' => [
-                'chart_data' => $chart_data,
-                'all_chart_data' => $all_chart_data,
-                'year_category_chart_data' => $year_category_data,
-                'month_category_chart_data' => $month_category_data,
-                'year_spent' => array_sum($year_category_data['payment']),
-                'month_spent' => array_sum($month_category_data['payment']),
+        $jsonArray = [
+            'data' => [
+                'days' => array_keys($data),
+                'data' => array_values($data),
             ],
+            'fcid' => $fcid,
         ];
-        return $this->render('index', $view_data);
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
     }
 
-    private function _getAllPaymentHistoryDataByDay($start_date)
+    public function actionAjaxFinanceHistoryMonth()
     {
-        $all_chart_data = [
-            'period' => [],
-            'payment' => [],
+        $params = yii::$app->request->get('params', array());
+        $startDate = (isset($params['month_start_date']) && Util::validDate($params['month_start_date']))
+            ? trim($params['month_start_date']) : date('Y-m', strtotime('-11 month')) . '-01';
+        $endDate = (isset($params['month_end_date']) && Util::validDate($params['month_end_date']))
+            ? trim($params['month_end_date']) : '';
+        $data = [
+            'months' => [],
+            'data' => [],
         ];
-        $all_data = FinancePayment::getTotalPaymentHistoryDataByDay($start_date);
-        foreach ($all_data as $all_value)
-        {
-            $all_chart_data['period'][] = $all_value['period'];
-            $all_chart_data['payment'][] = $all_value['payment'];
+        $tempData = [];
+        $monthData = FinancePayment::getTotalPaymentHistoryGroupData($startDate, $endDate);
+        foreach ($monthData as $monthValue) {
+            $data['months'][] = $monthValue['period'];
+            $tempData[$monthValue['period']] = $monthValue['payment'];
         }
+        $data['months'] = Util::getMonthRange($data['months']);
+        foreach ($data['months'] as $month) {
+            if (isset($tempData[$month])) {
+                $data['data'][] = floatval($tempData[$month]);
+            } else {
+                $data['data'][] = 0.00;
+            }
+        }
+        $jsonArray = [
+            'data' => $data,
+        ];
 
-        return $all_chart_data;
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
     }
 
-    private function _getAllPaymentHistoryDataByCategory($start_date)
+    public function actionAjaxFinanceHistoryMonthCategory()
     {
-        $all_chart_data = [
-            'category' => [],
-            'payment' => [],
+        $startDate = date('Y-m-d', strtotime('-1 month'));
+        $monthData = $this->_getAllPaymentHistoryDataByCategory($startDate);
+        $monthData['total'] = FinancePayment::getSumPaymentByDate($startDate);
+        $jsonArray = [
+            'data' => $monthData,
         ];
-        $all_data = FinancePayment::getTotalPaymentHistoryDataByCategory($start_date);
-        $categories = FinanceCategory::getAllParentCategory();
-        foreach ($all_data as $all_value)
-        {
-            $all_chart_data['category'][] = $categories[$all_value['fc_id']];
-            $all_chart_data['payment'][] = $all_value['payment'];
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
+    }
+
+    public function actionAjaxFinanceHistoryYearCategory()
+    {
+        $startDate = date('Y-m-d', strtotime('- 1 year'));
+        $yearData = $this->_getAllPaymentHistoryDataByCategory($startDate);
+        $yearData['total'] = FinancePayment::getSumPaymentByDate($startDate);
+        $jsonArray = [
+            'data' => $yearData,
+        ];
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
+    }
+
+    private function _getAllPaymentHistoryDataByCategory($startDate)
+    {
+        if (empty($this->_categories)) {
+            $this->_categories = FinanceCategory::getAllParentCategory(true);
+        }
+        $data = [
+            'categories' => [],
+            'data' => [],
+        ];
+        $yearData = FinancePayment::getTotalPaymentHistoryDataByCategory($startDate);
+        foreach ($yearData as $yearValue) {
+            $data['categories'][] = isset($this->_categories[$yearValue['fcid']])
+                ? $this->_categories[$yearValue['fcid']] : '';
+            $data['data'][] = floatval($yearValue['payment']);
         }
 
-        return $all_chart_data;
+        return $data;
     }
 }
