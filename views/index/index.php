@@ -3,6 +3,7 @@ use app\assets\AppAssetIndex;
 AppAssetIndex::register($this);
 ?>
 
+<title>Bill Coderepo - Variety</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">
@@ -18,24 +19,28 @@ AppAssetIndex::register($this);
                            placeholder="like:http://music.baidu.com/song/1262598/download?title=&pst=naga&fr="/>&nbsp;&nbsp;
                     <button class="btn btn-success" type="button" id="btn_generate_download_link">
                         Generate real download link
-                    </button><br><br>
+                    </button>
+                    <br><br>
                     Real download link:(right click and save as.../other will failed!)&nbsp;&nbsp;
-                    <a href="#" id="generated_baidu_music_url" target="_blank"></a>
+                    <a href="#" id="generated_baidu_music_url"></a>
                     <hr>
                     Generate url with underline:&nbsp;&nbsp;
                     <input type="text" id="url" class="form-control" style="width: 800px;"/>&nbsp;&nbsp;
-                    <button class="btn btn-success" type="button" id="btn_generate_url">Generate</button><br/>
+                    <button class="btn btn-success" type="button" id="btn_generate_url">Generate</button>
+                    <br/>
                     <a href="#" id="generated_url" target="_blank"></a>
                     <hr>
                     <a href='#exampleModal' data-toggle="modal">Bootstrap Modal Example</a>
                 </div>
             </form>
-        </div><hr>
+        </div>
     </div>
+    <!-- panel footer -->
+    <!--<div class="panel-footer">
+    </div>-->
 </div>
-
 <!-- Bootstrap Modal -->
-<div id="exampleModal" class="modal fade" >
+<div id="exampleModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -43,10 +48,7 @@ AppAssetIndex::register($this);
             </div>
 
             <div class="modal-body">
-                <form class="form-inline">
-                    <span>Example: </span>
-                    <input type="text" class="form-control"/>
-                </form>
+                Example: <input type="text"/>
             </div>
 
             <div class="modal-footer">
