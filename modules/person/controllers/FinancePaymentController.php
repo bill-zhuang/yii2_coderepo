@@ -8,6 +8,10 @@ use app\modules\person\models\FinancePayment;
 use app\modules\person\models\FinanceCategory;
 use app\modules\person\models\FinancePaymentMap;
 use yii\filters\AccessControl;
+use app\library\bill\Constant;
+use app\library\bill\Util;
+use app\library\bill\JsMessage;
+use yii\web\Response;
 
 class FinancePaymentController extends Controller
 {
@@ -23,6 +27,7 @@ class FinancePaymentController extends Controller
                         'allow' => true,
                         'actions' => [
                             'index',
+                            'ajax-index',
                             'add-finance-payment',
                             'modify-finance-payment',
                             'delete-finance-payment',
@@ -37,261 +42,309 @@ class FinancePaymentController extends Controller
 
     public function actionIndex()
     {
-        $current_page = intval(yii::$app->request->get('current_page', yii::$app->params['init_start_page']));
-        $page_length = intval(yii::$app->request->get('page_length', yii::$app->params['init_page_length']));
-        $start = ($current_page - yii::$app->params['init_start_page']) * $page_length;
-        $payment_date = trim(yii::$app->request->get('payment_date', ''));
-
-        $conditions = [
-            'fp_status' => [
-                'compare_type' => '=',
-                'value' => yii::$app->params['valid_status']
-            ]
-        ];
-        if ('' != $payment_date)
-        {
-            $conditions['fp_payment_date'] = [
-                'compare_type' => '=',
-                'value' => $payment_date
-            ];
-        }
-        $order_by = ['fp_payment_date' => SORT_DESC];
-        $total = FinancePayment::getFinancePaymentCount($conditions);
-        $data = FinancePayment::getFinancePaymentData($conditions, $page_length, $start, $order_by);
-        foreach ($data as $key => $value)
-        {
-            $fc_ids = FinancePaymentMap::getFinanceCategoryIDs($value['fp_id']);
-            if (!empty($fc_ids))
-            {
-                $data[$key]['category'] =
-                    implode(',', FinanceCategory::getFinanceCategoryNames($fc_ids));
-            }
-            else
-            {
-                $data[$key]['category'] = '';
-            }
-        }
-
-        $js_data = [
-            'current_page' => $current_page,
-            'page_length' => $page_length,
-            'total_pages' => ceil($total / $page_length) ? ceil($total / $page_length) : yii::$app->params['init_total_page'],
-            'total' => $total,
-            'start' => $start,
-            'payment_date' => $payment_date,
-        ];
-        $view_data = [
-            'data' => $data,
-            'parent_categories' => FinanceCategory::getAllParentCategory(),
-            'js_data' => $js_data,
-        ];
-        return $this->render('index', $view_data);
+        return $this->render('index');
     }
+
+    public function actionAjaxIndex()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $this->_index();
+    }
+
     public function actionAddFinancePayment()
     {
-        $affected_rows = yii::$app->params['init_affected_rows'];
-        if (isset($_POST['finance_payment_payment']))
-        {
+        $jsonArray = [];
+        if (yii::$app->request->isPost) {
             $transaction = FinancePayment::getDb()->beginTransaction();
-            try
-            {
-                $affected_rows = $this->_addFinancePayment();
+            try {
+                $affectedRows = Constant::INIT_AFFECTED_ROWS;
+                $params = yii::$app->request->post('params', array());
+                $payments = isset($params['finance_payment_payment']) ? array_filter(explode(',', $params['finance_payment_payment'])) : [];
+                $paymentDate = isset($params['finance_payment_payment_date']) ? trim($params['finance_payment_payment_date']) : '';
+                $categoryIds = isset($params['finance_payment_fcid']) ? $params['finance_payment_fcid'] : [];
+                $intro = isset($params['finance_payment_intro']) ? trim($params['finance_payment_intro']) : '';
+                $addTime = date('Y-m-d H:i:s');
+                $data = [
+                    'payment_date' => $paymentDate,
+                    'detail' => $intro,
+                    'status' => Constant::VALID_STATUS,
+                    'create_time' => $addTime,
+                    'update_time' => $addTime
+                ];
+                if (Util::validDate($paymentDate)) {
+                    foreach ($payments as $payment) {
+                        $payment = floatval($payment);
+                        if ($payment > 0) {
+                            $data['payment'] = $payment;
+                            $paymentObj = new FinancePayment();
+                            foreach ($data as $tableKey => $tableValue) {
+                                $paymentObj->$tableKey = $tableValue;
+                            }
+                            $paymentObj->save();
+                            $fpId= intval(FinancePayment::getDb()->getLastInsertID());
+                            $this->_addFinancePaymentMap($fpId, $categoryIds);
+                            $affectedRows += $fpId;
+                        }
+                    }
+                }
                 $transaction->commit();
-            }
-            catch (\Exception $e)
-            {
+                $jsonArray = [
+                    'data' => [
+                        'code' => $affectedRows,
+                        'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                                ? JsMessage::ADD_SUCCESS : JsMessage::ADD_FAIL,
+                    ],
+                ];
+            } catch (\Exception $e) {
                 $transaction->rollBack();
-                $affected_rows = yii::$app->params['init_affected_rows'];
-                echo $e->getMessage();
+                Util::handleException($e, 'Error From addFinanceCategory');
             }
         }
 
-        echo json_encode($affected_rows);
-        exit;
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
     }
 
     public function actionModifyFinancePayment()
     {
-        $affected_rows = yii::$app->params['init_affected_rows'];
-        if (isset($_POST['finance_payment_fp_id']))
-        {
+        $jsonArray = [];
+        if (yii::$app->request->isPost) {
             $transaction = FinancePayment::getDb()->beginTransaction();
-            try
-            {
-                $fp_id = intval(yii::$app->request->post('finance_payment_fp_id'));
-                $finance_payment = FinancePayment::findOne($fp_id);
-                if ($finance_payment instanceof FinancePayment)
-                {
-                    $finance_payment->fp_payment = yii::$app->request->post('finance_payment_payment');
-                    $finance_payment->fp_payment_date = trim(yii::$app->request->post('finance_payment_payment_date'));
-                    $finance_payment->fp_detail = trim(yii::$app->request->post('finance_payment_intro'));
-                    $finance_payment->fp_update_time = date('Y-m-d H:i:s');
-                    $affected_rows = intval($finance_payment->save());
+            try {
+                $affectedRows = Constant::INIT_AFFECTED_ROWS;
+                $params = yii::$app->request->post('params', array());
+                $fpid = isset($params['finance_payment_fpid']) ? intval($params['finance_payment_fpid']) : Constant::INVALID_PRIMARY_ID;
+                $payment = isset($params['finance_payment_payment']) ? floatval($params['finance_payment_payment']) : 0;
+                $paymentDate = isset($params['finance_payment_payment_date']) ? trim($params['finance_payment_payment_date']) : '';
+                $categoryIds = isset($params['finance_payment_fcid']) ? $params['finance_payment_fcid'] : [];
+                $intro = isset($params['finance_payment_intro']) ? trim($params['finance_payment_intro']) : '';
 
-                    //update finance payment map
-                    $category_ids = yii::$app->request->post('finance_payment_fc_id');
-                    $affected_rows += $this->_updateFinancePaymentMap($fp_id, $category_ids);
-
-                    $transaction->commit();
+                if (Util::validDate($paymentDate) && $payment > 0) {
+                    $data = [
+                        'fpid' => $fpid,
+                        'payment' => $payment,
+                        'payment_date' => $paymentDate,
+                        'detail' => $intro,
+                        'update_time' => date('Y-m-d H:i:s')
+                    ];
+                    $paymentObj = FinancePayment::findOne($fpid);
+                    if ($paymentObj instanceof FinancePayment) {
+                        foreach ($data as $tableKey => $tableValue) {
+                            $paymentObj->$tableKey = $tableValue;
+                        }
+                        $affectedRows = intval($paymentObj->save());
+                        $affectedRows += $this->_updateFinancePaymentMap($fpid, $categoryIds);
+                    }
                 }
-            }
-            catch (\Exception $e)
-            {
+                $transaction->commit();
+                $jsonArray = [
+                    'data' => [
+                        'code' => $affectedRows,
+                        'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                                ? JsMessage::MODIFY_SUCCESS : JsMessage::MODIFY_FAIL,
+                    ],
+                ];
+            } catch (\Exception $e) {
                 $transaction->rollBack();
-                echo $e->getMessage();
-                $affected_rows = yii::$app->params['init_affected_rows'];
+                Util::handleException($e, 'Error From modifyFinanceCategory');
             }
         }
-        
-        echo json_encode($affected_rows);
-        exit;
+
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
     }
 
     public function actionDeleteFinancePayment()
     {
-        $affected_rows = yii::$app->params['init_affected_rows'];
-        if (isset($_POST['fp_id']))
-        {
+        $jsonArray = [];
+        if (yii::$app->request->isPost) {
             $transaction = FinancePayment::getDb()->beginTransaction();
-            try
-            {
-                $fp_id = intval(yii::$app->request->post('fp_id'));
-                $finance_payment = FinancePayment::findOne($fp_id);
-                if ($finance_payment instanceof FinancePayment)
-                {
-                    $finance_payment->fp_status = yii::$app->params['invalid_status'];
-                    $finance_payment->fp_update_time = date('Y-m-d H:i:s');
-                    $affected_rows = intval($finance_payment->save());
-                }
-                //update map table
-                $finance_payment_maps = FinancePaymentMap::findAll([
-                    'fp_id' => $fp_id,
-                    'status' => yii::$app->params['valid_status']
-                ]);
-                foreach ($finance_payment_maps as $finance_payment_map)
-                {
-                    if ($finance_payment_map instanceof FinancePaymentMap)
-                    {
-                        $finance_payment_map->status = yii::$app->params['invalid_status'];
-                        $finance_payment_map->update_time = date('Y-m-d H:i:s');
-                        $affected_rows += intval($finance_payment_map->save());
+            try {
+                $affectedRows = Constant::INIT_AFFECTED_ROWS;
+                $params = yii::$app->request->post('params', array());
+                $fpid = isset($params['fpid']) ? intval($params['fpid']) : Constant::INVALID_PRIMARY_ID;
+                if ($fpid > Constant::INVALID_PRIMARY_ID) {
+                    $paymentObj = FinancePayment::findOne([
+                        'fpid' => $fpid,
+                        'status' => Constant::VALID_STATUS
+                    ]);
+                    if ($paymentObj instanceof FinancePayment) {
+                        $paymentObj->status = Constant::INVALID_STATUS;
+                        $paymentObj->update_time = date('Y-m-d H:i:s');
+                        $affectedRows = intval($paymentObj->save());
+                    }
+                    //update map table
+                    $mapObjs = FinancePaymentMap::findAll([
+                        'fpid' => $fpid,
+                        'status' => Constant::VALID_STATUS
+                    ]);
+                    foreach ($mapObjs as $mapObj) {
+                        if ($mapObj instanceof FinancePaymentMap) {
+                            $mapObj->status = Constant::INVALID_STATUS;
+                            $mapObj->update_time = date('Y-m-d H:i:s');
+                            $affectedRows += intval($mapObj->save());
+                        }
                     }
                 }
-
                 $transaction->commit();
-            }
-            catch (\Exception $e)
-            {
+                $jsonArray = [
+                    'data' => [
+                        'code' => $affectedRows,
+                        'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                                ? JsMessage::DELETE_SUCCESS : JsMessage::DELETE_FAIL,
+                    ],
+                ];
+            } catch (\Exception $e) {
                 $transaction->rollBack();
-                $affected_rows = yii::$app->params['init_affected_rows'];
+                Util::handleException($e, 'Error From deleteFinancePayment');
             }
         }
 
-        echo json_encode($affected_rows);
-        exit;
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
     }
 
     public function actionGetFinancePayment()
     {
-        $data = [];
-        if (isset($_GET['fp_id']))
-        {
-            $fp_id = intval(yii::$app->request->get('fp_id'));
-            if ($fp_id > yii::$app->params['invalid_primary_id'])
-            {
-                $data = FinancePayment::getFinancePaymentByID($fp_id);
-                $data['fc_ids'] = FinancePaymentMap::getFinanceCategoryIDs($fp_id);
+        if (yii::$app->request->isGet) {
+            $params = yii::$app->request->get('params', array());
+            $fpid = (isset($params['fpid'])) ? intval($params['fpid']) : Constant::INVALID_PRIMARY_ID;
+            $data = FinancePayment::getFinancePaymentByID($fpid);
+            $data['fcids'] = FinancePaymentMap::getFinanceCategoryIDs($fpid);
+            if (!empty($data)) {
+                $jsonArray = [
+                    'data' => $data,
+                ];
             }
         }
 
-        echo json_encode($data);
-        exit;
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
     }
 
-    private function _addFinancePayment()
+    private function _index()
     {
-        $payments = array_filter(explode(',', yii::$app->request->post('finance_payment_payment')));
-        $category_ids = yii::$app->request->post('finance_payment_fc_id');
-        $data = [
-            'fp_payment_date' => trim(yii::$app->request->post('finance_payment_payment_date')),
-            'fp_detail' => trim(yii::$app->request->post('finance_payment_intro')),
-            'fp_status' => yii::$app->params['valid_status'],
-            'fp_create_time' => date('Y-m-d H:i:s'),
-            'fp_update_time' => date('Y-m-d H:i:s'),
-        ];
-        $affected_rows = 0;
-        foreach ($payments as $payment)
-        {
-            $payment = floatval($payment);
-            if ($payment > 0)
-            {
-                $data['fp_payment'] = $payment;
-                $affected_rows = FinancePayment::getDb()->createCommand()->insert(FinancePayment::tableName(), $data)->execute();
-                $fp_id = intval(Yii::$app->db->getLastInsertID());
-                $this->_addFinancePaymentMap($fp_id, $category_ids);
+        $params = yii::$app->request->get('params', array());
+        list($currentPage, $pageLength, $start) = Util::getPaginationParamsFromUrlParamsArray($params);
+        $paymentDate = isset($params['payment_date']) ? trim($params['payment_date']) : '';
+        $financeCategoryId = isset($params['category_parent_id']) ? intval($params['category_parent_id']) : 0;
 
-                $affected_rows += $fp_id;
+        $conditions = [
+            ['status' => Constant::VALID_STATUS],
+        ];
+        if ('' != $paymentDate) {
+            $conditions[] = ['payment_date' => $paymentDate];
+        }
+        if (0 !== $financeCategoryId) {
+            $fpids = FinancePaymentMap::getFpidByFcid($financeCategoryId, ['create_time' => SORT_DESC], $start, $pageLength);
+            if (!empty($fpids)) {
+                $conditions[] = ['in', 'fpid', $fpids];
+            } else {
+                $conditions[] = [1 => 0];
             }
         }
-        return $affected_rows;
+        $orderBy = ['payment_date' => SORT_DESC];
+        $total = FinancePayment::getFinancePaymentCount($conditions);
+        $data = FinancePayment::getFinancePaymentData($conditions, $start, $pageLength, $orderBy);
+        foreach ($data as &$value) {
+            $fcids = FinancePaymentMap::getFinanceCategoryIDs($value['fpid']);
+            if (!empty($fcids)) {
+                $value['category'] =
+                    implode(',', FinanceCategory::getFinanceCategoryNames($fcids));
+            } else {
+                $value['category'] = '';
+            }
+        }
+
+        $jsonData = [
+            'data' => [
+                'totalPages' => Util::getTotalPages($total, $pageLength),
+                'pageIndex' => $currentPage,
+                'totalItems' => $total,
+                'startIndex' => $start + 1,
+                'itemsPerPage' => $pageLength,
+                'currentItemCount' => count($data),
+                'items' => $data,
+            ],
+        ];
+        return $jsonData;
     }
 
-    private function _addFinancePaymentMap($fp_id, $fc_ids)
+    private function _addFinancePaymentMap($fpid, array $fcids)
     {
-        $map_data = [
-            'fp_id' => 0,
-            'fc_id' => 0,
-            'status' => yii::$app->params['valid_status'],
-            'create_time' => date('Y-m-d H:i:s'),
-            'update_time' => date('Y-m-d H:i:s')
+        $addTime = date('Y-m-d H:i:s');
+        $mapData = [
+            'fpid' => 0,
+            'fcid' => 0,
+            'status' => Constant::VALID_STATUS,
+            'create_time' => $addTime,
+            'update_time' => $addTime
         ];
 
-        $map_data['fp_id'] = $fp_id;
-        foreach ($fc_ids as $category_id)
-        {
-            $map_data['fc_id'] = $category_id;
-            FinancePaymentMap::getDb()->createCommand()->insert(FinancePaymentMap::tableName(), $map_data)->execute();
+        $mapData['fpid'] = $fpid;
+        foreach ($fcids as $categoryId) {
+            $mapData['fcid'] = $categoryId;
+            FinancePaymentMap::getDb()->createCommand()->insert(FinancePaymentMap::tableName(), $mapData)->execute();
         }
     }
 
-    private function _updateFinancePaymentMap($fp_id, $fc_ids)
+    private function _updateFinancePaymentMap($fpid, array $fcids)
     {
-        $affected_rows = 0;
-
-        $insert_data = [
-            'fp_id' => $fp_id,
-            'fc_id' => 0,
-            'status' => yii::$app->params['valid_status'],
+        $affectedRows = Constant::INIT_AFFECTED_ROWS;
+        $insertData = [
+            'fpid' => $fpid,
+            'fcid' => 0,
+            'status' => Constant::VALID_STATUS,
             'create_time' => date('Y-m-d H:i:s'),
             'update_time' => date('Y-m-d H:i:s')
         ];
-        $origin_fc_ids = FinancePaymentMap::getFinanceCategoryIDs($fp_id);
-        $update_fc_ids = array_diff($origin_fc_ids, $fc_ids);
-        $insert_fc_ids = array_diff($fc_ids, $origin_fc_ids);
-        foreach ($update_fc_ids as $fc_id)
-        {
-            $finance_payment_map = FinancePaymentMap::findOne(
+        $originFcids = FinancePaymentMap::getFinanceCategoryIDs($fpid);
+        $updateFcids = array_diff($originFcids, $fcids);
+        $insertFcids = array_diff($fcids, $originFcids);
+        foreach ($updateFcids as $fcid) {
+            $mapObj = FinancePaymentMap::findOne(
                 [
-                    'fp_id' => $fp_id,
-                    'fc_id' => $fc_id,
-                    'status' => yii::$app->params['valid_status']
+                    'fpid' => $fpid,
+                    'fcid' => $fcid,
+                    'status' => Constant::VALID_STATUS
                 ]
             );
-            if ($finance_payment_map instanceof FinancePaymentMap)
+            if ($mapObj instanceof FinancePaymentMap)
             {
-                $finance_payment_map->status = yii::$app->params['invalid_status'];
-                $finance_payment_map->update_time = date('Y-m-d H:i:s');
-                $affected_rows = intval($finance_payment_map->save());
+                $mapObj->status = yii::$app->params['invalid_status'];
+                $mapObj->update_time = date('Y-m-d H:i:s');
+                $affectedRows += intval($mapObj->save());
             }
         }
 
-        foreach ($insert_fc_ids as $fc_id)
-        {
-            $insert_data['fc_id'] = $fc_id;
-            $affected_rows +=
-                FinancePaymentMap::getDb()->createCommand()->insert(FinancePaymentMap::tableName(), $insert_data)->execute();
+        foreach ($insertFcids as $fcid) {
+            $insertData['fcid'] = $fcid;
+            $affectedRows += FinancePaymentMap::getDb()->createCommand()->insert(FinancePaymentMap::tableName(), $insertData)->execute();
         }
 
-        return $affected_rows;
+        return $affectedRows;
     }
 }

@@ -11,10 +11,13 @@ class AppAssetFinancePayment extends AssetBundle
 
     ];
     public $js = [
-        'js/person/finance-payment/finance-payment.js',
-        'js/common/datetime-picker.js',
-        'js/common/alertInfo.js',
-        'js/common/util.js',
+        'js/public/jAjaxWidget.js',
+        'js/public/alertMessage.js',
+        'js/public/dateWidget.js',
+        'js/public/pagination.js',
+        'js/public/datetimepicker.js',
+        'js/person/finance-payment.js',
+        'js/person/load-finance-category.js',
     ];
     public $depends = [
         'yii\bootstrap\BootstrapAsset', //bootstrap css
@@ -22,5 +25,6 @@ class AppAssetFinancePayment extends AssetBundle
         'app\assets\plugins\AssetDatetimePicker',
         'app\assets\plugins\PaginationAsset',
         'app\assets\plugins\AssetBootstrapSelect',
+        'app\assets\plugins\jQuerySerializeObjectAsset',
     ];
 }

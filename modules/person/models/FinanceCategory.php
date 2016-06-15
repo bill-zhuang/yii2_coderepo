@@ -130,7 +130,7 @@ class FinanceCategory extends ActiveRecord
     {
         $data = FinanceCategory::find()
             ->select('name')
-            ->where(['in ', 'fcid ', $fcids])
+            ->where(['in', 'fcid', $fcids])
             ->andWhere(['status' => Constant::VALID_STATUS])
             ->asArray()
             ->all();

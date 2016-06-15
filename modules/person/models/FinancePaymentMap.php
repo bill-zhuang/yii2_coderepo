@@ -88,7 +88,7 @@ class FinancePaymentMap extends ActiveRecord
     public static function getFinanceCategoryIDs($fpid)
     {
         $data = FinancePaymentMap::find()
-            ->select(['fcid'])
+            ->select('fcid')
             ->where(['fpid' => $fpid])
             ->andWhere(['status' => Constant::VALID_STATUS])
             ->asArray()
@@ -101,7 +101,7 @@ class FinancePaymentMap extends ActiveRecord
         return $fcids;
     }
 
-    public static function getFpidByFcid($fcid, $orderBy, $startPage, $pageLength)
+    public static function getFpidByFcid($fcid, $orderBy, $start, $pageLength)
     {
         $data = FinancePaymentMap::find()
             ->select('fpid')
@@ -109,7 +109,7 @@ class FinancePaymentMap extends ActiveRecord
             ->andWhere(['status' => Constant::VALID_STATUS])
             ->orderBy($orderBy)
             ->limit($pageLength)
-            ->offset(($startPage - Constant::INIT_START_PAGE) * $pageLength)
+            ->offset($start)
             ->asArray()
             ->all();
         $fpids = [];

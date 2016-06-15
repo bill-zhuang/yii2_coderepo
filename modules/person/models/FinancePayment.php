@@ -4,16 +4,17 @@ namespace app\modules\person\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use app\library\bill\Constant;
 /**
  * This is the model class for table "finance_payment".
  *
- * @property string $fp_id
- * @property double $fp_payment
- * @property string $fp_payment_date
- * @property string $fp_detail
- * @property integer $fp_status
- * @property string $fp_create_time
- * @property string $fp_update_time
+ * @property string $fpid
+ * @property double $payment
+ * @property string $payment_date
+ * @property string $detail
+ * @property integer $status
+ * @property string $create_time
+ * @property string $update_time
  */
 class FinancePayment extends ActiveRecord
 {
@@ -31,11 +32,11 @@ class FinancePayment extends ActiveRecord
     public function rules()
     {
         return [
-            [['fp_payment', 'fp_payment_date'], 'required'],
-            [['fp_payment'], 'number'],
-            [['fp_payment_date', 'fp_create_time', 'fp_update_time'], 'safe'],
-            [['fp_status'], 'integer'],
-            [['fp_detail'], 'string', 'max' => 255]
+            [['payment', 'payment_date'], 'required'],
+            [['payment'], 'number'],
+            [['payment_date', 'create_time', 'update_time'], 'safe'],
+            [['status'], 'integer'],
+            [['detail'], 'string', 'max' => 255]
         ];
     }
 
@@ -45,85 +46,119 @@ class FinancePayment extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'fp_id' => 'Fp ID',
-            'fp_payment' => 'Fp Payment',
-            'fp_payment_date' => 'Fp Payment Date',
-            'fp_detail' => 'Fp Detail',
-            'fp_status' => 'Fp Status',
-            'fp_create_time' => 'Fp Create Time',
-            'fp_update_time' => 'Fp Update Time',
+            'fpid' => 'Fpid',
+            'payment' => 'Payment',
+            'payment_date' => 'Payment Date',
+            'detail' => 'Detail',
+            'status' => 'Status',
+            'create_time' => 'Create Time',
+            'update_time' => 'Update Time',
         ];
     }
 
     public static function getFinancePaymentCount(array $conditions)
     {
         $select = FinancePayment::find();
-        foreach ($conditions as $key => $content)
-        {
-            $select->andWhere([$content['compare_type'], $key, $content['value']]);
+        foreach ($conditions as $cond) {
+            $select->andWhere($cond);
         }
         $count = $select->count();
         return $count;
     }
 
-    public static function getFinancePaymentData(array $conditions, $limit, $offset, $order_by)
+    public static function getFinancePaymentData(array $conditions, $start, $pageLength, $orderBy)
     {
         $select = FinancePayment::find();
-        foreach ($conditions as $key => $content)
-        {
-            $select->andWhere([$content['compare_type'], $key, $content['value']]);
+        foreach ($conditions as $cond) {
+            $select->andWhere($cond);
         }
         $data = $select
-            ->limit($limit)
-            ->offset($offset)
-            ->orderBy($order_by)
+            ->limit($pageLength)
+            ->offset($start)
+            ->orderBy($orderBy)
             ->asArray()
             ->all();
         return $data;
     }
 
-    public static function getFinancePaymentByID($fp_id)
+    public static function getFinancePaymentByID($fpid)
     {
         return FinancePayment::find()
-            ->where(['fp_id' => $fp_id])
+            ->andWhere(['fpid' => $fpid])
             ->asArray()
             ->one();
     }
 
-    public static function getTotalPaymentHistoryGroupData()
+    public static function getTotalPaymentHistoryGroupData($startDate, $endDate)
     {
-        return FinancePayment::find()
-            ->select(['date_format(fp_payment_date, "%Y-%m") as period', 'sum(fp_payment) as payment'])
-            ->where(['fp_status' => 1])
-            ->groupBy(['date_format(fp_payment_date, "%Y%m")'])
-            ->orderBy(['fp_payment_date' => SORT_ASC])
-            ->asArray()
-            ->all();
+        $select = FinancePayment::find()
+            ->select(['date_format(payment_date, "%Y-%m") as period', 'sum(payment) as payment'])
+            ->andWhere(['status' => Constant::VALID_STATUS]);
+        if ($startDate !== '') {
+            $select->andWhere(['>=', 'payment_date', $startDate]);
+        }
+        if ($endDate !== '') {
+            $select->andWhere(['<=', 'payment_date', $endDate]);
+        }
+        return $select
+            ->groupBy('date_format(payment_date, "%Y%m")')
+            ->orderBy(['payment_date' => SORT_ASC])
+            ->asArray()->all();
     }
 
-    public static function getTotalPaymentHistoryDataByDay($start_date)
+    public static function getTotalPaymentHistoryDataByDay($startDate, $endDate, $fcid)
     {
-        return FinancePayment::find()
-            ->select(['fp_payment_date as period', 'sum(fp_payment) as payment'])
-            ->where(['fp_status' => 1])
-            ->andWhere(['>=', 'fp_payment_date', $start_date])
-            ->groupBy(['fp_payment_date'])
-            ->orderBy(['fp_payment_date' => SORT_ASC])
-            ->asArray()
-            ->all();
+        if ($fcid == Constant::INVALID_PRIMARY_ID) {
+            return FinancePayment::find()
+                ->select(['payment_date as period', 'sum(payment) as payment'])
+                ->andWhere(['status' => Constant::VALID_STATUS])
+                ->andWhere(['>=', 'payment_date?', $startDate])
+                ->andWhere(['<=', 'payment_date', $endDate])
+                ->groupBy('payment_date')
+                ->orderBy(['payment_date' => SORT_ASC])
+                ->asArray()->all();
+        } else {
+            return FinancePayment::find()
+                ->select(['payment_date as period', 'sum(payment) as payment'])
+                ->innerJoin('finance_payment_map', 'finance_payment.fpid=finance_payment_map.fpid', [])
+                ->andWhere([FinancePayment::tableName() . '.status' => Constant::VALID_STATUS])
+                ->andWhere(['>=', FinancePayment::tableName() . '.payment_date', $startDate])
+                ->andWhere(['<=', FinancePayment::tableName() . '.payment_date', $endDate])
+                ->andWhere('finance_payment_map.fcid=?', $fcid)
+                ->groupBy(FinancePayment::tableName() . '.payment_date')
+                ->orderBy([FinancePayment::tableName() . '.payment_date' => SORT_ASC])
+                ->asArray()->all();
+        }
     }
 
-    public static function getTotalPaymentHistoryDataByCategory($start_date)
+    public static function getTotalPaymentHistoryDataByCategory($startDate)
     {
         return FinancePayment::find()
-            ->innerJoin(FinancePaymentMap::tableName(), 'finance_payment.fp_id=finance_payment_map.fp_id')
-            ->select(['finance_payment_map.fc_id', 'sum(finance_payment.fp_payment) as payment'])
-            ->where(['finance_payment.fp_status' => 1])
-            ->andWhere(['>=', 'finance_payment.fp_payment_date', $start_date])
-            ->andWhere(['finance_payment_map.status' => 1])
-            ->groupBy(['finance_payment_map.fc_id'])
+            ->select(['sum(payment) as payment'])
+            ->innerJoin('finance_payment_map', 'finance_payment.fpid=finance_payment_map.fpid', 'fcid')
+            ->andWhere([FinancePayment::tableName() . '.status', Constant::VALID_STATUS])
+            ->andWhere(['>=', FinancePayment::tableName() . '.payment_date', $startDate])
+            ->andWhere(['finance_payment_map.status' => Constant::VALID_STATUS])
+            ->groupBy('finance_payment_map.fcid')
             ->orderBy(['payment' => SORT_DESC])
-            ->asArray()
-            ->all();
+            ->asArray()->all();
+    }
+
+    public static function getAllPaymentDataForTransfer()
+    {
+        return FinancePayment::find()
+            ->select(['fpid', 'fcid', 'create_time', 'update_time'])
+            ->andWhere(['status' => Constant::VALID_STATUS])
+            ->asArray()->all();
+    }
+
+    public static function getSumPaymentByDate($startDate)
+    {
+        $data = FinancePayment::find()
+            ->select('sum(payment) as total')
+            ->andWhere(['>=', 'payment_date', $startDate])
+            ->andWhere(['status' => Constant::VALID_STATUS])
+            ->asArray()->all();
+        return floatval($data[0]['total']);
     }
 }
