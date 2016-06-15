@@ -3,7 +3,7 @@ use app\assets\person\AppAssetFinanceCategory;
 AppAssetFinanceCategory::register($this);
 ?>
 
-<title>Finance Category</title>
+<title>Bill Coderepo - Finance Category</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">
