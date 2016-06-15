@@ -4,12 +4,13 @@ namespace app\modules\person\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use app\library\bill\Constant;
 /**
  * This is the model class for table "finance_payment_map".
  *
  * @property string $fpmid
- * @property string $fp_id
- * @property string $fc_id
+ * @property string $fpid
+ * @property string $fcid
  * @property integer $status
  * @property string $create_time
  * @property string $update_time
@@ -30,8 +31,8 @@ class FinancePaymentMap extends ActiveRecord
     public function rules()
     {
         return [
-            [['fp_id', 'fc_id'], 'required'],
-            [['fp_id', 'fc_id', 'status'], 'integer'],
+            [['fpid', 'fcid'], 'required'],
+            [['fpid', 'fcid', 'status'], 'integer'],
             [['create_time', 'update_time'], 'safe']
         ];
     }
@@ -43,8 +44,8 @@ class FinancePaymentMap extends ActiveRecord
     {
         return [
             'fpmid' => 'Fpmid',
-            'fp_id' => 'Fp ID',
-            'fc_id' => 'Fc ID',
+            'fpid' => 'Fpid',
+            'fcid' => 'Fcid',
             'status' => 'Status',
             'create_time' => 'Create Time',
             'update_time' => 'Update Time',
@@ -54,9 +55,8 @@ class FinancePaymentMap extends ActiveRecord
     public static function getFinancePaymentMapCount(array $conditions)
     {
         $select = FinancePaymentMap::find();
-        foreach ($conditions as $key => $content)
-        {
-            $select->andWhere([$content['compare_type'], $key, $content['value']]);
+        foreach ($conditions as $cond) {
+            $select->andWhere($cond);
         }
         $count = $select->count();
         return $count;
@@ -65,9 +65,8 @@ class FinancePaymentMap extends ActiveRecord
     public static function getFinancePaymentMapData(array $conditions, $limit, $offset, $order_by)
     {
         $select = FinancePaymentMap::find();
-        foreach ($conditions as $key => $content)
-        {
-            $select->andWhere([$content['compare_type'], $key, $content['value']]);
+        foreach ($conditions as $cond) {
+            $select->andWhere($cond);
         }
         $data = $select
             ->limit($limit)
@@ -89,17 +88,47 @@ class FinancePaymentMap extends ActiveRecord
     public static function getFinanceCategoryIDs($fpid)
     {
         $data = FinancePaymentMap::find()
-            ->select(['fc_id'])
-            ->where(['fp_id' => $fpid])
-            ->andWhere(['status' => 1])
+            ->select(['fcid'])
+            ->where(['fpid' => $fpid])
+            ->andWhere(['status' => Constant::VALID_STATUS])
             ->asArray()
             ->all();
-        $fc_ids = [];
-        foreach ($data as $value)
-        {
-            $fc_ids[] = $value['fc_id'];
+        $fcids = [];
+        foreach ($data as $value) {
+            $fcids[] = $value['fcid'];
         }
 
-        return $fc_ids;
+        return $fcids;
+    }
+
+    public static function getFpidByFcid($fcid, $orderBy, $startPage, $pageLength)
+    {
+        $data = FinancePaymentMap::find()
+            ->select('fpid')
+            ->where(['fcid' => $fcid])
+            ->andWhere(['status' => Constant::VALID_STATUS])
+            ->orderBy($orderBy)
+            ->limit($pageLength)
+            ->offset(($startPage - Constant::INIT_START_PAGE) * $pageLength)
+            ->asArray()
+            ->all();
+        $fpids = [];
+        foreach ($data as $value) {
+            $fpids[] = $value['fpid'];
+        }
+
+        return $fpids;
+    }
+
+    public static function isPaymentExistUnderFcid($fcid)
+    {
+        $data = FinancePaymentMap::find()
+            ->select('fpmid')
+            ->where(['fcid' => $fcid])
+            ->andWhere(['status' => Constant::VALID_STATUS])
+            ->asArray()
+            ->one();
+
+        return isset($data['fpmid']) ? true : false;
     }
 }

@@ -2,10 +2,15 @@
 
 namespace app\modules\person\controllers;
 
+use app\modules\person\models\FinancePaymentMap;
 use yii;
 use yii\web\Controller;
 use app\modules\person\models\FinanceCategory;
+use app\library\bill\Constant;
+use app\library\bill\Util;
+use app\library\bill\JsMessage;
 use yii\filters\AccessControl;
+use yii\web\Response;
 
 class FinanceCategoryController extends Controller
 {
@@ -21,11 +26,13 @@ class FinanceCategoryController extends Controller
                         'allow' => true,
                         'actions' => [
                             'index',
+                            'ajax-index',
                             'add-finance-category',
                             'modify-finance-category',
                             'delete-finance-category',
                             'get-finance-category',
                             'get-finance-subcategory',
+                            'get-finance-main-category',
                         ],
                         'roles' => ['@'],
                     ],
@@ -36,151 +43,244 @@ class FinanceCategoryController extends Controller
 
     public function actionIndex()
     {
-        $current_page = intval(yii::$app->request->get('current_page', yii::$app->params['init_start_page']));
-        $page_length = intval(yii::$app->request->get('page_length', yii::$app->params['init_page_length']));
-        $start = ($current_page - yii::$app->params['init_start_page']) * $page_length;
-        $keyword = trim(yii::$app->request->get('keyword', ''));
+        return $this->render('index');
+    }
 
-        $conditions = [
-            'fc_status' => [
-                'compare_type' => '=',
-                'value' => yii::$app->params['valid_status']
-            ]
-        ];
-        if ('' !== $keyword)
-        {
-            $conditions['fc_name'] = [
-                'compare_type' => 'like',
-                'value' => $keyword
-            ];
-        }
-        $order_by = ['fc_weight' => SORT_DESC];
-        $total = FinanceCategory::getFinanceCategoryCount($conditions);
-        $data = FinanceCategory::getFinanceCategoryData($conditions, $page_length, $start, $order_by);
-
-        $js_data = [
-            'current_page' => $current_page,
-            'page_length' => $page_length,
-            'total_pages' => ceil($total / $page_length) ? ceil($total / $page_length) : yii::$app->params['init_total_page'],
-            'total' => $total,
-            'start' => $start,
-            'keyword' => $keyword,
-        ];
-        $view_data = [
-            'data' => $data,
-            'parents' => FinanceCategory::getAllParentCategory(),
-            'js_data' => $js_data,
-        ];
-        return $this->render('index', $view_data);
+    public function actionAjaxIndex()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $this->_index();
     }
 
     public function actionAddFinanceCategory()
     {
-        $affected_rows = yii::$app->params['init_affected_rows'];
-        if (isset($_POST['finance_category_name']))
-        {
-            try
-            {
-                $finance_category = new FinanceCategory();
-                $finance_category->fc_name = trim(yii::$app->request->post('finance_category_name'));
-                $finance_category->fc_parent_id = intval(yii::$app->request->post('finance_category_parent_id'));
-                $finance_category->fc_weight = intval(yii::$app->request->post('finance_category_weight'));
-                $finance_category->fc_status = yii::$app->params['valid_status'];
-                $finance_category->fc_create_time = date('Y-m-d H:i:s');
-                $finance_category->fc_update_time = date('Y-m-d H:i:s');
-                $affected_rows = intval($finance_category->save());
-            }
-            catch (\Exception $e)
-            {
-                $affected_rows = yii::$app->params['init_affected_rows'];
+        $jsonArray = [];
+        if (yii::$app->request->isPost) {
+            try {
+                $params = yii::$app->request->post('params', array());
+                $name = isset($params['finance_category_name']) ? trim($params['finance_category_name']) : '';
+                $parentId = isset($params['finance_category_parent_id']) ? intval($params['finance_category_parent_id']) : 0;
+                $weight = isset($params['finance_category_weight'])
+                    ? intval($params['finance_category_weight']) : Constant::DEFAULT_WEIGHT;
+                $addTime = date('Y-m-d H:i:s');
+
+                if (!FinanceCategory::isFinanceCategoryExist($name, 0)) {
+                    $financeCategory = new FinanceCategory();
+                    $financeCategory->name = $name;
+                    $financeCategory->parent_id = $parentId;
+                    $financeCategory->weight = $weight;
+                    $financeCategory->status = Constant::VALID_STATUS;
+                    $financeCategory->create_time = $addTime;
+                    $financeCategory->update_time = $addTime;
+                    $affectedRows = intval($financeCategory->save());
+                    $jsonArray = [
+                        'data' => [
+                            'code' => $affectedRows,
+                            'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                                    ? JsMessage::ADD_SUCCESS : JsMessage::ADD_FAIL,
+                        ],
+                    ];
+                }
+            } catch (\Exception $e) {
+                Util::handleException($e, 'Error From addFinanceCategory');
             }
         }
 
-        echo json_encode($affected_rows);
-        exit;
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
     }
 
     public function actionModifyFinanceCategory()
     {
-        $affected_rows = yii::$app->params['init_affected_rows'];
-        if (isset($_POST['finance_category_fc_id']))
-        {
-            try
-            {
-                $fc_id = intval(yii::$app->request->post('finance_category_fc_id'));
-                $finance_category = FinanceCategory::findOne($fc_id);
-                if ($finance_category instanceof FinanceCategory)
-                {
-                    $finance_category->fc_name = trim(yii::$app->request->post('finance_category_name'));
-                    $finance_category->fc_parent_id = intval(yii::$app->request->post('finance_category_parent_id'));
-                    $finance_category->fc_weight = intval(yii::$app->request->post('finance_category_weight'));
-                    $finance_category->fc_update_time = date('Y-m-d H:i:s');
-                    $affected_rows = intval($finance_category->save());
+        $jsonArray = [];
+        if (yii::$app->request->isPost) {
+            try {
+                $params = yii::$app->request->post('params', array());
+                $fcid = isset($params['finance_category_fcid']) ? intval($params['finance_category_fcid']) : 0;
+                $name = isset($params['finance_category_name']) ? trim($params['finance_category_name']) : '';
+                $parentId = isset($params['finance_category_parent_id']) ? intval($params['finance_category_parent_id']) : 0;
+                $weight = isset($params['finance_category_weight'])
+                    ? intval($params['finance_category_weight']) : Constant::DEFAULT_WEIGHT;
+
+                if (!FinanceCategory::isFinanceCategoryExist($name, $fcid)) {
+                    $financeCategory = FinanceCategory::findOne($fcid);
+                    if ($financeCategory instanceof FinanceCategory)
+                    {
+                        $financeCategory->name = $name;
+                        $financeCategory->parent_id = $parentId;
+                        $financeCategory->weight = $weight;
+                        $financeCategory->update_time = date('Y-m-d H:i:s');
+                        $affectedRows = intval($financeCategory->save());
+                        $jsonArray = [
+                            'data' => [
+                                'code' => $affectedRows,
+                                'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                                        ? JsMessage::MODIFY_SUCCESS : JsMessage::MODIFY_FAIL,
+                            ],
+                        ];
+                    }
                 }
-            }
-            catch (\Exception $e)
-            {
-                $affected_rows = yii::$app->params['init_affected_rows'];
+            } catch (\Exception $e) {
+                Util::handleException($e, 'Error From modifyFinanceCategory');
             }
         }
-        
-        echo json_encode($affected_rows);
-        exit;
+
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
     }
 
     public function actionDeleteFinanceCategory()
     {
-        $affected_rows = yii::$app->params['init_affected_rows'];
-        if (isset($_POST['fc_id']))
-        {
-            try
-            {
-                $fc_id = intval(yii::$app->request->post('fc_id'));
-                $update_data = [
-                    'fc_status' => yii::$app->params['invalid_status'],
-                    'fc_update_time' => date('Y-m-d H:i:s')
-                ];
-                $where = [
-                    'and', 'fc_status=1', ['or', 'fc_id=' . $fc_id, 'fc_parent_id=' . $fc_id],
-                ];
-                $affected_rows = FinanceCategory::updateAll($update_data, $where);
-            }
-            catch (\Exception $e)
-            {
-                $affected_rows = yii::$app->params['init_affected_rows'];
+        $jsonArray = [];
+        if (yii::$app->request->isPost) {
+            try {
+                $params = yii::$app->request->post('params', array());
+                $fcid = isset($params['fcid']) ? intval($params['fcid']) : Constant::INVALID_PRIMARY_ID;
+                if (!FinancePaymentMap::isPaymentExistUnderFcid($fcid)) {
+                    $updateData = [
+                        'status' => Constant::INVALID_STATUS,
+                        'update_time' => date('Y-m-d H:i:s')
+                    ];
+                    $where = [
+                        'and', 'status=' . Constant::VALID_STATUS, ['or', 'fcid=' . $fcid, 'parent_id=' . $fcid],
+                    ];
+                    $affectedRows = FinanceCategory::updateAll($updateData, $where);
+                    $jsonArray = [
+                        'data' => [
+                            'code' => $affectedRows,
+                            'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                                    ? JsMessage::DELETE_SUCCESS : JsMessage::DELETE_FAIL,
+                        ]
+                    ];
+                } else {
+                    $jsonArray = [
+                        'data' => [
+                            'code' => 0,
+                            'message' => JsMessage::PAYMENT_EXIST_UNDER_CATEGORY,
+                        ]
+                    ];
+                }
+            } catch (\Exception $e) {
+                Util::handleException($e, 'Error From deleteFinanceCategory');
             }
         }
 
-        echo json_encode($affected_rows);
-        exit;
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
     }
 
     public function actionGetFinanceCategory()
     {
-        $data = [];
-        if (isset($_GET['fc_id']))
-        {
-            $fc_id = intval(yii::$app->request->get('fc_id'));
-            if ($fc_id > yii::$app->params['invalid_primary_id'])
-            {
-                $data = FinanceCategory::getFinanceCategoryByID($fc_id);
+        if (yii::$app->request->isGet) {
+            $params = yii::$app->request->get('params', array());
+            $fcid = (isset($params['fcid'])) ? intval($params['fcid']) : Constant::INVALID_PRIMARY_ID;
+            $data = FinanceCategory::getFinanceCategoryByID($fcid);
+            if (!empty($data)) {
+                $jsonArray = [
+                    'data' => $data,
+                ];
             }
         }
 
-        echo json_encode($data);
-        exit;
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
     }
 
     public function actionGetFinanceSubcategory()
     {
-        $data = [];
-        if (isset($_GET['parent_id']))
-        {
-            $parent_id = intval(yii::$app->request->get('parent_id'));
-            $data = FinanceCategory::getFinanceSubcategory($parent_id);
+        $jsonArray = [];
+        if (yii::$app->request->isGet) {
+            $params = yii::$app->request->get('params', array());
+            $parentId = isset($params['parent_id']) ? intval($params['parent_id']) : Constant::INVALID_PRIMARY_ID;
+            $subcategoryData = FinanceCategory::getFinanceSubcategory($parentId);
+            if (!empty($data)) {
+                $jsonArray = [
+                    'data' => [
+                        'currentItemCount' => count($subcategoryData),
+                        'items' => $subcategoryData,
+                    ],
+                ];
+            }
         }
 
-        echo json_encode($data);
-        exit;
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
+    }
+
+    public function actionGetFinanceMainCategory()
+    {
+        $data = FinanceCategory::getAllParentCategory();
+        $jsonData = [
+            'data' => [
+                'currentItemCount' => count($data),
+                'items' => $data,
+            ],
+        ];
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonData;
+    }
+
+    private function _index()
+    {
+        $params = yii::$app->request->get('params', array());
+        list($currentPage, $pageLength, $start) = Util::getPaginationParamsFromUrlParamsArray($params);
+        $keyword = isset($params['keyword']) ? trim($params['keyword']) : '';
+
+        $conditions = [
+            ['status' => Constant::VALID_STATUS],
+        ];
+        if ('' !== $keyword) {
+            $conditions[] = ['like', 'name', Util::getLikeString($keyword)];
+        }
+        $orderBy = ['weight' => SORT_DESC];
+        $total = FinanceCategory::getFinanceCategoryCount($conditions);
+        $data = FinanceCategory::getFinanceCategoryData($conditions, $start, $pageLength, $orderBy);
+        foreach ($data as &$value) {
+            $value['parent'] = $value['parent_id'] == 0 ?
+                '无' : FinanceCategory::getParentCategoryName($value['parent_id']);
+        }
+
+        $jsonData = [
+            'data' => [
+                'totalPages' => Util::getTotalPages($total, $pageLength),
+                'pageIndex' => $currentPage,
+                'totalItems' => $total,
+                'startIndex' => $start + 1,
+                'itemsPerPage' => $pageLength,
+                'currentItemCount' => count($data),
+                'items' => $data,
+            ],
+        ];
+        return $jsonData;
     }
 }

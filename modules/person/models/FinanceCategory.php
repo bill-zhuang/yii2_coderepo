@@ -4,16 +4,17 @@ namespace app\modules\person\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use app\library\bill\Constant;
 /**
  * This is the model class for table "finance_category".
  *
- * @property string $fc_id
- * @property string $fc_name
- * @property string $fc_parent_id
- * @property string $fc_weight
- * @property integer $fc_status
- * @property string $fc_create_time
- * @property string $fc_update_time
+ * @property string $fcid
+ * @property string $name
+ * @property string $parent_id
+ * @property string $weight
+ * @property integer $status
+ * @property string $create_time
+ * @property string $update_time
  */
 class FinanceCategory extends ActiveRecord
 {
@@ -31,9 +32,9 @@ class FinanceCategory extends ActiveRecord
     public function rules()
     {
         return [
-            [['fc_parent_id', 'fc_weight', 'fc_status'], 'integer'],
-            [['fc_create_time', 'fc_update_time'], 'safe'],
-            [['fc_name'], 'string', 'max' => 255]
+            [['parent_id', 'weight', 'status'], 'integer'],
+            [['create_time', 'update_time'], 'safe'],
+            [['name'], 'string', 'max' => 255]
         ];
     }
 
@@ -43,130 +44,137 @@ class FinanceCategory extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'fc_id' => 'Fc ID',
-            'fc_name' => 'Fc Name',
-            'fc_parent_id' => 'Fc Parent ID',
-            'fc_weight' => 'Fc Weight',
-            'fc_status' => 'Fc Status',
-            'fc_create_time' => 'Fc Create Time',
-            'fc_update_time' => 'Fc Update Time',
+            'fcid' => 'Fcid',
+            'name' => 'Name',
+            'parent_id' => 'Parent ID',
+            'weight' => 'Weight',
+            'status' => 'Status',
+            'create_time' => 'Create Time',
+            'update_time' => 'Update Time',
         ];
     }
 
     public static function getFinanceCategoryCount(array $conditions)
     {
         $select = FinanceCategory::find();
-        foreach ($conditions as $key => $content)
-        {
-            $select->andWhere([$content['compare_type'], $key, $content['value']]);
+        foreach ($conditions as $cond) {
+            $select->andWhere($cond);
         }
         $count = $select->count();
         return $count;
     }
 
-    public static function getFinanceCategoryData(array $conditions, $limit, $offset, $order_by)
+    public static function getFinanceCategoryData(array $conditions, $start, $pageLength, $orderBy)
     {
         $select = FinanceCategory::find();
-        foreach ($conditions as $key => $content)
-        {
-            $select->andWhere([$content['compare_type'], $key, $content['value']]);
+        foreach ($conditions as $cond) {
+            $select->andWhere($cond);
         }
         $data = $select
-            ->limit($limit)
-            ->offset($offset)
-            ->orderBy($order_by)
+            ->limit($pageLength)
+            ->offset($start)
+            ->orderBy($orderBy)
             ->asArray()
             ->all();
         return $data;
     }
 
-    public static function getFinanceCategoryByID($fc_id)
+    public static function getFinanceCategoryByID($fcid)
     {
         return FinanceCategory::find()
-            ->where(['fc_id' => $fc_id])
+            ->where(['fcid' => $fcid])
             ->asArray()
             ->one();
     }
 
-    public static function getAllParentCategory()
+    public static function getAllParentCategory($isKeyValueFormat = false)
     {
-        $parent_data = FinanceCategory::find()
-            ->select(['fc_id', 'fc_name'])
-            ->where(['fc_parent_id' => 0])
-            ->where(['fc_status' => 1])
-            ->orderBy('fc_weight desc')
+        $parentData = FinanceCategory::find()
+            ->select(['fcid', 'name'])
+            ->where(['parent_id' => 0])
+            ->andWhere(['status' => Constant::VALID_STATUS])
+            ->orderBy(['weight' => SORT_DESC])
             ->asArray()
             ->all();
-        $data = [];
-        foreach ($parent_data as $parent_value)
-        {
-            $data[$parent_value['fc_id']] = $parent_value['fc_name'];
+        if ($isKeyValueFormat) {
+            $data = [];
+            foreach ($parentData as $parentValue) {
+                $data[$parentValue['fcid']] = $parentValue['name'];
+            }
+            return $data;
         }
-
-        return $data;
+        return $parentData;
     }
 
-    public static function isFinanceCategoryExist($name, $fc_id)
+    public static function isFinanceCategoryExist($name, $fcid)
     {
         $count = FinanceCategory::find()
-            ->where(['fc_name' => $name])
-            ->andWhere(['!=', 'fc_id', $fc_id])
-            ->andWhere(['fc_status' => 1])
+            ->where(['name' => $name])
+            ->andWhere(['!=', 'fcid', $fcid])
+            ->andWhere(['status' => Constant::VALID_STATUS])
             ->count();
-        return $count == 0 ? false : true;
+        return $count;
     }
 
-    public static function getFinaceCategoryName($fc_id)
+    public static function getFinanceCategoryName($fcid)
     {
         $data = FinanceCategory::find()
-            ->select('fc_name')
-            ->where(['fc_id' => $fc_id])
+            ->select('name')
+            ->where(['fcid' => $fcid])
             ->asArray()
             ->one();
-        return isset($data['fc_name']) ? $data['fc_name'] : '';
+        return isset($data['name']) ? $data['name'] : '';
     }
 
-    public static function getFinanceCategoryNames(array $fc_ids)
+    public static function getFinanceCategoryNames(array $fcids)
     {
         $data = FinanceCategory::find()
-            ->select('fc_name')
-            ->where(['in', 'fc_id', $fc_ids])
-            ->andWhere(['fc_status' => 1])
+            ->select('name')
+            ->where(['in ', 'fcid ', $fcids])
+            ->andWhere(['status' => Constant::VALID_STATUS])
             ->asArray()
             ->all();
         $names = [];
-        foreach ($data as $value)
-        {
-            $names[] = $value['fc_name'];
+        foreach ($data as $value) {
+            $names[] = $value['name'];
         }
 
         return $names;
     }
 
-    public static function getFinanceSubcategory($parent_id)
+    public static function getFinanceSubcategory($parentId)
     {
-        $subcategory_data = FinanceCategory::find()
-            ->select(['fc_id', 'fc_name'])
-            ->where(['fc_parent_id' => $parent_id])
-            ->andWhere(['fc_status' => 1])
+        $subcategoryData = FinanceCategory::find()
+            ->select(['fcid', 'name'])
+            ->where(['parent_id' => $parentId])
+            ->andWhere(['status' => Constant::VALID_STATUS])
             ->asArray()
             ->all();
         $data = [];
-        foreach ($subcategory_data as $subcategory_value)
-        {
-            $data[$subcategory_value['fc_id']] = $subcategory_value['fc_name'];
+        foreach ($subcategoryData as $subcategoryValue) {
+            $data[$subcategoryValue['fcid']] = $subcategoryValue['name'];
         }
 
         return $data;
     }
 
-    public function getFinanceParentCategory($fc_id)
+    public static function getFinanceParentCategory($fcid)
     {
         $data = FinanceCategory::find()
-            ->select('fc_parent_id')
-            ->where(['fc_id' => $fc_id])
+            ->select('parent_id')
+            ->where(['fcid' => $fcid])
             ->asArray()
             ->one();
-        return isset($data['fc_parent_id']) ? $data['fc_parent_id'] : 0;
+        return isset($data['parent_id']) ? $data['parent_id'] : 0;
+    }
+
+    public static function getParentCategoryName($fcid)
+    {
+        $data = FinanceCategory::find()
+            ->select('name')
+            ->where(['fcid' => $fcid])
+            ->asArray()
+            ->one();
+        return isset($data['name']) ? $data['name'] : '';
     }
 }
