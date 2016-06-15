@@ -1,7 +1,3 @@
-
-$(document).ready(function(){
-});
-
 $('#farbtastic_color').val('#123456');
 $('#farbtastic_colorpicker').farbtastic('#farbtastic_color');
 //or $.farbtastic('#farbtastic_colorpicker', '#farbtastic_color');

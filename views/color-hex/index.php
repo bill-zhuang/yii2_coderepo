@@ -3,6 +3,7 @@ use app\assets\AppAssetColorHex;
 AppAssetColorHex::register($this);
 ?>
 
+<title>Bill Coderepo - Color Hex</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">
@@ -15,13 +16,17 @@ AppAssetColorHex::register($this);
                 <div class="bill-chart-canvas">
                     <span>Farbtastic color:</span>
                     <input type="text" id="farbtastic_color" class="form-control"/>
+
                     <div id="farbtastic_colorpicker"></div>
                 </div>
                 <div class="bill-chart-canvas bill-margin-left">
                     <span>mini color:</span><br/>
-                    <input type="text" id="mini_color" />
+                    <input type="text" id="mini_color"/>
                 </div>
             </div>
-        </div><hr>
+        </div>
     </div>
+    <!-- panel footer -->
+    <!--<div class="panel-footer">
+    </div>-->
 </div>
