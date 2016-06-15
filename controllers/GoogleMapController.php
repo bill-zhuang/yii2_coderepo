@@ -55,7 +55,7 @@ class GoogleMapController extends Controller
         }
 
         Yii::$app->response->format = Response::FORMAT_JSON;
-        return json_encode($jsonArray);
+        return $jsonArray;
     }
 
     public function actionMultipleLocation()
@@ -71,7 +71,7 @@ class GoogleMapController extends Controller
             ],
         ];
         Yii::$app->response->format = Response::FORMAT_JSON;
-        return json_encode($jsonArray);
+        return $jsonArray;
     }
 
     private function _multipleLocation()

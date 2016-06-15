@@ -67,6 +67,6 @@ class IndexController extends Controller
         }
 
         Yii::$app->response->format = Response::FORMAT_JSON;
-        return json_encode($jsonArray);
+        return $jsonArray;
     }
 }
