@@ -12,7 +12,7 @@ class AppAssetModifyPassword extends AssetBundle
     ];
     public $js = [
         'js/default/modify-password.js',
-        'js/common/jAjaxWidget.js',
+        'js/public/jAjaxWidget.js',
     ];
     public $depends = [
         'yii\bootstrap\BootstrapAsset', //bootstrap css
