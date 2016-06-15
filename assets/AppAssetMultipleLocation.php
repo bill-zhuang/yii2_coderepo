@@ -11,6 +11,7 @@ class AppAssetMultipleLocation extends AssetBundle
 
     ];
     public $js = [
+        'js/public/jAjaxWidget.js',
         'js/google-map/marker-cluster.js',
         'js/google-map/multiple-location.js',
         'js/google-map/gmaprepo.js',

@@ -3,6 +3,7 @@ use app\assets\AppAssetGoogleMap;
 AppAssetGoogleMap::register($this);
 ?>
 
+<title>Bill Coderepo - Google Map</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">
@@ -19,7 +20,8 @@ AppAssetGoogleMap::register($this);
                     </button>
                 </div>
             </form>
-        </div><hr>
+        </div>
+        <hr>
 
         <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12">
@@ -28,4 +30,7 @@ AppAssetGoogleMap::register($this);
             </div>
         </div>
     </div>
+    <!-- panel footer -->
+    <!--<div class="panel-footer">
+    </div>-->
 </div>

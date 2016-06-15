@@ -25,6 +25,7 @@ class GoogleMapController extends Controller
                             'index',
                             'mark-location',
                             'multiple-location',
+                            'ajax-multiple-location',
                         ],
                         'roles' => ['@'],
                     ],
