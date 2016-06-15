@@ -37,7 +37,7 @@ class MainController extends Controller
     {
         if (yii::$app->request->isPost) {
             $userID = Yii::$app->getUser()->getId();
-            $params = yii::$app->request->get('params', array());
+            $params = yii::$app->request->post('params', array());
             $oldPassword = isset($params['old_password']) ? addslashes($params['old_password']) : '';
             $newPassword = isset($params['new_password']) ? addslashes($params['new_password']) : '';
             if ($userID !== null) {

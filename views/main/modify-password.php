@@ -3,6 +3,7 @@ use app\assets\AppAssetModifyPassword;
 AppAssetModifyPassword::register($this);
 ?>
 
+<title>Bill Coderepo - Modify Password</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">
@@ -13,23 +14,27 @@ AppAssetModifyPassword::register($this);
         <div class="row">
             <div class="col-sm-1 col-md-1 col-lg-1"></div>
             <div class="col-sm-4 col-md-4 col-lg-4 text-left">
-                <form name="formModifyPassword" id="formModifyPassword" action="/index.php/main/modify-password" method="post" class="form-inline">
+                <form name="formModifyPassword" id="formModifyPassword" action="#" method="post" class="form-inline">
                     <div class="form-group">
-                        <span>原密码：</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="password" name="old_password" id="old_password" class="form-control" autofocus/>
+                        <span>原密码：</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="password" name="old_password" id="old_password"
+                               class="form-control bill-ime-disabled" autofocus/>
                     </div>
                     <br/><br/>
-                    <div class="form-group">
-                        <span>新密码：</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="password" name="new_password" id="new_password" class="form-control"/>
 
-                    </div>
-                    <br/><br/>
                     <div class="form-group">
-                        <span>新密码确认：</span>
-                        <input type="password" name="new_password_repeat" id="new_password_repeat" class="form-control"/>
+                        <span>新密码：</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="password" name="new_password" id="new_password" class="form-control bill-ime-disabled"/>
                     </div>
                     <br/><br/>
+
+                    <div class="form-group">
+                        <span>确认密码：</span>
+                        <input type="password" name="new_password_repeat" id="new_password_repeat"
+                               class="form-control bill-ime-disabled"/>
+                    </div>
+                    <br/><br/>
+
                     <div class="form-group">
                         <button type="submit" class="btn btn-success" id="btn_modify_password">确认修改</button>
                     </div>
