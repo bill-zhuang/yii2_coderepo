@@ -22,6 +22,5 @@ class AppAssetFinanceHistory extends AssetBundle
         'app\assets\plugins\HighChartsAsset',
         'app\assets\plugins\jQuerySerializeObjectAsset',
         'app\assets\plugins\AssetDatetimePicker',
-        'app\assets\plugins\jQuerySerializeObjectAsset',
     ];
 }
