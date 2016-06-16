@@ -60,25 +60,23 @@ class <?php echo $model_name; ?> extends ActiveRecord
     public static function get<?php echo $model_name; ?>Count(array $conditions)
     {
         $select = <?php echo $model_name; ?>::find();
-        foreach ($conditions as $key => $content)
-        {
-            $select->andWhere([$content['compare_type'], $key, $content['value']]);
+        foreach ($conditions as $cond) {
+            $select->andWhere($cond);
         }
         $count = $select->count();
         return $count;
     }
 
-    public static function get<?php echo $model_name; ?>Data(array $conditions, $limit, $offset, $order_by)
+    public static function get<?php echo $model_name; ?>Data(array $conditions, $start, $pageLength, $orderBy)
     {
         $select = <?php echo $model_name; ?>::find();
-        foreach ($conditions as $key => $content)
-        {
-            $select->andWhere([$content['compare_type'], $key, $content['value']]);
+        foreach ($conditions as $cond) {
+            $select->andWhere($cond);
         }
         $data = $select
-            ->limit($limit)
-            ->offset($offset)
-            ->orderBy($order_by)
+            ->limit($pageLength)
+            ->offset($start)
+            ->orderBy($orderBy)
             ->asArray()
             ->all();
         return $data;

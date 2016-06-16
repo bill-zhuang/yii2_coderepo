@@ -13,17 +13,19 @@
 /* @var $view_modal_size string modal size */
 /* @var $is_blacklist bool use blacklist or not */
 /* @var $is_ckeditor bool use ckeditor or not */
+/* @var $tab_types array tab types for select */
+/* @var $default_tab_value mixed default selected tab value */
 
 $table_keys = array_keys($table_data);
 echo "<?php\n";
 echo 'use app\assets' . (($module_name === '') ? '' : ('\\' . strtolower($module_name))) . '\\AppAsset' . $asset_name . ';' . PHP_EOL;
 
 echo  'AppAsset' . $asset_name . '::register($this);' . PHP_EOL;
-echo 'Yii::$app->view->registerJs(\'var js_data = \' . json_encode($js_data) . \';\', \\yii\\web\\View::POS_END);' . PHP_EOL;
 
 echo "?>\n";
 ?>
 
+<title>Bill Coderepo - <?php echo $page_title_name; ?></title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">
@@ -67,13 +69,28 @@ echo "?>\n";
                     </select>
                     &nbsp;<label>每页</label>
                     <input type="hidden" id="current_page" name="current_page"/>
+<?php if(!empty($tab_types)){ ?>
+                    <input type="hidden" id="tab_type" name="tab_type"/>
+<?php } ?>
                 </div>
             </form>
 <?php } ?>
-        </div><hr>
+        </div>
+        <hr>
 <?php if($primary_id !== ''){ ?>
         <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12">
+<?php if(!empty($tab_types)){ ?>
+            <nav class="navbar nav-tabs" role="navigation">
+                <div>
+                    <ul class="nav nav-tabs" id="ul_tab_type">
+<?php foreach ($tab_types as $key => $value) { ?>
+                        <li id="li_tab_type_<?php echo '' . $key; ?>" <?php echo ($key == $default_tab_value) ? 'class="active"' : ''; ?>><a href="#"><?php echo $value; ?></a></li><?php echo PHP_EOL; ?>
+<?php } ?>
+                    </ul>
+                </div>
+            </nav>
+<?php } ?>
                 <table class="table table-striped table-bordered bill_table text-center">
                     <tr><?php if($all_batch_id !== ''){ echo PHP_EOL; ?>
                         <td><input type="checkbox" id="<?php echo $all_batch_id; ?>" name="<?php echo $all_batch_id; ?>"/></td>
@@ -88,29 +105,6 @@ echo "?>\n";
                         <td>操作</td>
                     </tr>
                     <tbody>
-                    <?php echo '<?php for($i = 0, $len = count($data); $i < $len; $i++){ ?>' . PHP_EOL; ?>
-                        <tr><?php if($batch_id !== ''){ echo PHP_EOL; ?>
-                            <td><input type="checkbox" value="<?php echo '<?php echo $data[$i][\'' . $primary_id . '\']; ?>'; ?>" name="<?php echo $batch_id; ?>"/></td>
-                            <?php } ?>
-                            <?php
-                                echo PHP_EOL . str_repeat(' ', 4 * 7) . '<td><?php echo ($js_data[\'start\'] + $i + 1); ?></td>' . PHP_EOL;
-                                foreach ($table_row_data as $value)
-                                {
-                                    echo str_repeat(' ', 4 * 7) . '<td><?php echo $data[$i][\'' . $value . '\']; ?></td>' . PHP_EOL;
-                                }
-                            ?>
-                            <td>
-                                <a href="#" id="<?php echo '<?php echo \'modify_\' . ' . '$data[$i][\'' . $primary_id . '\']; ?>'; ?>">修改</a>
-                                <a href="#" id="<?php echo '<?php echo \'delete_\' . ' . '$data[$i][\'' . $primary_id . '\']; ?>'; ?>">删除</a>
-                            </td>
-                        </tr>
-                    <?php echo '<?php } ?>'; ?>
-
-                    <?php echo '<?php if (count($data) == 0) { ?>' . PHP_EOL; ?>
-                        <tr>
-                            <td colspan="<?php echo (2 + ($all_batch_id ==='' ? 0 : 1) + ($batch_id === '' ? 0 : 1) + count($table_row_data)); ?>" class="bill_table_no_data">对不起,没有符合条件的数据</td>
-                        </tr>
-                    <?php echo '<?php } ?>' . PHP_EOL; ?>
                     </tbody>
                 </table>
             </div>
@@ -121,8 +115,7 @@ echo "?>\n";
         <div class="row">
             <div class="col-sm-6 col-md-6 col-lg-6 text-left">
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6 text-right">
-                <ul id="pagination" class="pagination-md"></ul>
+            <div id="div_pagination" class="col-sm-6 col-md-6 col-lg-6 text-right">
             </div>
         </div>
     </div>
@@ -142,12 +135,13 @@ echo "?>\n";
                 <div class="modal-body">
 <?php foreach ($table_data as $key => $default_value)
 {
-    if ($key != $primary_id)
+    if ($key != $primary_id && $key != 'status' && $key != 'create_time' && $key != 'update_time')
     {
         echo str_repeat(' ', 4 * 5) . '<div class="input-group">' . PHP_EOL;
         echo str_repeat(' ', 4 * 6) . '<span class="input-group-addon">' . $key . '：</span>' . PHP_EOL;
         echo str_repeat(' ', 4 * 6) . '<input type="text" name="' . $form_element_prefix . '_' . $key . '" id="' . $form_element_prefix. '_'  . $key . '" class="form-control"/>' . PHP_EOL;
-        echo str_repeat(' ', 4 * 5) . '</div><br /><br />' . PHP_EOL;
+        echo str_repeat(' ', 4 * 5) . '</div>' . PHP_EOL;
+        echo str_repeat(' ', 4 * 5) . '<br /><br />' . PHP_EOL;
     }
 }
 ?>
