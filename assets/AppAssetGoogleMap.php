@@ -12,9 +12,9 @@ class AppAssetGoogleMap extends AssetBundle
     ];
     public $js = [
         'js/public/jAjaxWidget.js',
-        'js/google-map/google-map-index.js',
-        'js/google-map/multiple-location.js',
-        'js/google-map/gmaprepo.js',
+        'js/default/google-map-index.js',
+        'js/default/multiple-location.js',
+        'js/default/gmaprepo.js',
         'http://maps.googleapis.com/maps/api/js?key=AIzaSyCefZle2DqxF9i51PTfoZsZoOmvWzKYhF4&sensor=true',
     ];
     public $depends = [

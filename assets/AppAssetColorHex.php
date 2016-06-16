@@ -11,8 +11,8 @@ class AppAssetColorHex extends AssetBundle
         'css/color-hex/farbtastic.css',
     ];
     public $js = [
-        'js/color-hex/farbtastic.js',
-        'js/color-hex/color-hex.js',
+        'js/default/farbtastic.js',
+        'js/default/color-hex.js',
     ];
     public $depends = [
         'yii\bootstrap\BootstrapAsset', //bootstrap css
