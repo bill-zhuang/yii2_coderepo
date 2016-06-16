@@ -103,7 +103,7 @@ class TemplateGenerator
                 . 'AppAsset' . $this->_controller_name . '.php';
             $js_name = strtolower(implode('-', $this->_splitControllerName()));
             $this->_js[] = 'js/' . (($this->_module_name === '') ? '' : (strtolower($this->_module_name) . '/'))
-                . $js_name . '/' . $js_name . '.js';
+                . $js_name . '.js';
             $params = [
                 'module_name' => $this->_module_name,
                 'controller_name' => $this->_controller_name,
@@ -188,6 +188,8 @@ class TemplateGenerator
                 'view_modal_size' => $this->_view_modal_size,
                 'is_blacklist' => $this->_is_blacklist,
                 'is_ckeditor' => $this->_is_ckeditor,
+                'tab_types' => $this->_tab_types,
+                'default_tab_value' => $this->_default_tab_value,
             ];
             $create_result = $this->_renderFile($template_path, $dest_path, $params);
             if ($create_result !== false)
@@ -209,7 +211,7 @@ class TemplateGenerator
         {
             $js_folder_path = __DIR__ . '/../web/js/'
                 . ($this->_module_name === '' ? '' : (strtolower($this->_module_name) . '/'))
-                . $folder_name;
+                ;
             $this->_createDirectory($js_folder_path);
             //create view file
             $template_path = __DIR__ . '/template/JsTemplate.php';
@@ -224,7 +226,12 @@ class TemplateGenerator
                 'primary_id' => $this->_primary_id,
                 'form_element_prefix' => strtolower(implode('_', $camel_name)),
                 'table_data' => empty($this->_table_names) ? [] : $this->_getTableInsertArrayForController($this->_table_names[0]),
-                'is_ckeditor' => $this->_is_ckeditor,
+                'using_ckeditor' => $this->_is_ckeditor,
+                'page_title_name' => $this->_page_title,
+                'form_name_postfix' => implode('', $camel_name),
+                'view_modal_size' => $this->_view_modal_size,
+                'tab_types' => $this->_tab_types,
+                'default_tab_value' => $this->_default_tab_value,
             ];
             $create_result = $this->_renderFile($template_path, $dest_path, $params);
             if ($create_result !== false)
@@ -300,6 +307,7 @@ class TemplateGenerator
             'model_names' => $this->_model_names,
             'table_names' => $this->_table_names,
             'controller_name' => $this->_controller_name,
+            'controller_url' => str_replace('_', '-', $model_param_name),
             'primary_id' => $this->_primary_id,
             'table_data' => empty($this->_table_names) ? [] : $this->_getTableInsertArrayForController($this->_table_names[0]),
             'form_element_prefix' => $model_param_name,
@@ -564,15 +572,15 @@ class TemplateGenerator
                 case 'smallint':
                 case 'integer':
                 case 'bigint':
-                    $field_value = 'intval(yii::$app->request->post(\'' . $element_name .  '\'))';
+                    $field_value = 'intval($params[\'' . $element_name .  '\'])';
                     break;
                 case 'boolean':
-                    $field_value = 'intval(yii::$app->request->post(\'' . $element_name .  '\'))';
+                    $field_value = 'intval($params[\'' . $element_name .  '\'])';
                     break;
                 case 'float':
                 case 'decimal':
                 case 'money':
-                    $field_value = 'floatval(yii::$app->request->post(\'' . $element_name .  '\'))';
+                    $field_value = 'floatval($params[\'' . $element_name .  '\'])';
                     break;
                 case 'date':
                     $field_value = 'date(\'Y-m-d\')';
@@ -585,7 +593,7 @@ class TemplateGenerator
                     $field_value = 'date(\'Y-m-d H:i:s\')';
                     break;
                 default: // strings
-                    $field_value = 'trim(yii::$app->request->post(\'' . $element_name .  '\'))';;
+                    $field_value = 'trim($params[\'' . $element_name .  '\'])';;
                     break;
             }
             $table_data[$definition['Field']] = $field_value; //fc_weight => 1
