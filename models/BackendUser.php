@@ -4,17 +4,18 @@ namespace app\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use app\library\bill\Constant;
 /**
  * This is the model class for table "backend_user".
  *
- * @property string $bu_id
- * @property string $bu_name
- * @property string $bu_password_hash
- * @property string $bu_auth_key
- * @property string $bu_role
- * @property integer $bu_status
- * @property string $bu_create_time
- * @property string $bu_update_time
+ * @property string $buid
+ * @property string $name
+ * @property string $password
+ * @property string $salt
+ * @property string $brid
+ * @property integer $status
+ * @property string $create_time
+ * @property string $update_time
  */
 class BackendUser extends ActiveRecord
 {
@@ -32,11 +33,11 @@ class BackendUser extends ActiveRecord
     public function rules()
     {
         return [
-            [['bu_password_hash', 'bu_auth_key', 'bu_role'], 'required'],
-            [['bu_role', 'bu_status'], 'integer'],
-            [['bu_create_time', 'bu_update_time'], 'safe'],
-            [['bu_name', 'bu_password_hash'], 'string', 'max' => 255],
-            [['bu_auth_key'], 'string', 'max' => 32]
+            [['salt', 'brid'], 'required'],
+            [['brid', 'status'], 'integer'],
+            [['create_time', 'update_time'], 'safe'],
+            [['name'], 'string', 'max' => 128],
+            [['password', 'salt'], 'string', 'max' => 64]
         ];
     }
 
@@ -46,23 +47,22 @@ class BackendUser extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'bu_id' => 'Bu ID',
-            'bu_name' => 'Bu Name',
-            'bu_password_hash' => 'Bu Password Hash',
-            'bu_auth_key' => 'Bu Auth Key',
-            'bu_role' => 'Bu Role',
-            'bu_status' => 'Bu Status',
-            'bu_create_time' => 'Bu Create Time',
-            'bu_update_time' => 'Bu Update Time',
+            'buid' => 'Buid',
+            'name' => 'Name',
+            'password' => 'Password',
+            'salt' => 'Salt',
+            'brid' => 'Brid',
+            'status' => 'Status',
+            'create_time' => 'Create Time',
+            'update_time' => 'Update Time',
         ];
     }
 
     public static function getBackendUserCount(array $conditions)
     {
         $select = BackendUser::find();
-        foreach ($conditions as $key => $content)
-        {
-            $select->andWhere([$content['compare_type'], $key, $content['value']]);
+        foreach ($conditions as $cond) {
+            $select->andWhere($cond);
         }
         $count = $select->count();
         return $count;
@@ -71,9 +71,8 @@ class BackendUser extends ActiveRecord
     public static function getBackendUserData(array $conditions, $limit, $offset, $order_by)
     {
         $select = BackendUser::find();
-        foreach ($conditions as $key => $content)
-        {
-            $select->andWhere([$content['compare_type'], $key, $content['value']]);
+        foreach ($conditions as $cond) {
+            $select->andWhere($cond);
         }
         $data = $select
             ->limit($limit)
@@ -84,10 +83,10 @@ class BackendUser extends ActiveRecord
         return $data;
     }
 
-    public static function getBackendUserByID($bu_id)
+    public static function getBackendUserByID($buid)
     {
         return BackendUser::find()
-            ->where(['bu_id' => $bu_id])
+            ->where(['buid' => $buid])
             ->asArray()
             ->one();
     }
@@ -95,19 +94,38 @@ class BackendUser extends ActiveRecord
     public static function getUserInfo($user_name)
     {
         return BackendUser::find()
-            ->where(['bu_name' => $user_name])
-            ->andWhere(['bu_status' => 1])
+            ->where(['name' => $user_name])
+            ->andWhere(['status' => Constant::VALID_STATUS])
             ->asArray()
             ->one();
     }
 
-    public function isUserNameExist($name, $buid)
+    public static function isUserNameExist($name, $buid)
     {
         $count = BackendUser::find()
-            ->where(['bu_name' => $name])
-            ->andWhere(['!=', 'bu_id', $buid])
-            ->andWhere(['bu_status' => 1])
+            ->where(['name' => $name])
+            ->andWhere(['!=', 'buid', $buid])
+            ->andWhere(['status' => Constant::VALID_STATUS])
             ->count();
         return ($count === 0) ? false : true;
+    }
+
+    public static function getUserName($buid)
+    {
+        $data = BackendUser::find()
+            ->select('name')
+            ->where(['buid' => $buid])
+            ->asArray()->one();
+        return isset($data['name']) ? $data['name'] : '';
+    }
+
+    public static function getRoleCount($brid)
+    {
+        $count = BackendUser::find()
+            ->where(['brid' => $brid])
+            ->andWhere(['status' => Constant::VALID_STATUS])
+            ->count();
+
+        return $count;
     }
 }
