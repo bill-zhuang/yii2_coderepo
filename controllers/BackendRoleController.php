@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\BackendAcl;
+use app\models\BackendRoleAcl;
 use app\models\BackendUser;
 use yii;
 use yii\web\Controller;
@@ -31,6 +33,8 @@ class BackendRoleController extends Controller
                                 'modify-backend-role',
                                 'delete-backend-role',
                                 'get-backend-role',
+                                'get-backend-role-acl',
+                                'modify-backend-role-acl',
                                 'get-all-roles',
                         ],
                         'roles' => ['@'],
@@ -183,6 +187,96 @@ class BackendRoleController extends Controller
                 $jsonArray = [
                     'data' => $data,
                 ];
+            }
+        }
+
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
+    }
+
+    public function actionGetBackendRoleAcl()
+    {
+        if (yii::$app->request->isGet) {
+            $params = yii::$app->request->get('params', array());
+            $brid = (isset($params['brid'])) ? intval($params['brid']) : Constant::INVALID_PRIMARY_ID;
+            //
+            $aclList = BackendAcl::getAclList();
+            $jsonArray = [
+                'data' => [
+                    'brid' => $brid,
+                    'aclList' => $aclList,
+                    'roleAcl' => BackendRoleAcl::getUserAclByBrid($brid),
+                ],
+            ];
+        }
+
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
+    }
+
+    public function actionModifyBackendRoleAcl()
+    {
+        if (yii::$app->request->isPost) {
+            $params = yii::$app->request->post('params', array());
+            $brid = (isset($params['backend_role_acl_brid']))
+                ? intval($params['backend_role_acl_brid']) : Constant::INVALID_PRIMARY_ID;
+            $submitBaids = (isset($params['backend_role_acl_baid'])) ? array_filter($params['backend_role_acl_baid']) : [];
+            if ($brid > Constant::INVALID_PRIMARY_ID && !empty($submitBaids)) {
+                //
+                $existBaids = BackendRoleAcl::getUserAclByBrid($brid);
+                $addBaids = array_diff($submitBaids, $existBaids);
+                $removeBaids = array_diff($existBaids, $submitBaids);
+                //transaction
+                $transaction = BackendRoleAcl::getDb()->beginTransaction();
+                try {
+                    $affectedRows = Constant::INIT_AFFECTED_ROWS;
+                    if (!empty($removeBaids)) {
+                        $affectedRows += BackendRoleAcl::deleteAll([
+                            ['brid' => $brid],
+                            ['in', 'baid', $removeBaids],
+                        ]);
+                    }
+                    if (!empty($addBaids)) {
+                        $initData = [
+                            'brid' => $brid,
+                            'baid' => Constant::INVALID_PRIMARY_ID,
+                            'status' => Constant::VALID_STATUS,
+                            'create_time' => date('Y-m-d H:i:s'),
+                            'update_time' => date('Y-m-d H:i:s'),
+                        ];
+                        foreach ($addBaids as $baid) {
+                            $initData['baid'] = $baid;
+                            $roleAcl = new BackendRoleAcl();
+                            foreach ($initData as $keyRoleAcl => $valueRoleAcl) {
+                                $roleAcl->$keyRoleAcl = $valueRoleAcl;
+                            }
+                            $affectedRows += intval($roleAcl->save());
+                        }
+                    }
+                    $transaction->commit();
+                    $jsonArray = [
+                        'data' => [
+                            'code' => $affectedRows,
+                            'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                                    ? JsMessage::MODIFY_SUCCESS : JsMessage::MODIFY_FAIL,
+                        ],
+                    ];
+                } catch (\Exception $e) {
+                    $transaction->rollBack();
+                    Util::handleException($e, 'Error from modifyBackendRoleAcl');
+                }
             }
         }
 
