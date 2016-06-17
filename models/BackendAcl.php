@@ -69,7 +69,7 @@ class BackendAcl extends ActiveRecord
         return $count;
     }
 
-    public static function getBackendAclData(array $conditions, $start, $pageLength, $orderBy)
+    public static function getBackendAclData(array $conditions, $start, $pageLength, $orderBy, $groupBy)
     {
         $select = BackendAcl::find();
         foreach ($conditions as $cond) {
@@ -79,6 +79,7 @@ class BackendAcl extends ActiveRecord
             ->limit($pageLength)
             ->offset($start)
             ->orderBy($orderBy)
+            ->groupBy($groupBy)
             ->asArray()
             ->all();
         return $data;
