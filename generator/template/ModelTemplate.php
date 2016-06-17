@@ -15,6 +15,7 @@ namespace app<?php echo ($module_name === '') ? '' : ('\\modules\\' . strtolower
 
 use Yii;
 use yii\db\ActiveRecord;
+use app\library\bill\Constant;
 /**
  * This is the model class for table "<?php echo $table_name; ?>".
  *
