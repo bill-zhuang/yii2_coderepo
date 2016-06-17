@@ -20,41 +20,47 @@ class TemplateGenerator
     private $_view_modal_size;
     private $_is_blacklist;
     private $_is_ckeditor;
+    private $_tab_types;
+    private $_default_tab_value;
 
     private $_cache_table_info;
 
     public function __construct()
     {
         //module
-        $this->_module_name = 'Test';
+        $this->_module_name = '';
         //controller
-        $this->_controller_name = 'DefaultTest';
+        $this->_controller_name = 'BackendAcl';
         //asset
         $this->_css = [
-            'css/common/test.css',
+            //'css/common/test.css',
         ];
         $this->_js = [
-            'js/common/datetime-picker.js',
-            'js/common/alertInfo.js',
-            'js/common/util.js',
+            'js/public/jAjaxWidget.js',
+            'js/public/regexWidget.js',
+            'js/public/alertMessage.js',
+            'js/public/pagination.js',
         ];
         //view
         $this->_asset_name = $this->_controller_name;
-        $this->_page_title = 'DefaultTest';
+        $this->_page_title = 'Backend Acl';
         $this->_all_batch_id = '';
         $this->_batch_id = '';
         $this->_table_row_data = [
             'name' => 'name',
-            'weight' => 'weight',
-            'create time' => 'create_time',
-            'update time' => 'update_time',
+            'module' => 'weight',
+            'controller' => 'update_time',
+            'action' => ''
         ];
         $this->_view_modal_size = 'md'; //optional: sm/md/lg, refer to small/middle/large
         $this->_is_blacklist = false;
         $this->_is_ckeditor = false;
+        $this->_tab_types = [
+        ];
+        $this->_default_tab_value = '0';
         //tables
         $this->_table_names = [
-            'finance_category',
+            'backend_acl',
         ];
         $this->_table_prefix = ''; //like bill_
         if (!empty($this->_table_names))
@@ -79,7 +85,7 @@ class TemplateGenerator
         $this->_generateControllerFile();
         $this->_generateJsFile();
         $this->_generateViewFile();
-        $this->_generateModuleFile();
+        //$this->_generateModuleFile();
         $this->_generateAppAssetFile();
     }
 
