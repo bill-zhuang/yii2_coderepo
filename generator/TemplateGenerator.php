@@ -102,7 +102,7 @@ class TemplateGenerator
             $dest_path = __DIR__ . '/../assets/' . (($this->_module_name === '') ? '' : ($this->_module_name . '/') )
                 . 'AppAsset' . $this->_controller_name . '.php';
             $js_name = strtolower(implode('-', $this->_splitControllerName()));
-            $this->_js[] = 'js/' . (($this->_module_name === '') ? '' : (strtolower($this->_module_name) . '/'))
+            $this->_js[] = 'js/' . (($this->_module_name === '') ? 'default/' : (strtolower($this->_module_name) . '/'))
                 . $js_name . '.js';
             $params = [
                 'module_name' => $this->_module_name,
