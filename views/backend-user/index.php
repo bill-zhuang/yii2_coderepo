@@ -1,9 +1,9 @@
 <?php
 use app\assets\AppAssetBackendUser;
 AppAssetBackendUser::register($this);
-Yii::$app->view->registerJs('var js_data = ' . json_encode($js_data) . ';', \yii\web\View::POS_END);
 ?>
 
+<title>Bill Coderepo - Backend User</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">
@@ -12,10 +12,9 @@ Yii::$app->view->registerJs('var js_data = ' . json_encode($js_data) . ';', \yii
     <!-- panel body -->
     <div class="panel-body">
         <div class="row">
-            <form action="/index.php/backend-user/index" method="get" id="formSearch" class="form-inline">
+            <form action="#" method="get" id="formSearch" class="form-inline">
                 <div class="col-sm-10 col-md-10 col-lg-10">
-                    关键字:
-                    <input type="text" class="form-control" id="keyword" name="keyword"/>
+                    用户名: <input type="text" class="form-control" id="keyword" name="keyword"/>
                     <button class="btn btn-primary" type="submit" id="btn_search">
                         <span class="glyphicon glyphicon-search"></span>
                         <span>搜索</span>
@@ -33,40 +32,31 @@ Yii::$app->view->registerJs('var js_data = ' . json_encode($js_data) . ';', \yii
                         <option value="100">100</option>
                     </select>
                     &nbsp;<label>每页</label>
-                    <input type="hidden" id="current_page" name="current_page"/>
                 </div>
+                <input type="hidden" id="current_page" name="current_page"/>
+                <input type="hidden" id="tab_type" name="tab_type" value="1"/>
             </form>
         </div><hr>
         <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12">
-                <table class="table table-striped table-bordered bill_table text-center">
-                    <tr>                        
+                <nav class="navbar nav-tabs" role="navigation">
+                    <div>
+                        <ul class="nav nav-tabs" id="ul_tab_type">
+                            <li id="li_tab_type_1" class="active"><a href="#">正常用户</a></li>
+                            <li id="li_tab_type_0"><a href="#">已删除</a></li>
+                        </ul>
+                    </div>
+                </nav>
+                <table id="tbl" class="table table-striped table-bordered bill_table text-center">
+                    <thead>
+                    <tr>
                         <td>序号</td>
                         <td>用户名</td>
                         <td>角色</td>
-                        <td>创建时间</td>
-                        <td>更新时间</td>
                         <td>操作</td>
                     </tr>
+                    </thead>
                     <tbody>
-                    <?php for($i = 0, $len = count($data); $i < $len; $i++){ ?>
-                        <tr>                            
-                            <td><?php echo ($js_data['start'] + $i + 1); ?></td>
-                            <td><?php echo $data[$i]['bu_name']; ?></td>
-                            <td><?php echo $data[$i]['bu_role']; ?></td>
-                            <td><?php echo $data[$i]['bu_create_time']; ?></td>
-                            <td><?php echo $data[$i]['bu_update_time']; ?></td>
-                            <td>
-                                <a href="#" id="<?php echo 'reset_password_' . $data[$i]['bu_id']; ?>">重设密码</a>
-                                <a href="#" id="<?php echo 'delete_' . $data[$i]['bu_id']; ?>">删除</a>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                    <?php if (count($data) == 0) { ?>
-                        <tr>
-                            <td colspan="6" class="bill_table_no_data">对不起,没有符合条件的数据</td>
-                        </tr>
-                    <?php } ?>
                     </tbody>
                 </table>
             </div>
@@ -77,30 +67,32 @@ Yii::$app->view->registerJs('var js_data = ' . json_encode($js_data) . ';', \yii
         <div class="row">
             <div class="col-sm-6 col-md-6 col-lg-6 text-left">
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-6 text-right">
-                <ul id="pagination" class="pagination-md"></ul>
+            <div id="div_pagination" class="col-sm-6 col-md-6 col-lg-6 text-right">
             </div>
         </div>
     </div>
 </div>
 <!-- modal -->
-<div id="modalBackendUser" class="modal fade">
+<div id="modalBackendUser" class="modal fade" >
     <div class="modal-dialog bill_modal_md" >
         <div class="modal-content">
             <div class="modal-header">
                 <span>新增/修改</span>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
-
             <form id="formBackendUser" action="#" method="post" enctype="multipart/form-data" class="form-inline">
                 <div class="modal-body">
                     <div class="input-group">
                         <span class="input-group-addon">用户名：</span>
-                        <input type="text" name="backend_user_bu_name" id="backend_user_bu_name" class="form-control"/>
-                    </div><br /><br />
-                    <input type="hidden" id="backend_user_bu_id" name="backend_user_bu_id"/>
+                        <input type="text" name="backend_user_name" id="backend_user_name" class="form-control"/>
+                    </div><br />
+                    <div class="input-group">
+                        <span class="input-group-addon">角色：</span>
+                        <select name="backend_user_brid" id="backend_user_brid" class="form-control">
+                        </select>
+                    </div><br />
+                    <input type="hidden" id="backend_user_buid" name="backend_user_buid"/>
                 </div>
-
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success" id="btn_submit_backend_user">提交</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>

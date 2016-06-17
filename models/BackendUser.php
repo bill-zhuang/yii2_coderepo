@@ -68,16 +68,16 @@ class BackendUser extends ActiveRecord
         return $count;
     }
 
-    public static function getBackendUserData(array $conditions, $limit, $offset, $order_by)
+    public static function getBackendUserData(array $conditions, $start, $pageLength, $orderBy)
     {
         $select = BackendUser::find();
         foreach ($conditions as $cond) {
             $select->andWhere($cond);
         }
         $data = $select
-            ->limit($limit)
-            ->offset($offset)
-            ->orderBy($order_by)
+            ->limit($pageLength)
+            ->offset($start)
+            ->orderBy($orderBy)
             ->asArray()
             ->all();
         return $data;
@@ -105,9 +105,8 @@ class BackendUser extends ActiveRecord
         $count = BackendUser::find()
             ->where(['name' => $name])
             ->andWhere(['!=', 'buid', $buid])
-            ->andWhere(['status' => Constant::VALID_STATUS])
             ->count();
-        return ($count === 0) ? false : true;
+        return (intval($count) === 0) ? false : true;
     }
 
     public static function getUserName($buid)

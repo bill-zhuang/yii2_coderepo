@@ -2,11 +2,16 @@
 
 namespace app\controllers;
 
+use app\models\BackendRole;
 use yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\models\BackendUser;
-use app\models\User;
+use app\library\bill\Constant;
+use app\library\bill\Util;
+use app\library\bill\Security;
+use app\library\bill\JsMessage;
+use yii\web\Response;
 
 class BackendUserController extends Controller
 {
@@ -17,151 +22,268 @@ class BackendUserController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => [
-                            'index', 'add-backend-user', 'reset-password', 'get-backend-user', 'delete-backend-user'
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'actions' => [
+                                'index',
+                                'ajax-index',
+                                'add-backend-user',
+                                'modify-backend-user',
+                                'delete-backend-user',
+                                'recover-backend-user',
+                                'get-backend-user',
                         ],
-                        'roles' => ['admin'],
+                        'roles' => ['@'],
                     ],
                 ],
-                'denyCallback' => function($rule, $action) {
-                    return $this->redirect('/index.php/error/no-permission');
-                },
             ],
         ];
     }
 
     public function actionIndex()
     {
-        $current_page = intval(yii::$app->request->get('current_page', yii::$app->params['init_start_page']));
-        $page_length = intval(yii::$app->request->get('page_length', yii::$app->params['init_page_length']));
-        $start = ($current_page - yii::$app->params['init_start_page']) * $page_length;
-        $keyword = trim(yii::$app->request->get('keyword', ''));
+        return $this->render('index');
+    }
 
-        $conditions = [
-            'bu_status' => [
-                'compare_type' => '=',
-                'value' => yii::$app->params['valid_status']
-            ]
-        ];
-        $order_by = ['bu_id' => SORT_DESC];
-        $total = BackendUser::getBackendUserCount($conditions);
-        $data = BackendUser::getBackendUserData($conditions, $page_length, $start, $order_by);
-
-        $js_data = [
-            'current_page' => $current_page,
-            'page_length' => $page_length,
-            'total_pages' => ceil($total / $page_length) ? ceil($total / $page_length) : yii::$app->params['init_total_page'],
-            'total' => $total,
-            'start' => $start,
-            'keyword' => $keyword,
-        ];
-        $view_data = [
-            'data' => $data,
-            'js_data' => $js_data,
-        ];
-        return $this->render('index', $view_data);
+    public function actionAjaxIndex()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $this->_index();
     }
 
     public function actionAddBackendUser()
     {
-        $affected_rows = yii::$app->params['init_affected_rows'];
-        if (isset($_POST['backend_user_bu_name']))
-        {
-            try
-            {
-                $user_name = trim(yii::$app->request->post('backend_user_bu_name'));
-                if (User::findByUsername($user_name) === null)
-                {
-                    $user = new User();
-                    $user->bu_name = $user_name;
-                    $user->setPassword(yii::$app->params['init_password']);
-                    $user->generateAuthKey();
-                    $user->bu_role = 1;
-                    $user->bu_status = yii::$app->params['valid_status'];
-                    $user->bu_create_time = date('Y-m-d H:i:s');
-                    $user->bu_update_time = date('Y-m-d H:i:s');
-                    $affected_rows = intval($user->save());
-
-                    $auth = Yii::$app->authManager;
-                    $authorRole = $auth->getRole('normal');
-                    $auth->assign($authorRole, $user->getId());
+        $jsonArray = [];
+        if (yii::$app->request->isPost) {
+            $affectedRows = Constant::INIT_AFFECTED_ROWS;
+            $params = yii::$app->request->post('params', array());
+            $name = trim($params['backend_user_name']);
+            if (!BackendUser::isUserNameExist($name, Constant::INVALID_PRIMARY_ID)) {
+                $security = new Security();
+                $salt = $security->generateRandomString(Constant::SALT_STRING_LENGTH);
+                try {
+                    $backendUser = new BackendUser();
+                    $backendUser->name = $name;
+                    $backendUser->password = md5(Constant::DEFAULT_PASSWORD . $salt);
+                    $backendUser->salt = $salt;
+                    $backendUser->brid = intval($params['backend_user_brid']);
+                    $backendUser->status = Constant::VALID_STATUS;
+                    $backendUser->create_time = date('Y-m-d H:i:s');
+                    $backendUser->update_time = date('Y-m-d H:i:s');
+                    $affectedRows = intval($backendUser->save());
+                    $jsonArray = [
+                        'data' => [
+                            'code' => $affectedRows,
+                            'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                                    ? JsMessage::ADD_SUCCESS : JsMessage::ADD_FAIL,
+                        ],
+                    ];
+                } catch (\Exception $e) {
+                    Util::handleException($e, 'Error From addBackendUser');
                 }
             }
-            catch (\Exception $e)
-            {
-                echo $e->getMessage();
-                $affected_rows = yii::$app->params['init_affected_rows'];
-            }
         }
 
-        echo json_encode($affected_rows);
-        exit;
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
     }
 
-    public function actionResetPassword()
+    public function actionModifyBackendUser()
     {
-        $affected_rows = yii::$app->params['init_affected_rows'];
-        if (isset($_POST['bu_id']))
-        {
-            try
-            {
-                $bu_id = intval(yii::$app->request->post('bu_id'));
-                $user = User::findIdentity($bu_id);
-                $user->setPassword(yii::$app->params['init_password']);
-                $user->generateAuthKey();
-                $user->bu_update_time = date('Y-m-d H:i:s');
-                $affected_rows = intval($user->save());
-            }
-            catch (\Exception $e)
-            {
-                $affected_rows = yii::$app->params['init_affected_rows'];
+        $jsonArray = [];
+        if (yii::$app->request->isPost) {
+            $affectedRows = Constant::INIT_AFFECTED_ROWS;
+            $params = yii::$app->request->post('params', array());
+            $buid = intval($params['backend_user_buid']);
+            if ($buid > Constant::INVALID_PRIMARY_ID) {
+                $name = trim($params['backend_user_name']);
+                if (!BackendUser::isUserNameExist($name, $buid)) {
+                    try {
+                        $backendUser = BackendUser::findOne($buid);
+                        if ($backendUser instanceof BackendUser) {
+                            $backendUser->name = $name;
+                            $backendUser->brid = intval($params['backend_user_brid']);
+                            $backendUser->update_time = date('Y-m-d H:i:s');
+                            $affectedRows = intval($backendUser->save());
+                        }
+                        $jsonArray = [
+                            'data' => [
+                                'code' => $affectedRows,
+                                'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                                        ? JsMessage::MODIFY_SUCCESS : JsMessage::MODIFY_FAIL,
+                            ],
+                        ];
+                    } catch (\Exception $e) {
+                        Util::handleException($e, 'Error From modifyBackendUser');
+                    }
+                } else {
+                    $jsonArray = [
+                        'data' => [
+                            'code' => Constant::INIT_AFFECTED_ROWS,
+                            'message' => JsMessage::ACCOUNT_EXIST,
+                        ],
+                    ];
+                }
             }
         }
 
-        echo json_encode($affected_rows);
-        exit;
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
     }
 
     public function actionDeleteBackendUser()
     {
-        $affected_rows = yii::$app->params['init_affected_rows'];
-        if (isset($_POST['bu_id']))
-        {
-            try
-            {
-                $bu_id = intval(yii::$app->request->post('bu_id'));
-                $user = User::findIdentity($bu_id);
-                $user->bu_status = yii::$app->params['invalid_status'];
-                $user->bu_update_time = date('Y-m-d H:i:s');
-                $affected_rows = intval($user->save());
-            }
-            catch (\Exception $e)
-            {
-                $affected_rows = yii::$app->params['init_affected_rows'];
+        $jsonArray = [];
+        if (yii::$app->request->isPost) {
+            $affectedRows = Constant::INIT_AFFECTED_ROWS;
+            $params = yii::$app->request->post('params', array());
+            $buid = isset($params['buid']) ? intval($params['buid']) : Constant::INVALID_PRIMARY_ID;
+            try {
+                $backendUser = BackendUser::findOne($buid);
+                if ($backendUser instanceof BackendUser) {
+                    $backendUser->status = Constant::INVALID_STATUS;
+                    $backendUser->update_time = date('Y-m-d H:i:s');
+                    $affectedRows = intval($backendUser->save());
+                }
+                $jsonArray = [
+                    'data' => [
+                        'code' => $affectedRows,
+                        'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                            ? JsMessage::DELETE_SUCCESS : JsMessage::DELETE_FAIL,
+                    ],
+                ];
+            } catch (\Exception $e) {
+                Util::handleException($e, 'Error From deleteBackendUser');
             }
         }
 
-        echo json_encode($affected_rows);
-        exit;
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
+    }
+
+    public function actionRecoverBackendUser()
+    {
+        $jsonArray = [];
+        if (yii::$app->request->isPost) {
+            try {
+                $affectedRows = Constant::INIT_AFFECTED_ROWS;
+                $params = yii::$app->request->post('params', array());
+                $buid = isset($params['buid']) ? intval($params['buid']) : Constant::INVALID_PRIMARY_ID;
+                if ($buid > Constant::INVALID_PRIMARY_ID) {
+                    $backendUser = BackendUser::findOne($buid);
+                    if ($backendUser instanceof BackendUser) {
+                        $backendUser->status = Constant::VALID_STATUS;
+                        $backendUser->update_time = date('Y-m-d H:i:s');
+                        $affectedRows = intval($backendUser->save());
+                    }
+                    $jsonArray = [
+                        'data' => [
+                            'code' => $affectedRows,
+                            'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                                    ? JsMessage::RECOVER_ACCOUNT_SUCCESS : JsMessage::RECOVER_ACCOUNT_FAIL,
+                        ]
+                    ];
+
+                }
+            } catch (\Exception $e) {
+                Util::handleException($e, 'Error From recoverBackendUser');
+            }
+        }
+
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        echo json_encode($jsonArray);
     }
 
     public function actionGetBackendUser()
     {
-        $data = [];
-        if (isset($_GET['bu_id']))
-        {
-            $bu_id = intval(yii::$app->request->get('bu_id'));
-            if ($bu_id > yii::$app->params['invalid_primary_id'])
-            {
-                $data = BackendUser::getBackendUserByID($bu_id);
+        if (yii::$app->request->isGet) {
+            $params = yii::$app->request->get('params', array());
+            $buid = (isset($params['buid'])) ? intval($params['buid']) : Constant::INVALID_PRIMARY_ID;
+            $data = BackendUser::getBackendUserByID($buid);
+            if (!empty($data)) {
+                $jsonArray = [
+                    'data' => [
+                        'buid' => $data['buid'],
+                        'name' => $data['name'],
+                        'brid' => $data['brid'],
+                        'roles' => BackendRole::getAllRoles(),
+                    ],
+                ];
             }
         }
 
-        echo json_encode($data);
-        exit;
+        if (!isset($jsonArray['data'])) {
+            $jsonArray = [
+                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $jsonArray;
+    }
+
+    private function _index()
+    {
+        $params = yii::$app->request->get('params', array());
+        list($currentPage, $pageLength, $start) = Util::getPaginationParamsFromUrlParamsArray($params);
+        $keyword = isset($params['keyword']) ? trim($params['keyword']) : '';
+        $tabType = isset($params['tab_type']) ? intval($params['tab_type']) : 1;
+
+        $conditions = [
+            ['status' => $tabType],
+            ['!=', 'name', Constant::ADMIN_NAME],
+        ];
+        if ($keyword !== '') {
+            $conditions[] = ['like', 'name', Util::getLikeString($keyword)];
+        }
+        $orderBy = ['buid' => SORT_DESC];
+        $total = BackendUser::getBackendUserCount($conditions);
+        $data = BackendUser::getBackendUserData($conditions, $start, $pageLength, $orderBy);
+        $roles = BackendRole::getAllRoles();
+        $output = [];
+        foreach ($data as $value) {
+            $output[] = [
+                'buid' => $value['buid'],
+                'name' => $value['name'],
+                'role' => isset($roles[$value['brid']]) ? $roles[$value['brid']] : '-',
+            ];
+        }
+
+        $jsonData = [
+            'data' => [
+                'totalPages' => Util::getTotalPages($total, $pageLength),
+                'pageIndex' => $currentPage,
+                'totalItems' => $total,
+                'startIndex' => $start + 1,
+                'itemsPerPage' => $pageLength,
+                'currentItemCount' => count($data),
+                'items' => $output,
+            ],
+        ];
+        return $jsonData;
     }
 
 }
