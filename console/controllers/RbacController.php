@@ -2,6 +2,8 @@
 
 namespace app\console\controllers;
 
+use app\library\bill\Constant;
+use app\models\BackendRole;
 use Yii;
 use yii\console\Controller;
 use app\models\User;
@@ -13,44 +15,25 @@ class RbacController extends Controller
         $auth->removeAll();
 
         // add "adminPermission" permission
-        $admin_permission = $auth->createPermission('adminPermission');
-        $admin_permission->description = 'Manage backend user';
-        $auth->add($admin_permission);
-
-        // add "normalPermission" permission
-        $normal_permission = $auth->createPermission('normalPermission');
-        $normal_permission->description = 'normal user';
-        $auth->add($normal_permission);
-
-        // add "normal" role and give this role the "normalPermission" permission
-        $normal = $auth->createRole('normal');
-        $auth->add($normal);
-        $auth->addChild($normal, $normal_permission);
+        $adminPermission = $auth->createPermission('adminPermission');
+        $adminPermission->description = 'Manage backend user';
+        $auth->add($adminPermission);
 
         // add "admin" role and give this role the "adminPermission" permission
         // as well as the permissions of the "normal" role
         $admin = $auth->createRole('admin');
         $auth->add($admin);
-        $auth->addChild($admin, $admin_permission);
-        $auth->addChild($admin, $normal_permission);
+        $auth->addChild($admin, $adminPermission);
 
         // Assign roles to users. admin_id/normal_id are IDs returned by IdentityInterface::getId()
         // usually implemented in your User model.
         //add admin
-        $admin_id = $this->_addUserAdmin();
-        if ($admin_id != 0)
-        {
+        $adminID = $this->_addUserAdmin();
+        if ($adminID != 0) {
+            //add role
             $auth = Yii::$app->authManager;
             $authorRole = $auth->getRole('admin');
-            $auth->assign($authorRole, $admin_id);
-        }
-        //add normal user
-        $normal_id = $this->_addUserNormal();
-        if ($normal_id != 0)
-        {
-            $auth = Yii::$app->authManager;
-            $authorRole = $auth->getRole('normal');
-            $auth->assign($authorRole, $normal_id);
+            $auth->assign($authorRole, $adminID);
         }
     }
 
@@ -60,28 +43,34 @@ class RbacController extends Controller
         return $this->_addUser($user_name);
     }
 
-    private function _addUserNormal()
-    {
-        $user_name = 'normal';
-        return $this->_addUser($user_name);
-    }
-
     private function _addUser($name)
     {
+        $transaction = User::getDb()->beginTransaction();
+        //add role
+        $role = new BackendRole();
+        $role->role = 'admin';
+        $role->status = Constant::VALID_STATUS;
+        $role->create_time = date('Y-m-d H:i:s');
+        $role->update_time = date('Y-m-d H:i:s');
+        $role->save();
+        $brid = $role->brid;
+        //add user
         $user = new User();
-        $user->bu_name = $name;
-        $user->setPassword(yii::$app->params['init_password']);
+        $user->name = $name;
         $user->generateAuthKey();
-        $user->bu_role = 1;
-        $user->bu_status = 1;
-        $user->bu_create_time = date('Y-m-d H:i:s');
-        $user->bu_update_time = date('Y-m-d H:i:s');
-        if ($user->save())
-        {
+        $user->setPassword(Constant::DEFAULT_PASSWORD);
+        $user->brid = $brid;
+        $user->status = Constant::VALID_STATUS;
+        $user->create_time = date('Y-m-d H:i:s');
+        $user->update_time = date('Y-m-d H:i:s');
+        if ($user->save()) {
+            $transaction->commit();
             return $user->getId();
+        } else {
+            $transaction->rollBack();
         }
 
-        return 0;
+        return Constant::INVALID_PRIMARY_ID;
     }
 
 }
