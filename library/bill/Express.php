@@ -11,7 +11,7 @@ class Express
         $expressCompany = $this->_getExpressCompanyName($expressCode);
         if ($expressCompany !== false) {
             $param = array('type' => $expressCompany, 'postid' => $expressCode);
-            $jsonData = Bill_Curl::sendRequestByCurl($requestUrl, $param, $method);
+            $jsonData = Curl::sendRequestByCurl($requestUrl, $param, $method);
             $decodeData = json_decode($jsonData, true);
             if ($decodeData['message'] == 'ok') {
                 return $decodeData['data'];

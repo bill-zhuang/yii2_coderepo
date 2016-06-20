@@ -230,7 +230,7 @@ class Image
      * @param $direction string acceptable argument: x|y, x: join height, y: join width
      * @param $directionLength integer join image width/height
      * @return string join image path
-     * @throws Exception
+     * @throws \Exception
      */
     public function joinMultipleImages(array $paths, $direction, $directionLength)
     {
