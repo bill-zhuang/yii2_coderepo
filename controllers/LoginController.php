@@ -44,16 +44,13 @@ class LoginController extends Controller
         }
 
         if (Yii::$app->request->isPost) {
-            //return $this->redirect('/index.php/main/index');
             $auth = new Auth();
             if ($auth->load(Yii::$app->request->post(), 'params') && $auth->login()) {
                 //return $this->goBack();
-                //$this->redirect('/index.php/main/index');
                 $jsonArray['data'] = [
                     'redirectUrl' => '/index.php/main/index',
                 ];
             } else {
-                //return $this->render('login', ['content' => '帐号或密码错误']);
                 $jsonArray['error'] = [
                     'message' => JsMessage::ACCOUNT_PASSWORD_ERROR,
                 ];
