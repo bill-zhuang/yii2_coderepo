@@ -96,7 +96,7 @@ class BackendAcl extends ActiveRecord
     public static function isAclExist($module, $controller, $action)
     {
         $count = BackendAcl::find()
-            ->where(['module=?', $module])
+            ->where(['module' => $module])
             ->andWhere(['controller' => $controller])
             ->andWhere(['action' => $action])
             ->andWhere(['status' => Constant::VALID_STATUS])
@@ -108,7 +108,7 @@ class BackendAcl extends ActiveRecord
     {
         $data = BackendAcl::find()
             ->select('baid')
-            ->where(['module=?', $module])
+            ->where(['module' => $module])
             ->andWhere(['controller' => $controller])
             ->andWhere(['action' => $action])
             ->andWhere(['status' => Constant::VALID_STATUS])
@@ -120,7 +120,7 @@ class BackendAcl extends ActiveRecord
     {
         $select = BackendAcl::find()
             ->select('baid')
-            ->where(['module=?', $module])
+            ->where(['module' => $module])
             ->andWhere(['controller' => $controller])
             ->andWhere(['status' => Constant::VALID_STATUS]);
         if (!empty($validActions)) {
@@ -140,7 +140,7 @@ class BackendAcl extends ActiveRecord
     {
         $select = BackendAcl::find()
             ->select('baid')
-            ->where(['module=?', $module])
+            ->where(['module' => $module])
             ->andWhere(['status' => Constant::VALID_STATUS]);
         if (!empty($validControllers)) {
             $select->andWhere(['not in', 'controller', $validControllers]);
