@@ -19,7 +19,8 @@ $('#formLogin').on('submit', function (event) {
         if ($('#remember').prop('checked')) {
             $.cookie('name', name, {expires: 1, path: '/'});
         }
-        var postUrl = '/login/login';
+        //$('#formLogin').get(0).submit();
+        var postUrl = '/index.php/login/login';
         var postData = {
             "params": $('#formLogin').serializeObject()
         };

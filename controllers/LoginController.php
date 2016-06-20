@@ -6,6 +6,8 @@ use yii;
 use yii\web\Controller;
 use app\models\Auth;
 use yii\filters\AccessControl;
+use app\library\bill\JsMessage;
+use yii\web\Response;
 
 class LoginController extends Controller
 {
@@ -38,21 +40,29 @@ class LoginController extends Controller
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            //return $this->goHome();
             return $this->redirect('/index.php/main/index');
         }
 
         if (Yii::$app->request->isPost) {
+            //return $this->redirect('/index.php/main/index');
             $auth = new Auth();
-            if ($auth->load(Yii::$app->request->post()) && $auth->login()) {
+            if ($auth->load(Yii::$app->request->post(), 'params') && $auth->login()) {
                 //return $this->goBack();
-                return $this->redirect('/index.php/main/index');
+                //$this->redirect('/index.php/main/index');
+                $jsonArray['data'] = [
+                    'redirectUrl' => '/index.php/main/index',
+                ];
             } else {
-                return $this->render('login', ['content' => '帐号或密码错误']);
+                //return $this->render('login', ['content' => '帐号或密码错误']);
+                $jsonArray['error'] = [
+                    'message' => JsMessage::ACCOUNT_PASSWORD_ERROR,
+                ];
             }
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $jsonArray;
         }
 
-        return $this->render('login', ['content' => '']);
+        return $this->render('login');
     }
 
     public function actionLogout()

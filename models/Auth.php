@@ -52,7 +52,8 @@ class Auth extends Model
      */
     public function login()
     {
-        if ($this->validate())
+        $user = $this->getUser();
+        if (isset($user['password']) && md5($this->password . $user['salt']) == $user['password'])
         {
             return Yii::$app->user->login($this->getUser());
         }
