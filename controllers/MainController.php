@@ -7,6 +7,9 @@ use app\models\User;
 use yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
+use yii\web\Response;
+use app\library\bill\JsMessage;
+use app\library\bill\Util;
 
 class MainController extends Controller
 {
@@ -44,20 +47,29 @@ class MainController extends Controller
                 $affectedRows = Constant::INVALID_PRIMARY_ID;
                 $user = User::findIdentity($userID);
                 if ($user->validatePassword($oldPassword)) {
+                    $user->generateAuthKey();
                     $user->setPassword($newPassword);
-                    $user->bu_update_time = date('Y-m-d H:i:s');
+                    $user->update_time = date('Y-m-d H:i:s');
                     $affectedRows = $user->save();
                 }
                 if ($affectedRows > 0) {
-                    Yii::$app->user->logout();
-                    //redirect to login page & set layout to login
-                    $this->layout = 'layout-login';
-                    return $this->render('@app/views/login/login', ['content' => '修改成功!请登录!']);
-                } else {
-                    $content = '修改失败！';
-                    return $this->render('index', ['content' => $content]);
+                    $identity = Yii::$app->user->identity;
+                    $identity = user::findIdentity($identity->getId()); //new identity, password changed
+                    yii::$app->user->login($identity);
                 }
+                $jsonArray['data'] = [
+                    'code' => $affectedRows,
+                    'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                            ? JsMessage::MODIFY_SUCCESS : JsMessage::MODIFY_FAIL,
+                ];
             }
+
+            if (!isset($jsonArray['data']) && !isset($jsonArray['error'])) {
+                $jsonArray['error'] = Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO);
+            }
+
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $jsonArray;
         }
 
         return $this->render('modify-password');

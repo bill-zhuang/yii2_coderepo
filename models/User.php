@@ -10,14 +10,14 @@ use yii\web\IdentityInterface;
 /**
  * This is the model class for table "backend_user".
  *
- * @property string $bu_id
- * @property string $bu_name
- * @property string $bu_password_hash
- * @property string $bu_auth_key
- * @property string $bu_role
- * @property integer $bu_status
- * @property string $bu_create_time
- * @property string $bu_update_time
+ * @property string $buid
+ * @property string $name
+ * @property string $password
+ * @property string $salt
+ * @property string $brid
+ * @property integer $status
+ * @property string $create_time
+ * @property string $update_time
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -37,11 +37,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['bu_password_hash', 'bu_auth_key', 'bu_role'], 'required'],
-            [['bu_role', 'bu_status'], 'integer'],
-            [['bu_create_time', 'bu_update_time'], 'safe'],
-            [['bu_name', 'bu_password_hash'], 'string', 'max' => 255],
-            [['bu_auth_key'], 'string', 'max' => 32]
+            [['salt', 'brid'], 'required'],
+            [['brid', 'status'], 'integer'],
+            [['create_time', 'update_time'], 'safe'],
+            [['name'], 'string', 'max' => 128],
+            [['password', 'salt'], 'string', 'max' => 64]
         ];
     }
 
@@ -52,7 +52,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['bu_id' => $id, 'bu_status' => self::STATUS_VALID]);
+        return static::findOne(['buid' => $id, 'status' => self::STATUS_VALID]);
     }
 
     /**
@@ -71,7 +71,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['bu_name' => $username, 'bu_status' => self::STATUS_VALID]);
+        return static::findOne(['name' => $username, 'status' => self::STATUS_VALID]);
     }
 
     /**
@@ -87,7 +87,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->bu_auth_key;
+        return $this->salt;
     }
 
     /**
@@ -106,7 +106,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return Yii::$app->security->validatePassword($password, $this->bu_password_hash);
+        return $this->password == md5($password . $this->getAuthKey());
     }
 
     /**
@@ -116,7 +116,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function setPassword($password)
     {
-        $this->bu_password_hash = Yii::$app->security->generatePasswordHash($password);
+        $this->password = md5($password . $this->getAuthKey());
     }
 
     /**
@@ -124,7 +124,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generateAuthKey()
     {
-        $this->bu_auth_key = Yii::$app->security->generateRandomString();
+        $this->salt = Yii::$app->security->generateRandomString();
     }
 
 }
