@@ -16,6 +16,8 @@
         "abeautifulsite/jquery-minicolors": "dev-master",
         "bootstrap-select/bootstrap-select": "1.7.2",
         "miloschuman/yii2-highcharts-widget": "*",
+        "fortawesome/font-awesome": "*",
+        "driftyco/ionicons": "*",
         "almasaeed2010/adminlte": "~2.0"
     },
     "require-dev": {
