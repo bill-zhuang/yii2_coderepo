@@ -308,7 +308,7 @@ class BackendRoleController extends Controller
             ['status' => Constant::VALID_STATUS],
         ];
         if ($keyword !== '') {
-            $conditions[] = ['like', 'role', Util::getLikeString($keyword)];
+            $conditions[] = ['like', 'role', Util::getLikeString($keyword), false];
         }
         $orderBy = ['brid' => SORT_DESC];
         $total = BackendRole::getBackendRoleCount($conditions);

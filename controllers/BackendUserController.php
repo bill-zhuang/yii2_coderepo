@@ -257,7 +257,7 @@ class BackendUserController extends Controller
             ['!=', 'name', Constant::ADMIN_NAME],
         ];
         if ($keyword !== '') {
-            $conditions[] = ['like', 'name', Util::getLikeString($keyword)];
+            $conditions[] = ['like', 'name', Util::getLikeString($keyword), false];
         }
         $orderBy = ['buid' => SORT_DESC];
         $total = BackendUser::getBackendUserCount($conditions);

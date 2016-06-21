@@ -260,7 +260,7 @@ class FinanceCategoryController extends Controller
             ['status' => Constant::VALID_STATUS],
         ];
         if ('' !== $keyword) {
-            $conditions[] = ['like', 'name', Util::getLikeString($keyword)];
+            $conditions[] = ['like', 'name', Util::getLikeString($keyword), false];
         }
         $orderBy = ['weight' => SORT_DESC];
         $total = FinanceCategory::getFinanceCategoryCount($conditions);

@@ -55,7 +55,7 @@ class BackendLogController extends Controller
             ['status' => Constant::VALID_STATUS],
         ];
         if ('' !== $keyword) {
-            $conditions[] = ['like', 'content', Util::getLikeString($keyword)];
+            $conditions[] = ['like', 'content', Util::getLikeString($keyword), false];
         }
         $orderBy = ['blid' => SORT_DESC];
         $total = BackendLog::getBackendLogCount($conditions);

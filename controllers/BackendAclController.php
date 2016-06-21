@@ -171,9 +171,9 @@ class BackendAclController extends Controller
         ];
         if ($keyword !== '') {
             $conditions[] = ['or',
-                ['like', 'module', Util::getLikeString($keyword)],
-                ['like', 'controller', Util::getLikeString($keyword)],
-                ['like', 'action', Util::getLikeString($keyword)],
+                ['like', 'module', Util::getLikeString($keyword), false],
+                ['like', 'controller', Util::getLikeString($keyword), false],
+                ['like', 'action', Util::getLikeString($keyword), false],
             ];
         }
         $orderBy = null;
