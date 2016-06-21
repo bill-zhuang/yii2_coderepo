@@ -7,16 +7,16 @@ class AppAssetLayout extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/common.css',
-        'css/layout.css',
+        'css/scroll-up.css',
     ];
     public $js = [
-        'js/common/layout.js',
+        'js/layout.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
         'app\assets\plugins\jQueryCookieAsset',
+        'app\assets\plugins\AdminLTEAsset',
     ];
 }

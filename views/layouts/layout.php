@@ -1,8 +1,11 @@
 <?php
 /* @var $content string */
 use yii\helpers\Html;
+use app\library\bill\Constant;
 use app\assets\AppAssetLayout;
+use app\assets\plugins\AdminLTEAsset;
 AppAssetLayout::register($this);
+$bundle = AdminLTEAsset::register($this);
 ?>
 
 <!-- read js file in AppAssetLayout.php -->
@@ -11,101 +14,185 @@ AppAssetLayout::register($this);
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Bill Coderepo</title>
         <!-- read css file in AppAssetLayout.php -->
         <?php Html::csrfMetaTags() ?>
         <?php $this->head() ?>
     </head>
 
-    <body>
+    <!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
+    <!-- the fixed layout is not compatible with sidebar-mini -->
+    <body class="hold-transition skin-blue fixed sidebar-mini">
     <?php $this->beginBody() ?>
-        <div class="navbar navbar-default navbar-fixed-top">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Bill</a>
-            </div>
-            <div class="navbar-collapse collapse">
-            </div>
-        </div>
-        <div class="row bill-layout-width">
-            <div class="col-sm-3 col-md-3 col-lg-2 well bill-sidebar bill_div_scroll" id="main">
-                <ul class="nav nav-sidebar">
-                    <li class="dropdown active">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-user"></span> Person center
-                            <b class="caret"></b>
+    <!-- Site wrapper -->
+    <div class="wrapper">
+
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="javascript:void(0)" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>B</b></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>Bill</b></span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="/login/logout" class="btn"><span>Log out</span></a>
+                        </li>
+                        <!-- Control Sidebar Toggle Button -->
+                        <li>
+                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i><span> </span></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <!-- =============================================== -->
+
+        <!-- Left side column. contains the sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="<?php echo $bundle->baseUrl . '/dist/img/avatar5.png'; ?>" class="img-circle" alt="User Image">
+                    </div>
+                    <div class="pull-left info">
+                        <p>Welcome, <?php echo Yii::$app->user->identity->name; ?></p>
+                        <a href="javascript:void(0)"><i class="fa fa-circle text-success"></i>Online</a>
+                    </div>
+                </div>
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu">
+                    <li class="header">MAIN NAVIGATION</li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-user"></i> <span>Person center</span> <i
+                                class="fa fa-angle-left pull-right"></i>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="/index.php/main/modify-password">
-                                    <span class="glyphicon glyphicon-wrench"></span>Modify Password
-                                </a>
+                        <ul class="treeview-menu">
+                            <li><a href="/index.php/main/modify-password"><i class="fa fa-circle-o"></i>Modify Password</a></li>
+                            <li><a href="/index.php/login/logout"><i class="fa fa-circle-o"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                    <?php if (Yii::$app->user->identity->name == Constant::ADMIN_NAME) { ?>
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-dashboard"></i> <span>Backend Panel</span> <i
+                                    class="fa fa-angle-left pull-right"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="/index.php/backend-user/index"><i class="fa fa-circle-o"></i>Backend User</a></li>
+                                <li><a href="/index.php/backend-role/index"><i class="fa fa-circle-o"></i>Backend Role</a></li>
+                                <li><a href="/index.php/backend-acl/index"><i class="fa fa-circle-o"></i>Access List</a></li>
+                                <li><a href="/index.php/backend-log/index"><i class="fa fa-circle-o"></i>Backend Log</a></li>
+                            </ul>
+                        </li>
+                    <?php } ?>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-leaf"></i> <span>Variety</span> <i
+                                class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="/index.php/index/index"><i class="fa fa-circle-o"></i>Other</a></li>
+                            <li><a href="/index.php/color-hex/index"><i class="fa fa-circle-o"></i>Color Hex</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-map-marker"></i> <span>Map</span> <i
+                                class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="/index.php/google-map"><i class="fa fa-circle-o"></i>Google Map</a></li>
+                            <li><a href="/index.php/google-map/multiple-location"><i class="fa fa-circle-o"></i>Multiple Markes</a>
                             </li>
-                            <li>
-                                <a href="/index.php/login/logout">
-                                    <span class="glyphicon glyphicon-log-out"></span>Logout
-                                </a>
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-stats"></i> <span>History</span> <i
+                                class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="/index.php/person/grain-recycle-history/index"><i class="fa fa-circle-o"></i>Grain Recycle
+                                    History</a></li>
+                            <li><a href="/index.php/person/grain-recycle-history-chart/index"><i class="fa fa-circle-o"></i>Grain
+                                    Recycle History Chart</a></li>
+                            <li><a href="/index.php/person/eject-history/index"><i class="fa fa-circle-o"></i>Eject History</a></li>
+                            <li><a href="/index.php/person/eject-history-chart/index"><i class="fa fa-circle-o"></i>Eject History
+                                    Chart</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-usd"></i> <span>Finance</span> <i
+                                class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="/index.php/person/finance-category/index"><i class="fa fa-circle-o"></i>Finance Category</a>
                             </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown active">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-leaf"></span> Variety<b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="/index.php/index/index">Other</a></li>
-                            <li><a href="/index.php/color-hex/index">Color Hex</a></li>
-                            <li><a href="/index.php/gii">Gii</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-map-marker"></span>
-                            Map<b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="/index.php/google-map/index">Google Map</a></li>
-                            <li><a href="/index.php/google-map/multiple-location">Multiple Markes</a></li>
-                            <li><a href="#">Baidu Map</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-stats"></span> History<b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="/index.php/person/dream-history/index">Dream History</a></li>
-                            <li><a href="/index.php/person/dream-history-chart/index">Dream History Chart</a></li>
-                            <li><a href="/index.php/person/bad-history/index">Bad History</a></li>
-                            <li><a href="/index.php/person/bad-history-chart/index">Bad History Chart</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-usd"></span>
-                            Finance<b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="/index.php/person/finance-category/index">Finance Category</a></li>
-                            <li><a href="/index.php/person/finance-payment/index">Finance Payment</a></li>
-                            <li><a href="/index.php/person/finance-history/index">Finance History</a></li>
+                            <li><a href="/index.php/person/finance-payment/index"><i class="fa fa-circle-o"></i>Finance Payment</a>
+                            </li>
+                            <li><a href="/index.php/person/finance-history/index"><i class="fa fa-circle-o"></i>Finance History</a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
-            </div>
-            <!-- below is for show action view file. -->
-            <div class="col-sm-9 col-md-9 col-lg-10 bill-content">
-                <?php echo $content;?>
-            </div>
-        </div>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
 
-        <div class="footer bill-footer">
-            <div class="container text-center">
-                <p class="text-muted">
-                    <a href="mailto:zstu_bill@yahoo.com">Send mail</a>.
-                    Released under <a href="http://apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache 2.0</a>
-                </p>
-            </div>
+        <!-- below is for show action view file. -->
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <section class="content">
+                <?php echo $content; ?>
+            </section>
         </div>
+        <!-- /.content-wrapper -->
+
+        <footer class="main-footer text-center">
+            <strong><a href="mailto:zstu_bill@yahoo.com">Send mail</a>.</strong>
+            Released under <a href="http://apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache 2.0</a>
+        </footer>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Create the tabs -->
+            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <!-- Home tab content -->
+                <div class="tab-pane" id="control-sidebar-home-tab"></div>
+                <!-- /.tab-pane -->
+                <!-- Stats tab content -->
+                <div class="tab-pane" id="control-sidebar-stats-tab"></div>
+                <!-- /.tab-pane -->
+            </div>
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Add the sidebar's background. This div must be placed
+             immediately after the control sidebar -->
+        <div class="control-sidebar-bg"></div>
+        <div class="scroll-up" id="go-top">
+            <i class="fa fa-chevron-up scroll-icon"></i>
+        </div>
+    </div>
     <?php $this->endBody() ?>
     </body>
 </html>
