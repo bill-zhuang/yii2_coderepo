@@ -1,5 +1,5 @@
 # yii2_coderepo
-yii2 based coderepo
+yii2 coderepo
 
 # Installing
 1. user composer to install Yii 2 & corresponding libs, command: composer install
@@ -8,3 +8,7 @@ yii2 based coderepo
 4. config `RbacController.php` at directory `\console\controllers\`, set admin name
 5. run yii on console, command: yii rbac/init, if success, db backend_user create user admin admin.
 6. Done.
+
+TODO.
+1. backend acl feature not available yet.
+2. backend log feature not trigger yet.
