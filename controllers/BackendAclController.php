@@ -278,12 +278,12 @@ class BackendAclController extends Controller
     }
 
     private function _removeInvalidAcl($module, $controller, array $validActions)
-    {//echo $module, '---'; var_dump($controller);var_dump($validActions);exit;
+    {
         if (!is_array($controller)) {
             $invalidAclIds = BackendAcl::getInvalidActionsAclIDs($module, $controller, $validActions);
         } else {
             $invalidAclIds = BackendAcl::getInvalidControllersAclIDs($module, $controller);
-        }//var_dump($invalidAclIds);exit;
+        }
         if (!empty($invalidAclIds)) {
             $transaction = BackendAcl::getDb()->beginTransaction();
             try {
