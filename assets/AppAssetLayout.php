@@ -18,6 +18,8 @@ class AppAssetLayout extends AssetBundle
         'yii\bootstrap\BootstrapAsset', //bootstrap css
         'yii\bootstrap\BootstrapPluginAsset', //bootstrap js
         'app\assets\plugins\jQueryCookieAsset',
+        'app\assets\plugins\FontAwesomeAsset',
+        'app\assets\plugins\IoniconsAsset',
         'app\assets\plugins\AdminLTEAsset',
     ];
 }
