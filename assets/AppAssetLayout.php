@@ -7,6 +7,7 @@ class AppAssetLayout extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
+        'css/common.css',
         'css/scroll-up.css',
     ];
     public $js = [
