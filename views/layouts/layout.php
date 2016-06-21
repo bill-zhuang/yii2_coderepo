@@ -47,7 +47,7 @@ $bundle = AdminLTEAsset::register($this);
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="/login/logout" class="btn"><span>Log out</span></a>
+                            <a href="/index.php/login/logout" class="btn"><span>Log out</span></a>
                         </li>
                         <!-- Control Sidebar Toggle Button -->
                         <li>
