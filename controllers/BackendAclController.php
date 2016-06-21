@@ -53,10 +53,28 @@ class BackendAclController extends Controller
     public function actionLoadBackendAcl()
     {
         $jsonArray = [];
-
-        if (!isset($jsonArray['data'])) {
+        $affectedRows = Constant::INIT_AFFECTED_ROWS;
+        $defaultControllerDir = \Yii::$app->basePath . '/controllers/';
+        $moduleDir = \Yii::$app->basePath . '/modules/';
+        //default
+        $this->_loadAcl2DB('', $defaultControllerDir);
+        //modules
+        if (is_dir($moduleDir)) {
+            $modules = scandir($moduleDir);
+            foreach ($modules as $module) {
+                if ($module != '.' && $module != '..' && is_dir($moduleDir . $module . DIRECTORY_SEPARATOR)) {
+                    $controllerDirPath = $moduleDir . $module . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR;
+                    if (is_dir($controllerDirPath)) {
+                        $affectedRows += $this->_loadAcl2DB(strtolower($module), $controllerDirPath);
+                    }
+                }
+            }
             $jsonArray = [
-                'error' => Util::getJsonResponseErrorArray(200, Constant::ACTION_ERROR_INFO),
+                'data' => [
+                    'code' => $affectedRows,
+                    'message' => ($affectedRows > Constant::INIT_AFFECTED_ROWS)
+                            ? JsMessage::LOAD_ACL_SUCCESS : JsMessage::LOAD_ACL_NO_ACL_LOADED,
+                ],
             ];
         }
 
@@ -195,4 +213,98 @@ class BackendAclController extends Controller
         return $jsonData;
     }
 
+    private function _loadAcl2DB($moduleName, $controllerPath)
+    {
+        $affectedRows = Constant::INIT_AFFECTED_ROWS;
+        $pregController = '/.*?Controller.php$/';
+        $pregController_postfix = '/Controller.php$/';
+        $pregAction = '/public\s+function\s+action(.*?)\(\)/';
+        $pregAction_postfix = '/^action/';
+        $data = [
+            'name' => '',
+            'module' => '',
+            'controller' => '',
+            'action' => '',
+            'status' => Constant::VALID_STATUS,
+            'create_time' => date('Y-m-d H:i:s'),
+            'update_time' => date('Y-m-d H:i:s'),
+        ];
+
+        if (is_dir($controllerPath)) {
+            $validControllers = [];
+            $controllers = scandir($controllerPath);
+            foreach ($controllers as $controller) {
+                if ($controller != '.' && $controller != '..') {
+                    if (preg_match($pregController, $controller) !== 0) {
+                        $controllerName = preg_replace($pregController_postfix, '', $controller);
+                        $controllerName = strtolower(implode('-', $this->_splitCamel($controllerName)));
+                        $controllerContent = file_get_contents($controllerPath . $controller);
+                        $isMatch = preg_match_all($pregAction, $controllerContent, $actionMatches);
+                        $data['module'] = $moduleName;
+                        $data['controller'] = $controllerName;
+                        $validControllers[] = $controllerName;
+                        $validActions = [];
+                        if ($isMatch) {
+                            foreach ($actionMatches[1] as $action) {
+                                if (ucfirst($action) != $action) {
+                                    //action first letter uppercase
+                                    continue;
+                                }
+                                $actionName = preg_replace($pregAction_postfix, '', $action);
+                                $actionName = strtolower(implode('-', $this->_splitCamel($actionName)));
+                                $data['action'] = $actionName;
+                                $validActions[] = $actionName;
+                                if (!BackendAcl::isAclExist($data['module'], $data['controller'], $data['action'])) {
+                                    $data['name'] = ($data['module'] == '' ? '' : '/' . $data['module'])
+                                        . '/' . $data['controller'] . '/' . $data['action'];
+                                    $backendAcl = new BackendAcl();
+                                    foreach ($data as $key => $value) {
+                                        $backendAcl->$key = $value;
+                                    }
+                                    $affectedRows += intval($backendAcl->save());
+                                }
+                            }
+                        }
+                        //delete unused action
+                        $this->_removeInvalidAcl($data['module'], $data['controller'], $validActions);
+                    }
+                }
+            }
+            //delete unused controller
+            $this->_removeInvalidAcl($moduleName, $validControllers, array());
+        }
+
+        return $affectedRows;
+    }
+
+    private function _removeInvalidAcl($module, $controller, array $validActions)
+    {//echo $module, '---'; var_dump($controller);var_dump($validActions);exit;
+        if (!is_array($controller)) {
+            $invalidAclIds = BackendAcl::getInvalidActionsAclIDs($module, $controller, $validActions);
+        } else {
+            $invalidAclIds = BackendAcl::getInvalidControllersAclIDs($module, $controller);
+        }//var_dump($invalidAclIds);exit;
+        if (!empty($invalidAclIds)) {
+            $transaction = BackendAcl::getDb()->beginTransaction();
+            try {
+                $deleteWhere = ['in', 'baid', $invalidAclIds];
+                BackendAcl::deleteAll($deleteWhere);
+                BackendRoleAcl::deleteAll($deleteWhere);
+                $transaction->commit();
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+            }
+        }
+    }
+
+    private function _splitCamel($controller)
+    {
+        $pregController = '/([A-Z][a-z\d]*)/';
+        $isMatch = preg_match_all($pregController, ucfirst($controller), $matches);
+        if ($isMatch) {
+            return $matches[1];
+        } else {
+            return [];
+        }
+    }
 }
