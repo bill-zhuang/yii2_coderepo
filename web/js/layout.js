@@ -21,7 +21,7 @@ $(document).ready(function () {
         }
     });
     //
-    trackWidget.trackUser();
+    //trackWidget.trackUser();
 });
 
 $('ul.treeview-menu li a').on('click', function () {
