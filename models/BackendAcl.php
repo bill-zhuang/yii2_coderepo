@@ -124,7 +124,7 @@ class BackendAcl extends ActiveRecord
             ->andWhere(['controller' => $controller])
             ->andWhere(['status' => Constant::VALID_STATUS]);
         if (!empty($validActions)) {
-            $select->where(['not in', 'action', $validActions]);
+            $select->andWhere(['not in', 'action', $validActions]);
         }
         $data = $select
             ->asArray()->all();
