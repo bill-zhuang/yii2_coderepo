@@ -15,7 +15,8 @@
         "ckeditor/ckeditor": "dev-master",
         "abeautifulsite/jquery-minicolors": "dev-master",
         "bootstrap-select/bootstrap-select": "1.7.2",
-        "miloschuman/yii2-highcharts-widget": "*"
+        "miloschuman/yii2-highcharts-widget": "*",
+        "almasaeed2010/adminlte": "~2.0"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
