@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "392a9cc8015a9e328153de3121d81505",
+    "hash": "37f2e410897969fcfb5467dbd22c3778",
     "packages": [
         {
             "name": "abeautifulsite/jquery-minicolors",
@@ -41,6 +41,37 @@
             "description": "jQuery MiniColors Plugin",
             "homepage": "http://www.abeautifulsite.net/",
             "time": "2016-06-13 13:33:38"
+        },
+        {
+            "name": "afarkas/html5shiv",
+            "version": "3.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aFarkas/html5shiv.git",
+                "reference": "ed28c56c071bddfe7d635ad88995674957a016be"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aFarkas/html5shiv/zipball/ed28c56c071bddfe7d635ad88995674957a016be",
+                "reference": "ed28c56c071bddfe7d635ad88995674957a016be",
+                "shasum": ""
+            },
+            "type": "component",
+            "extra": {
+                "component": {
+                    "scripts": [
+                        "dist/html5shiv.js"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT",
+                "GPL-2.0"
+            ],
+            "description": "Defacto way to enable use of HTML5 sectioning elements in legacy Internet Explorer.",
+            "homepage": "http://paulirish.com/2011/the-history-of-the-html5-shiv/",
+            "time": "2015-07-20 20:04:00"
         },
         {
             "name": "almasaeed2010/adminlte",
@@ -977,6 +1008,51 @@
             ],
             "description": "Allows installation of Components via Composer.",
             "time": "2015-08-10 12:35:38"
+        },
+        {
+            "name": "rogeriopradoj/respond",
+            "version": "1.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rogeriopradoj/Respond.git",
+                "reference": "885cd21e14e0199c4d126e4fe563581de2cd6aea"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rogeriopradoj/Respond/zipball/885cd21e14e0199c4d126e4fe563581de2cd6aea",
+                "reference": "885cd21e14e0199c4d126e4fe563581de2cd6aea",
+                "shasum": ""
+            },
+            "require": {
+                "robloach/component-installer": "*"
+            },
+            "type": "component",
+            "extra": {
+                "component": {
+                    "name": "respond",
+                    "scripts": [
+                        "dest/respond.src.js"
+                    ],
+                    "files": [
+                        "dest/respond.min.js"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rogerio Prado de Jesus",
+                    "email": "rogeriopradoj@gmail.com"
+                }
+            ],
+            "description": "A way to install Respond.js via composer",
+            "keywords": [
+                "JS"
+            ],
+            "time": "2014-02-14 20:48:52"
         },
         {
             "name": "swiftmailer/swiftmailer",
