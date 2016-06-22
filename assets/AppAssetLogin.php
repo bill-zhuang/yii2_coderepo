@@ -8,7 +8,7 @@ class AppAssetLogin extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-
+        'css/common.js',
     ];
     public $js = [
         'js/public/jAjaxWidget.js',

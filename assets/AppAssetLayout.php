@@ -21,5 +21,7 @@ class AppAssetLayout extends AssetBundle
         'app\assets\plugins\FontAwesomeAsset',
         'app\assets\plugins\IoniconsAsset',
         'app\assets\plugins\AdminLTEAsset',
+        'app\assets\plugins\Html5shivAsset',
+        'app\assets\plugins\RespondAsset',
     ];
 }

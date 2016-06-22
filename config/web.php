@@ -54,6 +54,15 @@ $config = [
         'authManager' => [
             'class' => 'yii\rbac\PhpManager',
         ],
+        'assetManager' => [
+            'bundles' => [
+                'yii\web\JqueryAsset' => [
+                    'jsOptions' => [
+                        'position' => \yii\web\View::POS_HEAD
+                    ],
+                ],
+            ],
+        ],
     ],
     'params' => $params,
     'timeZone' => 'Asia/Shanghai',
