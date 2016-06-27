@@ -3,7 +3,7 @@ use app\assets\person\AppAssetGrainRecycleHistoryChart;
 AppAssetGrainRecycleHistoryChart::register($this);
 ?>
 
-<title>Bill Coderepo - Grain Recycle History Chart</title>
+<title>Grain Recycle History Chart - Bill Coderepo</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">

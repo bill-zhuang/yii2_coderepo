@@ -3,7 +3,7 @@ use app\assets\AppAssetModifyPassword;
 AppAssetModifyPassword::register($this);
 ?>
 
-<title>Bill Coderepo - Modify Password</title>
+<title>Modify Password - Bill Coderepo</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">

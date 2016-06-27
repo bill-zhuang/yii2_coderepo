@@ -3,7 +3,7 @@ use app\assets\AppAssetIndex;
 AppAssetIndex::register($this);
 ?>
 
-<title>Bill Coderepo - Variety</title>
+<title>Variety - Bill Coderepo</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">

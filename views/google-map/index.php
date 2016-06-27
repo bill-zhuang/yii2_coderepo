@@ -3,7 +3,7 @@ use app\assets\AppAssetGoogleMap;
 AppAssetGoogleMap::register($this);
 ?>
 
-<title>Bill Coderepo - Google Map</title>
+<title>Google Map - Bill Coderepo</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">

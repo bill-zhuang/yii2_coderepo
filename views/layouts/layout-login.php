@@ -11,7 +11,7 @@ AppAssetLayoutLogin::register($this);
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <?php Html::csrfMetaTags(); ?>
-        <title>Bill Coderepo - Login</title>
+        <title>Login - Bill Coderepo</title>
         <?php $this->head() ?>
     </head>
     <body>

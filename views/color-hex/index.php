@@ -3,7 +3,7 @@ use app\assets\AppAssetColorHex;
 AppAssetColorHex::register($this);
 ?>
 
-<title>Bill Coderepo - Color Hex</title>
+<title>Color Hex - Bill Coderepo</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">

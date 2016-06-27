@@ -3,7 +3,7 @@ use app\assets\AppAssetBackendRole;
 AppAssetBackendRole::register($this);
 ?>
 
-<title>Bill Coderepo - Backend Role</title>
+<title>Backend Role - Bill Coderepo</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">
@@ -55,9 +55,7 @@ AppAssetBackendRole::register($this);
     <!-- panel footer -->
     <div class="panel-footer">
         <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-6 text-left">
-            </div>
-            <div id="div_pagination" class="col-sm-6 col-md-6 col-lg-6 text-right">
+            <div id="div_pagination" class="col-sm-12 col-md-12 col-lg-12 text-right">
             </div>
         </div>
     </div>

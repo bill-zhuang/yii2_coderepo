@@ -3,7 +3,7 @@ use app\assets\AppAssetMultipleLocation;
 AppAssetMultipleLocation::register($this);
 ?>
 
-<title>Bill Coderepo - Google Map-Multiple Markers with not cluster & cluster</title>
+<title>Google Map-Multiple Markers with not cluster & cluster - Bill Coderepo</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">

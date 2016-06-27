@@ -3,7 +3,7 @@ use app\assets\person\AppAssetEjectHistoryChart;
 AppAssetEjectHistoryChart::register($this);
 ?>
 
-<title>Bill Coderepo - Eject History Chart</title>
+<title>Eject History Chart - Bill Coderepo</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">

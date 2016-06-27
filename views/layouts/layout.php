@@ -166,8 +166,7 @@ $bundle = AdminLTEAsset::register($this);
         <!-- /.content-wrapper -->
 
         <footer class="main-footer text-center">
-            <strong><a href="mailto:zstu_bill@yahoo.com">Send mail</a>.</strong>
-            Released under <a href="http://apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache 2.0</a>
+            <strong><a href="mailto:zstu_bill@yahoo.com">Contact Author</a></strong>
         </footer>
 
         <!-- Control Sidebar -->

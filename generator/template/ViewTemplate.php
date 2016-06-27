@@ -25,7 +25,7 @@ echo  'AppAsset' . $asset_name . '::register($this);' . PHP_EOL;
 echo "?>\n";
 ?>
 
-<title>Bill Coderepo - <?php echo $page_title_name; ?></title>
+<title><?php echo $page_title_name; ?> - Bill Coderepo</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">
@@ -113,9 +113,7 @@ echo "?>\n";
     <!-- panel footer -->
     <div class="panel-footer">
         <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-6 text-left">
-            </div>
-            <div id="div_pagination" class="col-sm-6 col-md-6 col-lg-6 text-right">
+            <div id="div_pagination" class="col-sm-12 col-md-12 col-lg-12 text-right">
             </div>
         </div>
     </div>

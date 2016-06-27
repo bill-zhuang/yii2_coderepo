@@ -3,7 +3,7 @@ use app\assets\person\AppAssetFinanceHistory;
 AppAssetFinanceHistory::register($this);
 ?>
 
-<title>Bill Coderepo - Finance History</title>
+<title>Finance History - Bill Coderepo</title>
 <div class="panel panel-warning">
     <!-- panel heading -->
     <div class="panel-heading">
