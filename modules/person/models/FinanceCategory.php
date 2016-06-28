@@ -3,7 +3,7 @@
 namespace app\modules\person\models;
 
 use Yii;
-use yii\db\ActiveRecord;
+use app\models\BillActiveRecord;
 use app\library\bill\Constant;
 /**
  * This is the model class for table "finance_category".
@@ -16,7 +16,7 @@ use app\library\bill\Constant;
  * @property string $create_time
  * @property string $update_time
  */
-class FinanceCategory extends ActiveRecord
+class FinanceCategory extends BillActiveRecord
 {
     /**
      * @inheritdoc

@@ -3,7 +3,6 @@
 namespace app\models;
 
 use Yii;
-use yii\db\ActiveRecord;
 use app\library\bill\Constant;
 /**
  * This is the model class for table "backend_role".
@@ -14,7 +13,7 @@ use app\library\bill\Constant;
  * @property string $create_time
  * @property string $update_time
  */
-class BackendRole extends ActiveRecord
+class BackendRole extends BillActiveRecord
 {
     /**
      * @inheritdoc

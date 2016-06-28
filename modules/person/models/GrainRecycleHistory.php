@@ -3,7 +3,7 @@
 namespace app\modules\person\models;
 
 use Yii;
-use yii\db\ActiveRecord;
+use app\models\BillActiveRecord;
 use app\library\bill\Constant;
 /**
  * This is the model class for table "grain_recycle_history".
@@ -15,7 +15,7 @@ use app\library\bill\Constant;
  * @property string $create_time
  * @property string $update_time
  */
-class GrainRecycleHistory extends ActiveRecord
+class GrainRecycleHistory extends BillActiveRecord
 {
     /**
      * @inheritdoc

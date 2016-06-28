@@ -3,7 +3,6 @@
 namespace app\models;
 
 use Yii;
-use yii\db\ActiveRecord;
 use app\library\bill\Constant;
 use app\library\bill\Util;
 /**
@@ -18,7 +17,7 @@ use app\library\bill\Util;
  * @property string $create_time
  * @property string $update_time
  */
-class BackendAcl extends ActiveRecord
+class BackendAcl extends BillActiveRecord
 {
     /**
      * @inheritdoc

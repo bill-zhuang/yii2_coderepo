@@ -14,7 +14,9 @@ echo "<?php\n";
 namespace app<?php echo ($module_name === '') ? '' : ('\\modules\\' . strtolower($module_name)); ?>\models;
 
 use Yii;
-use yii\db\ActiveRecord;
+<?php if ($module_name !== ''){ ?>
+use app\models\BillActiveRecord;
+<?php } ?>
 use app\library\bill\Constant;
 /**
  * This is the model class for table "<?php echo $table_name; ?>".
@@ -26,7 +28,7 @@ use app\library\bill\Constant;
 * @property <?php echo $relation[1] . ($relation[2] ? '[]' : '') . ' $' . lcfirst($name) . "\n" ?>
 <?php }} ?>
  */
-class <?php echo $model_name; ?> extends ActiveRecord
+class <?php echo $model_name; ?> extends BillActiveRecord
 {
     /**
      * @inheritdoc
