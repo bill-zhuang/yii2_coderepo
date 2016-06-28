@@ -17,22 +17,6 @@ class BillActiveRecord extends ActiveRecord
         return parent::insert($runValidation, $attributes);
     }
 
-    //trigger updateAll, comment
-    /*public function update($runValidation = true, $attributes = null)
-    {
-        list($data, $where) = $this->_getSaveDataAndWhere();
-        $this->_writeLog('update', $data, $where);
-        return parent::update($runValidation, $attributes);
-    }*/
-
-    //trigger deleteAll, comment
-    /*public function delete()
-    {
-        list(, $where) = $this->_getSaveDataAndWhere();
-        $this->_writeLog('delete', [], $where);
-        return parent::delete();
-    }*/
-
     public static function updateAll($attributes, $condition = '', $params = [])
     {
         self::_writeLogFromCommand('update', $attributes, $condition, $params);
