@@ -3,40 +3,16 @@
 namespace app\modules\person\controllers;
 
 use yii;
-use yii\web\Controller;
+use app\controllers\BillController;
 use app\modules\person\models\FinancePayment;
 use app\modules\person\models\FinanceCategory;
-use yii\filters\AccessControl;
 use app\library\bill\Util;
 use yii\web\Response;
 
-class FinanceHistoryController extends Controller
+class FinanceHistoryController extends BillController
 {
     private $_categories;
     public $enableCsrfValidation = false;
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => [
-                            'index',
-                            'ajax-finance-history-period',
-                            'ajax-finance-history-month',
-                            'ajax-finance-history-month-category',
-                            'ajax-finance-history-year-category',
-                            'ajax-finance-history-year-category',
-                        ],
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
 
     public function actionIndex()
     {

@@ -4,42 +4,16 @@ namespace app\modules\person\controllers;
 
 use app\modules\person\models\FinancePaymentMap;
 use yii;
-use yii\web\Controller;
+use app\controllers\BillController;
 use app\modules\person\models\FinanceCategory;
 use app\library\bill\Constant;
 use app\library\bill\Util;
 use app\library\bill\JsMessage;
-use yii\filters\AccessControl;
 use yii\web\Response;
 
-class FinanceCategoryController extends Controller
+class FinanceCategoryController extends BillController
 {
     public $enableCsrfValidation = false;
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => [
-                            'index',
-                            'ajax-index',
-                            'add-finance-category',
-                            'modify-finance-category',
-                            'delete-finance-category',
-                            'get-finance-category',
-                            'get-finance-subcategory',
-                            'get-finance-main-category',
-                        ],
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
 
     public function actionIndex()
     {

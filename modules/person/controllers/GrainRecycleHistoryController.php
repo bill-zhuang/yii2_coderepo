@@ -3,40 +3,16 @@
 namespace app\modules\person\controllers;
 
 use yii;
-use yii\web\Controller;
-use yii\filters\AccessControl;
+use app\controllers\BillController;
 use app\modules\person\models\GrainRecycleHistory;
 use app\library\bill\Constant;
 use app\library\bill\Util;
 use app\library\bill\JsMessage;
 use yii\web\Response;
 
-class GrainRecycleHistoryController extends Controller
+class GrainRecycleHistoryController extends BillController
 {
     public $enableCsrfValidation = false;
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                    'rules' => [
-                        [
-                            'allow' => true,
-                            'actions' => [
-                                'index',
-                                'ajax-index',
-                                'add-grain-recycle-history',
-                                'modify-grain-recycle-history',
-                                'delete-grain-recycle-history',
-                                'get-grain-recycle-history',
-                        ],
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
 
     public function actionIndex()
     {

@@ -5,31 +5,13 @@ namespace app\controllers;
 use app\library\bill\Constant;
 use app\models\User;
 use yii;
-use yii\web\Controller;
-use yii\filters\AccessControl;
 use yii\web\Response;
 use app\library\bill\JsMessage;
 use app\library\bill\Util;
 
-class MainController extends Controller
+class MainController extends BillController
 {
     public $enableCsrfValidation = false;
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => ['index', 'modify-password'],
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
 
     public function actionIndex()
     {

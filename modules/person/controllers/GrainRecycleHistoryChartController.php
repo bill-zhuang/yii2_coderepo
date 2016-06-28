@@ -3,35 +3,14 @@
 namespace app\modules\person\controllers;
 
 use yii;
-use yii\web\Controller;
-use yii\filters\AccessControl;
+use app\controllers\BillController;
 use app\modules\person\models\GrainRecycleHistory;
 use app\library\bill\Util;
 use yii\web\Response;
 
-class GrainRecycleHistoryChartController extends Controller
+class GrainRecycleHistoryChartController extends BillController
 {
     public $enableCsrfValidation = false;
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                    'rules' => [
-                        [
-                            'allow' => true,
-                            'actions' => [
-                                'index',
-                                'ajax-grain-recycle-history-period',
-                                'ajax-grain-recycle-history-month',
-                        ],
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
 
     public function actionIndex()
     {

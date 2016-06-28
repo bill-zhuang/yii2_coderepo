@@ -3,35 +3,14 @@
 namespace app\controllers;
 
 use yii;
-use yii\web\Controller;
 use app\library\bill\Curl;
 use app\library\bill\Regex;
 use app\library\bill\Util;
-use yii\filters\AccessControl;
 use yii\web\Response;
 
-class IndexController extends Controller
+class IndexController extends BillController
 {
     public $enableCsrfValidation = false;
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => [
-                            'index',
-                            'get-baidu-music-link',
-                        ],
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
 
     public function actionIndex()
     {

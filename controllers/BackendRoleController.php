@@ -6,43 +6,15 @@ use app\models\BackendAcl;
 use app\models\BackendRoleAcl;
 use app\models\BackendUser;
 use yii;
-use yii\web\Controller;
-use yii\filters\AccessControl;
 use app\models\BackendRole;
 use app\library\bill\Constant;
 use app\library\bill\Util;
 use app\library\bill\JsMessage;
 use yii\web\Response;
 
-class BackendRoleController extends Controller
+class BackendRoleController extends BillController
 {
     public $enableCsrfValidation = false;
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                    'rules' => [
-                        [
-                            'allow' => true,
-                            'actions' => [
-                                'index',
-                                'ajax-index',
-                                'add-backend-role',
-                                'modify-backend-role',
-                                'delete-backend-role',
-                                'get-backend-role',
-                                'get-backend-role-acl',
-                                'modify-backend-role-acl',
-                                'get-all-roles',
-                        ],
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
 
     public function actionIndex()
     {

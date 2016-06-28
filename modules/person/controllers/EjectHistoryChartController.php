@@ -3,36 +3,15 @@
 namespace app\modules\person\controllers;
 
 use yii;
-use yii\web\Controller;
-use yii\filters\AccessControl;
+use app\controllers\BillController;
 use app\modules\person\models\EjectHistory;
 use app\library\bill\Constant;
 use app\library\bill\Util;
 use yii\web\Response;
 
-class EjectHistoryChartController extends Controller
+class EjectHistoryChartController extends BillController
 {
     public $enableCsrfValidation = false;
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                    'rules' => [
-                        [
-                            'allow' => true,
-                            'actions' => [
-                                'index',
-                                'ajax-eject-history-period',
-                                'ajax-eject-history-month',
-                        ],
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
 
     public function actionIndex()
     {

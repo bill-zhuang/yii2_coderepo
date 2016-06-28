@@ -25,8 +25,9 @@ echo "<?php\n";
 namespace app\<?php echo ($module_name === '') ? '' : ('modules\\' . strtolower($module_name) . '\\'); ?>controllers;
 
 use yii;
-use yii\web\Controller;
-use yii\filters\AccessControl;
+<?php if ($module_name !== ''){ ?>
+use app\controllers\BillController;
+<?php } ?>
 <?php foreach($model_names as $model_name){ ?>
 use app\<?php echo ($module_name === '') ? '' : ('modules\\' . strtolower($module_name) . '\\'); ?>models\<?php echo $model_name; ?>;<?php echo PHP_EOL; ?>
 <?php } ?>
@@ -35,32 +36,9 @@ use app\library\bill\Util;
 use app\library\bill\JsMessage;
 use yii\web\Response;
 
-class <?php echo $controller_name; ?>Controller extends Controller
+class <?php echo $controller_name; ?>Controller extends BillController
 {
     public $enableCsrfValidation = false;
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                    'rules' => [
-                        [
-                            'allow' => true,
-                            'actions' => [
-                                'index',
-                                'ajax-index',
-                                'add-<?php echo $controller_url; ?>',
-                                'modify-<?php echo $controller_url; ?>',
-                                'delete-<?php echo $controller_url; ?>',
-                                'get-<?php echo $controller_url; ?>',
-                        ],
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
 
     public function actionIndex()
     {

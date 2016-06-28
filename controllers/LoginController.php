@@ -3,39 +3,15 @@
 namespace app\controllers;
 
 use yii;
-use yii\web\Controller;
 use app\models\Auth;
-use yii\filters\AccessControl;
 use app\library\bill\JsMessage;
 use yii\web\Response;
 
-class LoginController extends Controller
+class LoginController extends BillController
 {
     public $enableCsrfValidation = false;
     public $layout = 'layout-login';
     public $defaultAction = 'login';
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['login', 'logout'],
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => ['login'],
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['logout'],
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
 
     public function actionLogin()
     {
