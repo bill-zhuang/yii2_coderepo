@@ -11,7 +11,11 @@ class BillController extends Controller
 {
     public function beforeAction($action)
     {
-        $moduleID = Yii::$app->module;
+        if (Yii::$app->controller->module->module != null) {
+            $moduleID = Yii::$app->controller->module->id;
+        } else {
+            $moduleID = '';
+        }
         $controllerID = Yii::$app->controller->id;
         $actionID = $this->action->id;
         $isAjax = Yii::$app->request->isAjax;
