@@ -28,7 +28,7 @@ class Acl
                         ];
                         return $jsonArray;
                     } else {
-                        return '/index.php/error/index';
+                        return '/index.php/error/no-permission';
                     }
                 }
             } else {
