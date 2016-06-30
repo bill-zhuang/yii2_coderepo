@@ -3,9 +3,9 @@
 namespace app\controllers;
 
 use Yii;
-use yii\web\Controller;
+use app\library\bill\Util;
 
-class ErrorController extends Controller
+class ErrorController extends BillController
 {
     public function actions()
     {
@@ -22,6 +22,8 @@ class ErrorController extends Controller
 
     public function actionIndex()
     {
+        $exception = Yii::$app->errorHandler->exception;
+        Util::handleException($exception, 'Error from trigger error/index');
         return $this->render('index');
     }
 
