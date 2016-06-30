@@ -6,6 +6,7 @@ use app\assets\AppAssetLayout;
 use app\assets\plugins\AdminLTEAsset;
 AppAssetLayout::register($this);
 $bundle = AdminLTEAsset::register($this);
+$userName = (isset(Yii::$app->user->identity->name)) ? Yii::$app->user->identity->name : '';
 ?>
 
 <!-- read js file in AppAssetLayout.php -->
@@ -70,7 +71,7 @@ $bundle = AdminLTEAsset::register($this);
                         <img src="<?php echo $bundle->baseUrl . '/dist/img/avatar5.png'; ?>" class="img-circle" alt="User Image">
                     </div>
                     <div class="pull-left info">
-                        <p>Welcome, <?php echo Yii::$app->user->identity->name; ?></p>
+                        <p>Welcome, <?php echo $userName; ?></p>
                         <a href="javascript:void(0)"><i class="fa fa-circle text-success"></i>Online</a>
                     </div>
                 </div>
@@ -87,7 +88,7 @@ $bundle = AdminLTEAsset::register($this);
                             <li><a href="/index.php/login/logout"><i class="fa fa-circle-o"></i>Logout</a></li>
                         </ul>
                     </li>
-                    <?php if (Yii::$app->user->identity->name == Constant::ADMIN_NAME) { ?>
+                    <?php if ($userName == Constant::ADMIN_NAME) { ?>
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-dashboard"></i> <span>Backend Panel</span> <i
