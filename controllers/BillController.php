@@ -8,6 +8,7 @@ use app\models\Acl;
 use yii\web\Response;
 use app\library\bill\Constant;
 use app\library\bill\Util;
+use app\library\bill\Mail;
 
 class BillController extends Controller
 {
@@ -43,7 +44,16 @@ class BillController extends Controller
             exit;
         }
         if (isset($sqlInfo['queryCost']) && $sqlInfo['queryCost'] > Constant::SQL_QUERY_COST_TRIGGER) {
-            //TODO slow query trigger
+            $mailTitle = 'Slow db query';
+            $mailContent = 'Total query count: ' . $sqlInfo['queryCount'] . '<br />' .
+                'Total query cost(s): ' . $sqlInfo['queryCost'] . '<br />';
+            foreach ($sqlInfo['queries'] as $query) {
+                $mailContent .= 'Query: ' . $query['sql'] . '<br />' .
+                    'Query cost: ' . $query['queryCost'] . '<br />';
+            }
+            $mail = new Mail();
+            $mail->send($mailTitle, $mailContent);
+
         }
         return $result;
     }
