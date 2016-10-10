@@ -23,8 +23,13 @@ class LoginController extends BillController
             $auth = new Auth();
             if ($auth->load(Yii::$app->request->post(), 'params') && $auth->login()) {
                 //return $this->goBack();
+                $redirectUrl = isset($params['location']) ? urldecode($params['location']) : '';
+                if ($redirectUrl === '' || $redirectUrl === '/') {
+                    $redirectUrl = '/index.php/main/index';
+                }
                 $jsonArray['data'] = [
-                    'redirectUrl' => '/index.php/main/index',
+                    //'redirectUrl' => '/index.php/main/index',
+                    'redirectUrl' => $redirectUrl,
                 ];
             } else {
                 $jsonArray['error'] = [

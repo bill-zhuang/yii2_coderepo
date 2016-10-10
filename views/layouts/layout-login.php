@@ -16,6 +16,11 @@ AppAssetLayoutLogin::register($this);
     </head>
     <body>
     <?php $this->beginBody() ?>
+        <noscript>
+            <span class="bill_font_bold_red">
+                This site requires JavaScript and Cookies to be enabled. Please change your browser settings or upgrade your browser.
+            </span>
+        </noscript>
         <div class="login">
             <?php echo $content; ?>
         </div>

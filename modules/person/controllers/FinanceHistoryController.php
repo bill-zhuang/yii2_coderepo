@@ -27,13 +27,14 @@ class FinanceHistoryController extends BillController
         $endDate = (isset($params['day_end_date']) && Util::validDate($params['day_end_date']))
             ? trim($params['day_end_date']) : date('Y-m-d');
         $fcid = (isset($params['day_category_id'])) ? intval($params['day_category_id']) : 0;
+        $ignoreMoney = (isset($params['payment_ignore'])) ? floatval($params['payment_min']) : 0;
         $data = [];
         $dayInterval = intval((strtotime($endDate) - strtotime($startDate)) / 86400);
         for($i = 0; $i <= $dayInterval; $i++) {
             $periodDate = date('Y-m-d', strtotime($startDate . " + {$i} day"));
             $data[$periodDate] = 0.00;
         }
-        $dayData = FinancePayment::getTotalPaymentHistoryDataByDay($startDate, $endDate, $fcid);
+        $dayData = FinancePayment::getTotalPaymentHistoryDataByDay($startDate, $endDate, $fcid, $ignoreMoney);
         foreach ($dayData as $dayValue) {
             if (isset($data[$dayValue['period']])) {
                 $data[$dayValue['period']] = floatval($dayValue['payment']);

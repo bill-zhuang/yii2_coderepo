@@ -106,25 +106,33 @@ class FinancePayment extends BillActiveRecord
             ->asArray()->all();
     }
 
-    public static function getTotalPaymentHistoryDataByDay($startDate, $endDate, $fcid)
+    public static function getTotalPaymentHistoryDataByDay($startDate, $endDate, $fcid, $ignoreMoney = 0)
     {
         if ($fcid == Constant::INVALID_PRIMARY_ID) {
-            return FinancePayment::find()
+            $select = FinancePayment::find()
                 ->select(['payment_date as period', 'sum(payment) as payment'])
                 ->andWhere(['status' => Constant::VALID_STATUS])
                 ->andWhere(['>=', 'payment_date', $startDate])
-                ->andWhere(['<=', 'payment_date', $endDate])
+                ->andWhere(['<=', 'payment_date', $endDate]);
+            if ($ignoreMoney > 0) {
+                $select->andWhere(['<?', 'payment', $ignoreMoney]);
+            }
+            return $select
                 ->groupBy(['payment_date'])
                 ->orderBy(['payment_date' => SORT_ASC])
                 ->asArray()->all();
         } else {
-            return FinancePayment::find()
+            $select = FinancePayment::find()
                 ->select(['payment_date as period', 'sum(payment) as payment'])
                 ->innerJoin('finance_payment_map', 'finance_payment.fpid=finance_payment_map.fpid', [])
                 ->andWhere([FinancePayment::tableName() . '.status' => Constant::VALID_STATUS])
                 ->andWhere(['>=', FinancePayment::tableName() . '.payment_date', $startDate])
                 ->andWhere(['<=', FinancePayment::tableName() . '.payment_date', $endDate])
-                ->andWhere(['finance_payment_map.fcid' => $fcid])
+                ->andWhere(['finance_payment_map.fcid' => $fcid]);
+            if ($ignoreMoney > 0) {
+                $select->andWhere(['<?', 'payment', $ignoreMoney]);
+            }
+            return $select
                 ->groupBy([FinancePayment::tableName() . '.payment_date'])
                 ->orderBy([FinancePayment::tableName() . '.payment_date' => SORT_ASC])
                 ->asArray()->all();

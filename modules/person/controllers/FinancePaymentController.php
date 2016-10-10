@@ -227,6 +227,7 @@ class FinancePaymentController extends BillController
         list($currentPage, $pageLength, $start) = Util::getPaginationParamsFromUrlParamsArray($params);
         $paymentDate = isset($params['payment_date']) ? trim($params['payment_date']) : '';
         $financeCategoryId = isset($params['category_parent_id']) ? intval($params['category_parent_id']) : 0;
+        $paymentDetail = isset($params['payment_detail']) ? trim($params['payment_detail']) : '';
 
         $conditions = [
             ['status' => Constant::VALID_STATUS],
@@ -241,6 +242,9 @@ class FinancePaymentController extends BillController
             } else {
                 $conditions[] = [1 => 0];
             }
+        }
+        if ('' !== $paymentDetail) {
+            $conditions[] = ['like', 'detail', Util::getLikeString($paymentDetail), false];
         }
         $orderBy = ['payment_date' => SORT_DESC];
         $total = FinancePayment::getFinancePaymentCount($conditions);

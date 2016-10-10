@@ -27,9 +27,8 @@ AppAssetLogin::register($this);
                                 <span>记住帐号</span>
                             </label>
                         </div>
-                        <div class="form-group">
-                            <button class="btn btn-lg btn-success btn-block" type="submit">登录</button>
-                        </div>
+                        <button class="btn btn-lg btn-success btn-block" type="submit">登录</button>
+                        <input type="hidden" id="location" name="location" value="<?php echo urlencode($_SERVER['REQUEST_URI']); ?>"/>
                     </form>
                 </div>
                 <!--<div class="panel-footer">
