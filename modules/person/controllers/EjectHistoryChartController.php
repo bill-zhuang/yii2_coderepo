@@ -46,6 +46,10 @@ class EjectHistoryChartController extends BillController
         }
 
         $jsonArray = [
+            'searchData' => [
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+            ],
             'data' => $data
         ];
 
@@ -98,6 +102,10 @@ class EjectHistoryChartController extends BillController
             ];
         }
         $jsonArray = [
+            'searchData' => [
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+            ],
             'data' => $data
         ];
 

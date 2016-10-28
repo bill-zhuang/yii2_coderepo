@@ -41,6 +41,10 @@ class FinanceHistoryController extends BillController
             }
         }
         $jsonArray = [
+            'searchData' => [
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+            ],
             'data' => [
                 'days' => array_keys($data),
                 'data' => array_values($data),
@@ -78,6 +82,10 @@ class FinanceHistoryController extends BillController
             }
         }
         $jsonArray = [
+            'searchData' => [
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+            ],
             'data' => $data,
         ];
 
