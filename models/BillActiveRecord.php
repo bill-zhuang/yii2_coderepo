@@ -10,6 +10,31 @@ use app\library\bill\Constant;
 
 class BillActiveRecord extends ActiveRecord
 {
+    public static function getSearchCount(array $conditions)
+    {
+        $select = ActiveRecord::find();
+        foreach ($conditions as $cond) {
+            $select->andWhere($cond);
+        }
+        $count = $select->count();
+        return $count;
+    }
+
+    public static function getSearchData(array $conditions, $start, $pageLength, $orderBy)
+    {
+        $select = ActiveRecord::find();
+        foreach ($conditions as $cond) {
+            $select->andWhere($cond);
+        }
+        $data = $select
+            ->limit($pageLength)
+            ->offset($start)
+            ->orderBy($orderBy)
+            ->asArray()
+            ->all();
+        return $data;
+    }
+
     public function insert($runValidation = true, $attributes = null)
     {
         list($data, ) = $this->_getSaveDataAndWhere();
