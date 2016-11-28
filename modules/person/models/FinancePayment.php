@@ -56,9 +56,13 @@ class FinancePayment extends BillActiveRecord
         ];
     }
 
-    public static function getFinancePaymentCount(array $conditions)
+    public static function getFinancePaymentCount(array $conditions, $joinFlag)
     {
         $select = FinancePayment::find();
+        if ($joinFlag) {
+            $select = $select
+                ->innerJoin('finance_payment_map', 'finance_payment.fpid=finance_payment_map.fpid', []);
+        }
         foreach ($conditions as $cond) {
             $select->andWhere($cond);
         }
@@ -66,9 +70,13 @@ class FinancePayment extends BillActiveRecord
         return $count;
     }
 
-    public static function getFinancePaymentData(array $conditions, $start, $pageLength, $orderBy)
+    public static function getFinancePaymentData(array $conditions, $joinFlag, $start, $pageLength, $orderBy)
     {
         $select = FinancePayment::find();
+        if ($joinFlag) {
+            $select = $select
+                ->innerJoin('finance_payment_map', 'finance_payment.fpid=finance_payment_map.fpid', []);
+        }
         foreach ($conditions as $cond) {
             $select->andWhere($cond);
         }

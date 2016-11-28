@@ -229,26 +229,24 @@ class FinancePaymentController extends BillController
         $financeCategoryId = isset($params['category_parent_id']) ? intval($params['category_parent_id']) : 0;
         $paymentDetail = isset($params['payment_detail']) ? trim($params['payment_detail']) : '';
 
+        $joinFlag = false;
         $conditions = [
-            ['status' => Constant::VALID_STATUS],
+            [FinancePayment::tableName() . '.status' => Constant::VALID_STATUS],
         ];
         if ('' != $paymentDate) {
-            $conditions[] = ['payment_date' => $paymentDate];
+            $conditions[] = [FinancePayment::tableName() . '.payment_date' => $paymentDate];
         }
         if (0 !== $financeCategoryId) {
-            $fpids = FinancePaymentMap::getFpidByFcid($financeCategoryId, ['create_time' => SORT_DESC], $start, $pageLength);
-            if (!empty($fpids)) {
-                $conditions[] = ['in', 'fpid', $fpids];
-            } else {
-                $conditions[] = [1 => 0];
-            }
+            $conditions[] = [FinanceCategory::tableName() . '.fcid' => $financeCategoryId];
+            $conditions[] = [FinanceCategory::tableName() . '.status' => Constant::VALID_STATUS];
+            $joinFlag = true;
         }
         if ('' !== $paymentDetail) {
-            $conditions[] = ['like', 'detail', Util::getLikeString($paymentDetail), false];
+            $conditions[] = ['like', FinancePayment::tableName() . '.detail', Util::getLikeString($paymentDetail), false];
         }
-        $orderBy = ['payment_date' => SORT_DESC];
-        $total = FinancePayment::getFinancePaymentCount($conditions);
-        $data = FinancePayment::getFinancePaymentData($conditions, $start, $pageLength, $orderBy);
+        $orderBy = [FinancePayment::tableName() . '.payment_date' => SORT_DESC];
+        $total = FinancePayment::getFinancePaymentCount($conditions, $joinFlag);
+        $data = FinancePayment::getFinancePaymentData($conditions, $joinFlag, $start, $pageLength, $orderBy);
         foreach ($data as &$value) {
             $fcids = FinancePaymentMap::getFinanceCategoryIDs($value['fpid']);
             if (!empty($fcids)) {
