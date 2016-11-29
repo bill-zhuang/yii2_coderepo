@@ -12,7 +12,7 @@ class BillActiveRecord extends ActiveRecord
 {
     public static function getSearchCount(array $conditions)
     {
-        $select = ActiveRecord::find();
+        $select = self::find();
         foreach ($conditions as $cond) {
             $select->andWhere($cond);
         }
@@ -22,7 +22,7 @@ class BillActiveRecord extends ActiveRecord
 
     public static function getSearchData(array $conditions, $start, $pageLength, $orderBy)
     {
-        $select = ActiveRecord::find();
+        $select = self::find();
         foreach ($conditions as $cond) {
             $select->andWhere($cond);
         }
