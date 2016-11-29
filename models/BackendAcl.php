@@ -58,32 +58,6 @@ class BackendAcl extends BillActiveRecord
         ];
     }
 
-    public static function getBackendAclCount(array $conditions)
-    {
-        $select = BackendAcl::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $count = $select->count();
-        return $count;
-    }
-
-    public static function getBackendAclData(array $conditions, $start, $pageLength, $orderBy, $groupBy)
-    {
-        $select = BackendAcl::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $data = $select
-            ->limit($pageLength)
-            ->offset($start)
-            ->orderBy($orderBy)
-            ->groupBy($groupBy)
-            ->asArray()
-            ->all();
-        return $data;
-    }
-
     public static function getBackendAclByID($baid)
     {
         return BackendAcl::find()

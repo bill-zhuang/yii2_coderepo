@@ -53,31 +53,6 @@ class GrainRecycleHistory extends BillActiveRecord
         ];
     }
 
-    public static function getGrainRecycleHistoryCount(array $conditions)
-    {
-        $select = GrainRecycleHistory::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $count = $select->count();
-        return $count;
-    }
-
-    public static function getGrainRecycleHistoryData(array $conditions, $start, $pageLength, $orderBy)
-    {
-        $select = GrainRecycleHistory::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $data = $select
-            ->limit($pageLength)
-            ->offset($start)
-            ->orderBy($orderBy)
-            ->asArray()
-            ->all();
-        return $data;
-    }
-
     public static function getGrainRecycleHistoryByID($grhid)
     {
         return GrainRecycleHistory::find()

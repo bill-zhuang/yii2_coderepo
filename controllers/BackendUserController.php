@@ -234,8 +234,8 @@ class BackendUserController extends BillController
             $conditions[] = ['like', 'name', Util::getLikeString($keyword), false];
         }
         $orderBy = ['buid' => SORT_DESC];
-        $total = BackendUser::getBackendUserCount($conditions);
-        $data = BackendUser::getBackendUserData($conditions, $start, $pageLength, $orderBy);
+        $total = BackendUser::getSearchCount($conditions);
+        $data = BackendUser::getSearchData($conditions, $start, $pageLength, $orderBy);
         $roles = BackendRole::getAllRoles();
         $output = [];
         foreach ($data as $value) {

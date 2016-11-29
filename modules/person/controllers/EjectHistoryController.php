@@ -210,8 +210,8 @@ class EjectHistoryController extends BillController
             $conditions[] = ['type' => $tabType];
         }
         $orderBy = ['happen_date' => SORT_DESC];
-        $total = EjectHistory::getEjectHistoryCount($conditions);
-        $data = EjectHistory::getEjectHistoryData($conditions, $start, $pageLength, $orderBy);
+        $total = EjectHistory::getSearchCount($conditions);
+        $data = EjectHistory::getSearchData($conditions, $start, $pageLength, $orderBy);
         foreach ($data as &$value) {
             $value['type'] = isset($types[$value['type']]) ? $types[$value['type']] : 'Unknown';
         }

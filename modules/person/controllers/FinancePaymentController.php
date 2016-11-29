@@ -245,8 +245,8 @@ class FinancePaymentController extends BillController
             $conditions[] = ['like', FinancePayment::tableName() . '.detail', Util::getLikeString($paymentDetail), false];
         }
         $orderBy = [FinancePayment::tableName() . '.payment_date' => SORT_DESC];
-        $total = FinancePayment::getFinancePaymentCount($conditions, $joinFlag);
-        $data = FinancePayment::getFinancePaymentData($conditions, $joinFlag, $start, $pageLength, $orderBy);
+        $total = FinancePayment::getSearchCount($conditions, $joinFlag);
+        $data = FinancePayment::getSearchData($conditions, $start, $pageLength, $orderBy, $joinFlag);
         foreach ($data as &$value) {
             $fcids = FinancePaymentMap::getFinanceCategoryIDs($value['fpid']);
             if (!empty($fcids)) {

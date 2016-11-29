@@ -174,8 +174,8 @@ class GrainRecycleHistoryController extends BillController
             ['status' => Constant::VALID_STATUS],
         ];
         $orderBy = ['grhid' => SORT_DESC];
-        $total = GrainRecycleHistory::getGrainRecycleHistoryCount($conditions);
-        $data = GrainRecycleHistory::getGrainRecycleHistoryData($conditions, $start, $pageLength, $orderBy);
+        $total = GrainRecycleHistory::getSearchCount($conditions);
+        $data = GrainRecycleHistory::getSearchData($conditions, $start, $pageLength, $orderBy);
 
         $jsonData = [
             'data' => [

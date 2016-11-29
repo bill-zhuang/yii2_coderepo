@@ -237,8 +237,8 @@ class FinanceCategoryController extends BillController
             $conditions[] = ['like', 'name', Util::getLikeString($keyword), false];
         }
         $orderBy = ['weight' => SORT_DESC];
-        $total = FinanceCategory::getFinanceCategoryCount($conditions);
-        $data = FinanceCategory::getFinanceCategoryData($conditions, $start, $pageLength, $orderBy);
+        $total = FinanceCategory::getSearchCount($conditions);
+        $data = FinanceCategory::getSearchData($conditions, $start, $pageLength, $orderBy);
         foreach ($data as &$value) {
             $value['parent'] = $value['parent_id'] == 0 ?
                 '无' : FinanceCategory::getParentCategoryName($value['parent_id']);

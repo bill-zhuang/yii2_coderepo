@@ -49,31 +49,6 @@ class BackendRole extends BillActiveRecord
         ];
     }
 
-    public static function getBackendRoleCount(array $conditions)
-    {
-        $select = BackendRole::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $count = $select->count();
-        return $count;
-    }
-
-    public static function getBackendRoleData(array $conditions, $start, $pageLength, $orderBy)
-    {
-        $select = BackendRole::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $data = $select
-            ->limit($pageLength)
-            ->offset($start)
-            ->orderBy($orderBy)
-            ->asArray()
-            ->all();
-        return $data;
-    }
-
     public static function getBackendRoleByID($brid)
     {
         return BackendRole::find()

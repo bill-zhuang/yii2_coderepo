@@ -283,8 +283,8 @@ class BackendRoleController extends BillController
             $conditions[] = ['like', 'role', Util::getLikeString($keyword), false];
         }
         $orderBy = ['brid' => SORT_DESC];
-        $total = BackendRole::getBackendRoleCount($conditions);
-        $data = BackendRole::getBackendRoleData($conditions, $start, $pageLength, $orderBy);
+        $total = BackendRole::getSearchCount($conditions);
+        $data = BackendRole::getSearchData($conditions, $start, $pageLength, $orderBy);
         foreach ($data as &$value) {
             $value['count'] = BackendUser::getRoleCount($value['brid']);
         }

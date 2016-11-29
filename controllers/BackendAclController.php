@@ -171,8 +171,8 @@ class BackendAclController extends BillController
         }
         $orderBy = null;
         $groupBy = ['module', 'controller', 'action'];
-        $total = BackendAcl::getBackendAclCount($conditions);
-        $data = BackendAcl::getBackendAclData($conditions, $start, $pageLength, $orderBy, $groupBy);
+        $total = BackendAcl::getSearchCount($conditions);
+        $data = BackendAcl::getSearchData($conditions, $start, $pageLength, $orderBy, $groupBy);
 
         $jsonData = [
             'data' => [

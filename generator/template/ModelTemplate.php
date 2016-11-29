@@ -60,31 +60,6 @@ class <?php echo $model_name; ?> extends BillActiveRecord
         ];
     }
 
-    public static function get<?php echo $model_name; ?>Count(array $conditions)
-    {
-        $select = <?php echo $model_name; ?>::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $count = $select->count();
-        return $count;
-    }
-
-    public static function get<?php echo $model_name; ?>Data(array $conditions, $start, $pageLength, $orderBy)
-    {
-        $select = <?php echo $model_name; ?>::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $data = $select
-            ->limit($pageLength)
-            ->offset($start)
-            ->orderBy($orderBy)
-            ->asArray()
-            ->all();
-        return $data;
-    }
-
     public static function get<?php echo $model_name; ?>ByID($<?php echo $primary_id; ?>)
     {
         return <?php echo $model_name; ?>::find()

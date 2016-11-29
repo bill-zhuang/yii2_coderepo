@@ -57,31 +57,6 @@ class BackendUser extends BillActiveRecord
         ];
     }
 
-    public static function getBackendUserCount(array $conditions)
-    {
-        $select = BackendUser::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $count = $select->count();
-        return $count;
-    }
-
-    public static function getBackendUserData(array $conditions, $start, $pageLength, $orderBy)
-    {
-        $select = BackendUser::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $data = $select
-            ->limit($pageLength)
-            ->offset($start)
-            ->orderBy($orderBy)
-            ->asArray()
-            ->all();
-        return $data;
-    }
-
     public static function getBackendUserByID($buid)
     {
         return BackendUser::find()

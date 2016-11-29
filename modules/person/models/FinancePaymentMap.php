@@ -52,31 +52,6 @@ class FinancePaymentMap extends BillActiveRecord
         ];
     }
 
-    public static function getFinancePaymentMapCount(array $conditions)
-    {
-        $select = FinancePaymentMap::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $count = $select->count();
-        return $count;
-    }
-
-    public static function getFinancePaymentMapData(array $conditions, $limit, $offset, $order_by)
-    {
-        $select = FinancePaymentMap::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $data = $select
-            ->limit($limit)
-            ->offset($offset)
-            ->orderBy($order_by)
-            ->asArray()
-            ->all();
-        return $data;
-    }
-
     public static function getFinancePaymentMapByID($fpmid)
     {
         return FinancePaymentMap::find()

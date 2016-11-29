@@ -55,31 +55,6 @@ class EjectHistory extends BillActiveRecord
         ];
     }
 
-    public static function getEjectHistoryCount(array $conditions)
-    {
-        $select = EjectHistory::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $count = $select->count();
-        return $count;
-    }
-
-    public static function getEjectHistoryData(array $conditions, $start, $pageLength, $orderBy)
-    {
-        $select = EjectHistory::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $data = $select
-            ->limit($pageLength)
-            ->offset($start)
-            ->orderBy($orderBy)
-            ->asArray()
-            ->all();
-        return $data;
-    }
-
     public static function getEjectHistoryByID($ehid)
     {
         return EjectHistory::find()

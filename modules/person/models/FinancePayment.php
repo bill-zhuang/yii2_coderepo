@@ -56,37 +56,39 @@ class FinancePayment extends BillActiveRecord
         ];
     }
 
-    public static function getFinancePaymentCount(array $conditions, $joinFlag)
+    public static function getSearchCount(array $conditions, $joinFlag)
     {
-        $select = FinancePayment::find();
-        if ($joinFlag) {
-            $select = $select
-                ->innerJoin('finance_payment_map', 'finance_payment.fpid=finance_payment_map.fpid', []);
+        if (!$joinFlag) {
+            return parent::getSearchCount($conditions);
+        } else {
+            $select = FinancePayment::find()
+                    ->innerJoin('finance_payment_map', 'finance_payment.fpid=finance_payment_map.fpid', []);
+            foreach ($conditions as $cond) {
+                $select->andWhere($cond);
+            }
+            $count = $select->count();
+            return $count;
         }
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $count = $select->count();
-        return $count;
     }
 
-    public static function getFinancePaymentData(array $conditions, $joinFlag, $start, $pageLength, $orderBy)
+    public static function getSearchData(array $conditions, $start, $pageLength, $orderBy, $joinFlag)
     {
-        $select = FinancePayment::find();
-        if ($joinFlag) {
-            $select = $select
+        if (!$joinFlag) {
+            return parent::getSearchData($conditions, $start, $pageLength, $orderBy);
+        } else {
+            $select = FinancePayment::find()
                 ->innerJoin('finance_payment_map', 'finance_payment.fpid=finance_payment_map.fpid', []);
+            foreach ($conditions as $cond) {
+                $select->andWhere($cond);
+            }
+            $data = $select
+                ->limit($pageLength)
+                ->offset($start)
+                ->orderBy($orderBy)
+                ->asArray()
+                ->all();
+            return $data;
         }
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $data = $select
-            ->limit($pageLength)
-            ->offset($start)
-            ->orderBy($orderBy)
-            ->asArray()
-            ->all();
-        return $data;
     }
 
     public static function getFinancePaymentByID($fpid)

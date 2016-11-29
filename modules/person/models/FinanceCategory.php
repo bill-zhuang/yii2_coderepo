@@ -54,31 +54,6 @@ class FinanceCategory extends BillActiveRecord
         ];
     }
 
-    public static function getFinanceCategoryCount(array $conditions)
-    {
-        $select = FinanceCategory::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $count = $select->count();
-        return $count;
-    }
-
-    public static function getFinanceCategoryData(array $conditions, $start, $pageLength, $orderBy)
-    {
-        $select = FinanceCategory::find();
-        foreach ($conditions as $cond) {
-            $select->andWhere($cond);
-        }
-        $data = $select
-            ->limit($pageLength)
-            ->offset($start)
-            ->orderBy($orderBy)
-            ->asArray()
-            ->all();
-        return $data;
-    }
-
     public static function getFinanceCategoryByID($fcid)
     {
         return FinanceCategory::find()
