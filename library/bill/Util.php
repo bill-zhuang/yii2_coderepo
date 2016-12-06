@@ -161,20 +161,4 @@ class Util
             fclose($handle);
         }
     }
-
-    public static function printSQL()
-    {
-        $queryContent = self::getSQLInfo();
-
-        echo '<pre>';
-        print_r($queryContent);
-    }
-
-    public static function getSQLInfo()
-    {
-        $queryContent = array();
-        //TODO
-
-        return $queryContent;
-    }
-} 
+}
