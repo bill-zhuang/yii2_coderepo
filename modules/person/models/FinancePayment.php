@@ -56,10 +56,10 @@ class FinancePayment extends BillActiveRecord
         ];
     }
 
-    public static function getSearchCount(array $conditions, $joinFlag)
+    public static function getSearchCount(array $conditions, array $extra = [])
     {
-        if (!$joinFlag) {
-            return parent::getSearchCount($conditions);
+        if (isset($extra['join']) && !$extra['join']) {
+            return parent::getSearchCount($conditions, $extra);
         } else {
             $select = FinancePayment::find()
                     ->innerJoin('finance_payment_map', 'finance_payment.fpid=finance_payment_map.fpid', []);
@@ -71,10 +71,10 @@ class FinancePayment extends BillActiveRecord
         }
     }
 
-    public static function getSearchData(array $conditions, $start, $pageLength, $orderBy, $joinFlag)
+    public static function getSearchData(array $conditions, $start, $pageLength, $orderBy, array $extra = [])
     {
-        if (!$joinFlag) {
-            return parent::getSearchData($conditions, $start, $pageLength, $orderBy);
+        if (isset($extra['join']) && !$extra['join']) {
+            return parent::getSearchData($conditions, $start, $pageLength, $orderBy, $extra);
         } else {
             $select = FinancePayment::find()
                 ->innerJoin('finance_payment_map', 'finance_payment.fpid=finance_payment_map.fpid', []);

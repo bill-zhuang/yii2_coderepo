@@ -229,7 +229,9 @@ class FinancePaymentController extends BillController
         $financeCategoryId = isset($params['category_parent_id']) ? intval($params['category_parent_id']) : 0;
         $paymentDetail = isset($params['payment_detail']) ? trim($params['payment_detail']) : '';
 
-        $joinFlag = false;
+        $extra = [
+            'join' => false
+        ];
         $conditions = [
             [FinancePayment::tableName() . '.status' => Constant::VALID_STATUS],
         ];
@@ -239,14 +241,14 @@ class FinancePaymentController extends BillController
         if (0 !== $financeCategoryId) {
             $conditions[] = [FinanceCategory::tableName() . '.fcid' => $financeCategoryId];
             $conditions[] = [FinanceCategory::tableName() . '.status' => Constant::VALID_STATUS];
-            $joinFlag = true;
+            $extra['join'] = true;
         }
         if ('' !== $paymentDetail) {
             $conditions[] = ['like', FinancePayment::tableName() . '.detail', Util::getLikeString($paymentDetail), false];
         }
         $orderBy = [FinancePayment::tableName() . '.payment_date' => SORT_DESC];
-        $total = FinancePayment::getSearchCount($conditions, $joinFlag);
-        $data = FinancePayment::getSearchData($conditions, $start, $pageLength, $orderBy, $joinFlag);
+        $total = FinancePayment::getSearchCount($conditions, $extra);
+        $data = FinancePayment::getSearchData($conditions, $start, $pageLength, $orderBy, $extra);
         foreach ($data as &$value) {
             $fcids = FinancePaymentMap::getFinanceCategoryIDs($value['fpid']);
             if (!empty($fcids)) {

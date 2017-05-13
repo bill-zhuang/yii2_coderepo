@@ -10,7 +10,7 @@ use app\library\bill\Constant;
 
 class BillActiveRecord extends ActiveRecord
 {
-    public static function getSearchCount(array $conditions)
+    public static function getSearchCount(array $conditions, array $extra = [])
     {
         $select = self::find();
         foreach ($conditions as $cond) {
@@ -20,7 +20,7 @@ class BillActiveRecord extends ActiveRecord
         return $count;
     }
 
-    public static function getSearchData(array $conditions, $start, $pageLength, $orderBy)
+    public static function getSearchData(array $conditions, $start, $pageLength, $orderBy, array $extra = [])
     {
         $select = self::find();
         foreach ($conditions as $cond) {
