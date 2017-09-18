@@ -109,7 +109,11 @@ class BillActiveRecord extends ActiveRecord
 
     private static function _writeLogBase($type, $tableName, $sql)
     {
-        $userId = isset(Yii::$app->user->identity->buid) ? Yii::$app->user->identity->buid : '';
+        if (isset(Yii::$app->user)) {
+            $userId = isset(Yii::$app->user->identity->buid) ? Yii::$app->user->identity->buid : 0;
+        } else {
+            $userId = 0;
+        }
         $dateTime = date('Y-m-d H:i:s');
         $insertData = [
             'type' => $type,

@@ -11,29 +11,12 @@ class RbacController extends Controller
 {
     public function actionInit()
     {
-        $auth = Yii::$app->authManager;
-        $auth->removeAll();
-
-        // add "adminPermission" permission
-        $adminPermission = $auth->createPermission('adminPermission');
-        $adminPermission->description = 'Manage backend user';
-        $auth->add($adminPermission);
-
-        // add "admin" role and give this role the "adminPermission" permission
-        // as well as the permissions of the "normal" role
-        $admin = $auth->createRole('admin');
-        $auth->add($admin);
-        $auth->addChild($admin, $adminPermission);
-
-        // Assign roles to users. admin_id/normal_id are IDs returned by IdentityInterface::getId()
-        // usually implemented in your User model.
         //add admin
         $adminID = $this->_addUserAdmin();
         if ($adminID != 0) {
-            //add role
-            $auth = Yii::$app->authManager;
-            $authorRole = $auth->getRole('admin');
-            $auth->assign($authorRole, $adminID);
+            echo 'Add user account successfully.';
+        } else {
+            echo 'Add user account failed';
         }
     }
 
