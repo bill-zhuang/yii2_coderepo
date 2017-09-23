@@ -4,7 +4,7 @@ $(document).ready(function () {
 
 function ajaxIndex() {
     var $tblTbody = $('#tbl').find('tbody');
-    var getUrl = '/index.php/backend-role/ajax-index';
+    var getUrl = '/backend-role/ajax-index';
     var getData = {
         "params": $('#formSearch').serializeObject()
     };
@@ -68,7 +68,7 @@ $('#formBackendRole').on('submit', (function (event) {
     var type = (brid == '') ? 'add' : 'modify';
     if (isValidInput()) {
         $('#btn_submit_backend_role').attr('disabled', true);
-        var postUrl = '/index.php/backend-role/' + type + '-backend-role';
+        var postUrl = '/backend-role/' + type + '-backend-role';
         var postData = {
             "params": $('#formBackendRole').serializeObject()
         };
@@ -88,7 +88,7 @@ $('#formBackendRole').on('submit', (function (event) {
 
 function modifyBackendRole(modifyId) {
     var brid = modifyId.substr('modify_'.length);
-    var getUrl = '/index.php/backend-role/get-backend-role';
+    var getUrl = '/backend-role/get-backend-role';
     var getData = {
         "params": {
             "brid": brid
@@ -111,7 +111,7 @@ function modifyBackendRole(modifyId) {
 function deleteBackendRole(deleteId) {
     if (confirm(alertMessage.DELETE_CONFIRM)) {
         var brid = deleteId.substr('delete_'.length);
-        var postUrl = '/index.php/backend-role/delete-backend-role';
+        var postUrl = '/backend-role/delete-backend-role';
         var postData = {
             "params": {
                 "brid": brid
@@ -143,7 +143,7 @@ function isValidInput() {
 
 function modifyBackendRoleAcl(modifyId) {
     var brid = modifyId.substr('modifyAcl_'.length);
-    var getUrl = '/index.php/backend-role/get-backend-role-acl';
+    var getUrl = '/backend-role/get-backend-role-acl';
     var getData = {
         "params": {
             "brid": brid
@@ -208,7 +208,7 @@ $('#formBackendRoleAcl').on('submit', (function (event) {
     event.preventDefault();
 
     $('#btn_submit_backend_role_acl').attr('disabled', true);
-    var postUrl = '/index.php/backend-role/modify-backend-role-acl';
+    var postUrl = '/backend-role/modify-backend-role-acl';
     var postData = {
         "params": $('#formBackendRoleAcl').serializeObject()
     };

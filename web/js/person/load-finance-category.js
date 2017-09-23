@@ -1,5 +1,5 @@
 function loadMainCategory(selectID, isContainNoneOption) {
-    var getUrl = '/index.php/person/finance-category/get-finance-main-category';
+    var getUrl = '/person/finance-category/get-finance-main-category';
     var getData = {
         "params": {}
     };

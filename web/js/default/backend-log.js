@@ -4,7 +4,7 @@ $(document).ready(function () {
 
 function ajaxIndex() {
     var $tblTbody = $('#tbl').find('tbody');
-    var getUrl = '/index.php/backend-log/ajax-index';
+    var getUrl = '/backend-log/ajax-index';
     var getData = {
         "params": $('#formSearch').serializeObject()
     };

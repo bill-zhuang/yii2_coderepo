@@ -25,7 +25,7 @@ $(document).ready(function () {
 <?php if ($primary_id !== ''){ ?>
 function ajaxIndex() {
     var $tblTbody = $('#tbl').find('tbody');
-    var getUrl = '/index.php<?php echo $module_name == '' ? '' : '/' . $module_name; ?>/<?php echo strtolower($controller_url); ?>/ajax-index';
+    var getUrl = '<?php echo $module_name == '' ? '' : '/' . $module_name; ?>/<?php echo strtolower($controller_url); ?>/ajax-index';
     var getData = {
         "params": $('#formSearch').serializeObject()
     };
@@ -113,7 +113,7 @@ $('#form<?php echo $form_name_postfix; ?>').on('submit', (function (event) {
         var content = $.trim(CKEDITOR.instances.ck_<?php echo $form_element_prefix; ?>_intro.getData());
         $('#<?php echo $form_element_prefix; ?>_intro').val(content);
 <?php } ?>
-        var postUrl = '/index.php<?php echo $module_name == '' ? '' : '/' . $module_name; ?>/<?php echo strtolower($controller_url); ?>/' + type + '-<?php echo strtolower($controller_url); ?>';
+        var postUrl = '<?php echo $module_name == '' ? '' : '/' . $module_name; ?>/<?php echo strtolower($controller_url); ?>/' + type + '-<?php echo strtolower($controller_url); ?>';
         var postData = {
             "params": $('#form<?php echo $form_name_postfix; ?>').serializeObject()
         };
@@ -133,7 +133,7 @@ $('#form<?php echo $form_name_postfix; ?>').on('submit', (function (event) {
 
 function modify<?php echo $form_name_postfix; ?>(modifyId) {
     var <?php echo $primary_id; ?> = modifyId.substr('modify_'.length);
-    var getUrl = '/index.php<?php echo $module_name == '' ? '' : '/' . $module_name; ?>/<?php echo strtolower($controller_url); ?>/get-<?php echo strtolower($controller_url); ?>';
+    var getUrl = '<?php echo $module_name == '' ? '' : '/' . $module_name; ?>/<?php echo strtolower($controller_url); ?>/get-<?php echo strtolower($controller_url); ?>';
     var getData = {
         "params": {
             "<?php echo $primary_id; ?>": <?php echo $primary_id . PHP_EOL; ?>
@@ -165,7 +165,7 @@ function modify<?php echo $form_name_postfix; ?>(modifyId) {
 function delete<?php echo $form_name_postfix; ?>(deleteId) {
     if (confirm(alertMessage.DELETE_CONFIRM)) {
         var <?php echo $primary_id; ?> = deleteId.substr('delete_'.length);
-        var postUrl = '/index.php<?php echo $module_name == '' ? '' : '/' . $module_name; ?>/<?php echo strtolower($controller_url); ?>/delete-<?php echo strtolower($controller_url); ?>';
+        var postUrl = '<?php echo $module_name == '' ? '' : '/' . $module_name; ?>/<?php echo strtolower($controller_url); ?>/delete-<?php echo strtolower($controller_url); ?>';
         var postData = {
             "params": {
                 "<?php echo $primary_id; ?>": <?php echo $primary_id . PHP_EOL; ?>

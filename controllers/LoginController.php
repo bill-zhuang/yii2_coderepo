@@ -16,7 +16,7 @@ class LoginController extends BillController
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            return $this->redirect('/index.php/main/index');
+            return $this->redirect('/main/index');
         }
 
         if (Yii::$app->request->isPost) {
@@ -25,10 +25,10 @@ class LoginController extends BillController
                 //return $this->goBack();
                 $redirectUrl = isset($params['location']) ? urldecode($params['location']) : '';
                 if ($redirectUrl === '' || $redirectUrl === '/') {
-                    $redirectUrl = '/index.php/main/index';
+                    $redirectUrl = '/main/index';
                 }
                 $jsonArray['data'] = [
-                    //'redirectUrl' => '/index.php/main/index',
+                    //'redirectUrl' => '/main/index',
                     'redirectUrl' => $redirectUrl,
                 ];
             } else {
@@ -46,7 +46,7 @@ class LoginController extends BillController
     public function actionLogout()
     {
         Yii::$app->user->logout();
-        return $this->redirect('/index.php/login/login');
+        return $this->redirect('/login/login');
     }
 
 }

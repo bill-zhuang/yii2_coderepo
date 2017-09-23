@@ -4,7 +4,7 @@ $(document).ready(function () {
 
 function ajaxIndex() {
     var $tblTbody = $('#tbl').find('tbody');
-    var getUrl = '/index.php/person/grain-recycle-history/ajax-index';
+    var getUrl = '/person/grain-recycle-history/ajax-index';
     var getData = {
         "params": $('#formSearch').serializeObject()
     };
@@ -66,7 +66,7 @@ $('#formGrainRecycleHistory').on('submit', (function (event) {
     var type = (grhid == '') ? 'add' : 'modify';
     if (isValidInput()) {
         $('#btn_submit_grain_recycle_history').attr('disabled', true);
-        var postUrl = '/index.php/person/grain-recycle-history/' + type + '-grain-recycle-history';
+        var postUrl = '/person/grain-recycle-history/' + type + '-grain-recycle-history';
         var postData = {
             "params": $('#formGrainRecycleHistory').serializeObject()
         };
@@ -86,7 +86,7 @@ $('#formGrainRecycleHistory').on('submit', (function (event) {
 
 function modifyGrainRecycleHistory(modifyId) {
     var grhid = modifyId.substr('modify_'.length);
-    var getUrl = '/index.php/person/grain-recycle-history/get-grain-recycle-history';
+    var getUrl = '/person/grain-recycle-history/get-grain-recycle-history';
     var getData = {
         "params": {
             "grhid": grhid
@@ -110,7 +110,7 @@ function modifyGrainRecycleHistory(modifyId) {
 function deleteGrainRecycleHistory(deleteId) {
     if (confirm(alertMessage.DELETE_CONFIRM)) {
         var grhid = deleteId.substr('delete_'.length);
-        var postUrl = '/index.php/person/grain-recycle-history/delete-grain-recycle-history';
+        var postUrl = '/person/grain-recycle-history/delete-grain-recycle-history';
         var postData = {
             "params": {
                 "grhid": grhid

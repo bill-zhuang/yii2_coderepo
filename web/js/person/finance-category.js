@@ -4,7 +4,7 @@ $(document).ready(function () {
 
 function ajaxIndex() {
     var $tblTbody = $('#tbl').find('tbody');
-    var getUrl = '/index.php/person/finance-category/ajax-index';
+    var getUrl = '/person/finance-category/ajax-index';
     var getData = {
         "params": $('#formSearch').serializeObject()
     };
@@ -68,7 +68,7 @@ $('#FinanceCategoryForm').on('submit', (function (event) {
     var type = (fcid == '') ? 'add' : 'modify';
     if (isValidInput()) {
         $('#btn_submit_finance_category').attr('disabled', true);
-        var postUrl = '/index.php/person/finance-category/' + type + '-finance-category';
+        var postUrl = '/person/finance-category/' + type + '-finance-category';
         var postData = {
             "params": $('#FinanceCategoryForm').serializeObject()
         };
@@ -88,7 +88,7 @@ $('#FinanceCategoryForm').on('submit', (function (event) {
 
 function modifyFinanceCategory(modifyId) {
     var fcid = modifyId.substr('modify_'.length);
-    var postUrl = '/index.php/person/finance-category/get-finance-category';
+    var postUrl = '/person/finance-category/get-finance-category';
     var postData = {
         "params": {
             "fcid": fcid
@@ -113,7 +113,7 @@ function modifyFinanceCategory(modifyId) {
 function deleteFinanceCategory(deleteId) {
     if (confirm(alertMessage.DELETE_CONFIRM)) {
         var fcid = deleteId.substr('delete_'.length);
-        var postUrl = '/index.php/person/finance-category/delete-finance-category';
+        var postUrl = '/person/finance-category/delete-finance-category';
         var postData = {
             "params": {
                 "fcid": fcid

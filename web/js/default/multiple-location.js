@@ -3,7 +3,7 @@ $(document).ready(function () {
 });
 
 function initPlotMarkers() {
-    var getUrl = '/index.php/google-map/ajax-multiple-location';
+    var getUrl = '/google-map/ajax-multiple-location';
     var getData = {
         "params": {}
     };

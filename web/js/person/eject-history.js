@@ -4,7 +4,7 @@ $(document).ready(function () {
 
 function ajaxIndex() {
     var $tblTbody = $('#tbl').find('tbody');
-    var getUrl = '/index.php/person/eject-history/ajax-index';
+    var getUrl = '/person/eject-history/ajax-index';
     var getData = {
         "params": $('#formSearch').serializeObject()
     };
@@ -77,7 +77,7 @@ $('#formEjectHistory').on('submit', (function (event) {
     var type = (ehid == '') ? 'add' : 'modify';
     if (isValidInput(type)) {
         $('#btn_submit_eject_history').attr('disabled', true);
-        var postUrl = '/index.php/person/eject-history/' + type + '-eject-history';
+        var postUrl = '/person/eject-history/' + type + '-eject-history';
         var postData = {
             "params": $('#formEjectHistory').serializeObject()
         };
@@ -97,7 +97,7 @@ $('#formEjectHistory').on('submit', (function (event) {
 
 function modifyEjectHistory(modifyId) {
     var ehid = modifyId.substr('modify_'.length);
-    var getUrl = '/index.php/person/eject-history/get-eject-history';
+    var getUrl = '/person/eject-history/get-eject-history';
     var getData = {
         "params": {
             "ehid": ehid
@@ -122,7 +122,7 @@ function modifyEjectHistory(modifyId) {
 function deleteEjectHistory(deleteId) {
     if (confirm(alertMessage.DELETE_CONFIRM)) {
         var ehid = deleteId.substr('delete_'.length);
-        var postUrl = '/index.php/person/eject-history/delete-eject-history';
+        var postUrl = '/person/eject-history/delete-eject-history';
         var postData = {
             "params": {
                 "ehid": ehid

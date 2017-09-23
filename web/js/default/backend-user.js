@@ -4,7 +4,7 @@ $(document).ready(function () {
 
 function ajaxIndex() {
     var $tblTbody = $('#tbl').find('tbody');
-    var getUrl = '/index.php/backend-user/ajax-index';
+    var getUrl = '/backend-user/ajax-index';
     var getData = {
         "params": $('#formSearch').serializeObject()
     };
@@ -68,7 +68,7 @@ $('#btn_add').on('click', function () {
     window.formBackendUser.reset();
     $('#backend_user_buid').val('');
     $('#btn_submit_backend_user').attr('disabled', false);
-    var getUrl = '/index.php/backend-role/get-all-roles';
+    var getUrl = '/backend-role/get-all-roles';
     var getData = {
         'params': {}
     };
@@ -96,7 +96,7 @@ $('#formBackendUser').on('submit', (function (event) {
     var type = (buid == '') ? 'add' : 'modify';
     if (isValidInput()) {
         $('#btn_submit_backend_user').attr('disabled', true);
-        var postUrl = '/index.php/backend-user/' + type + '-backend-user';
+        var postUrl = '/backend-user/' + type + '-backend-user';
         var postData = {
             "params": $('#formBackendUser').serializeObject()
         };
@@ -116,7 +116,7 @@ $('#formBackendUser').on('submit', (function (event) {
 
 function modifyBackendUser(modifyId) {
     var buid = modifyId.substr('modify_'.length);
-    var getUrl = '/index.php/backend-user/get-backend-user';
+    var getUrl = '/backend-user/get-backend-user';
     var getData = {
         "params": {
             "buid": buid
@@ -144,7 +144,7 @@ function modifyBackendUser(modifyId) {
 function deleteBackendUser(deleteId) {
     if (confirm(alertMessage.DELETE_CONFIRM)) {
         var buid = deleteId.substr('delete_'.length);
-        var postUrl = '/index.php/backend-user/delete-backend-user';
+        var postUrl = '/backend-user/delete-backend-user';
         var postData = {
             "params": {
                 "buid": buid
@@ -166,7 +166,7 @@ function deleteBackendUser(deleteId) {
 function recoverBackendUser(recoverId) {
     if (confirm('确认恢复帐号？')) {
         var buid = recoverId.substr('recover_'.length);
-        var postUrl = '/index.php/backend-user/recover-backend-user';
+        var postUrl = '/backend-user/recover-backend-user';
         var postData = {
             "params": {
                 "buid": buid

@@ -4,7 +4,7 @@ $(document).ready(function () {
 });
 
 function initPeriodChart() {
-    var getUrl = '/index.php/person/eject-history-chart/ajax-eject-history-period';
+    var getUrl = '/person/eject-history-chart/ajax-eject-history-period';
     var getData = {
         "params": $('#formSearchDay').serializeObject()
     };
@@ -58,7 +58,7 @@ function initPeriodChart() {
 }
 
 function initMonthChart() {
-    var getUrl = '/index.php/person/eject-history-chart/ajax-eject-history-month';
+    var getUrl = '/person/eject-history-chart/ajax-eject-history-month';
     var getData = {
         "params": $('#formSearchMonth').serializeObject()
     };

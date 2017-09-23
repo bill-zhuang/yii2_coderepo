@@ -5,7 +5,7 @@ $(document).ready(function () {
 
 function ajaxIndex() {
     var $tblTbody = $('#tbl').find('tbody');
-    var getUrl = '/index.php/person/finance-payment/ajax-index';
+    var getUrl = '/person/finance-payment/ajax-index';
     var getData = {
         "params": $('#formSearch').serializeObject()
     };
@@ -74,7 +74,7 @@ $('#FinancePaymentForm').on('submit', (function (event) {
     var type = (fpid == '') ? 'add' : 'modify';
     if (isValidInput()) {
         $('#btn_submit_finance_payment').attr('disabled', true);
-        var postUrl = '/index.php/person/finance-payment/' + type + '-finance-payment';
+        var postUrl = '/person/finance-payment/' + type + '-finance-payment';
         var postData = {
             "params": $('#FinancePaymentForm').serializeObject()
         };
@@ -94,7 +94,7 @@ $('#FinancePaymentForm').on('submit', (function (event) {
 
 function modifyFinancePayment(modifyId) {
     var fpid = modifyId.substr('modify_'.length);
-    var postUrl = '/index.php/person/finance-payment/get-finance-payment';
+    var postUrl = '/person/finance-payment/get-finance-payment';
     var postData = {
         "params": {
             "fpid": fpid
@@ -121,7 +121,7 @@ function modifyFinancePayment(modifyId) {
 function deleteFinancePayment(deleteId) {
     if (confirm(alertMessage.DELETE_CONFIRM)) {
         var fpid = deleteId.substr('delete_'.length);
-        var postUrl = '/index.php/person/finance-payment/delete-finance-payment';
+        var postUrl = '/person/finance-payment/delete-finance-payment';
         var postData = {
             "params": {
                 "fpid": fpid

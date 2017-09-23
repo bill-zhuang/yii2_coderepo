@@ -4,7 +4,7 @@ $(document).ready(function () {
 });
 
 function initPeriodChart() {
-    var getUrl = '/index.php/person/grain-recycle-history-chart/ajax-grain-recycle-history-period';
+    var getUrl = '/person/grain-recycle-history-chart/ajax-grain-recycle-history-period';
     var getData = {
         "params": $('#formSearchDay').serializeObject()
     };
@@ -51,7 +51,7 @@ function initPeriodChart() {
 }
 
 function initMonthChart() {
-    var getUrl = '/index.php/person/grain-recycle-history-chart/ajax-grain-recycle-history-month';
+    var getUrl = '/person/grain-recycle-history-chart/ajax-grain-recycle-history-month';
     var getData = {
         "params": $('#formSearchMonth').serializeObject()
     };

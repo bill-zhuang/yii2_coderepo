@@ -17,7 +17,7 @@ $('#formModifyPassword').on('submit', function (event) {
     } else if (newPassword != newPasswordRepeat) {
         alert('两次密码不相同');
     } else {
-        var postUrl = '/index.php/main/modify-password';
+        var postUrl = '/main/modify-password';
         var postData = {
             "params": $('#formModifyPassword').serializeObject()
         };

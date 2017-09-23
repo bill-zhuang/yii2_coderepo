@@ -48,7 +48,7 @@ $userName = (isset(Yii::$app->user->identity->name)) ? Yii::$app->user->identity
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="/index.php/login/logout" class="btn"><span>Log out</span></a>
+                            <a href="/login/logout" class="btn"><span>Log out</span></a>
                         </li>
                         <!-- Control Sidebar Toggle Button -->
                         <li>
@@ -84,8 +84,8 @@ $userName = (isset(Yii::$app->user->identity->name)) ? Yii::$app->user->identity
                                 class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="/index.php/main/modify-password"><i class="fa fa-circle-o"></i>Modify Password</a></li>
-                            <li><a href="/index.php/login/logout"><i class="fa fa-circle-o"></i>Logout</a></li>
+                            <li><a href="/main/modify-password"><i class="fa fa-circle-o"></i>Modify Password</a></li>
+                            <li><a href="/login/logout"><i class="fa fa-circle-o"></i>Logout</a></li>
                         </ul>
                     </li>
                     <?php if ($userName == Constant::ADMIN_NAME) { ?>
@@ -95,10 +95,10 @@ $userName = (isset(Yii::$app->user->identity->name)) ? Yii::$app->user->identity
                                     class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="/index.php/backend-user/index"><i class="fa fa-circle-o"></i>Backend User</a></li>
-                                <li><a href="/index.php/backend-role/index"><i class="fa fa-circle-o"></i>Backend Role</a></li>
-                                <li><a href="/index.php/backend-acl/index"><i class="fa fa-circle-o"></i>Access List</a></li>
-                                <li><a href="/index.php/backend-log/index"><i class="fa fa-circle-o"></i>Backend Log</a></li>
+                                <li><a href="/backend-user/index"><i class="fa fa-circle-o"></i>Backend User</a></li>
+                                <li><a href="/backend-role/index"><i class="fa fa-circle-o"></i>Backend Role</a></li>
+                                <li><a href="/backend-acl/index"><i class="fa fa-circle-o"></i>Access List</a></li>
+                                <li><a href="/backend-log/index"><i class="fa fa-circle-o"></i>Backend Log</a></li>
                             </ul>
                         </li>
                     <?php } ?>
@@ -108,8 +108,8 @@ $userName = (isset(Yii::$app->user->identity->name)) ? Yii::$app->user->identity
                                 class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="/index.php/index/index"><i class="fa fa-circle-o"></i>Other</a></li>
-                            <li><a href="/index.php/color-hex/index"><i class="fa fa-circle-o"></i>Color Hex</a></li>
+                            <li><a href="/index/index"><i class="fa fa-circle-o"></i>Other</a></li>
+                            <li><a href="/color-hex/index"><i class="fa fa-circle-o"></i>Color Hex</a></li>
                         </ul>
                     </li>
                     <li class="treeview">
@@ -118,8 +118,8 @@ $userName = (isset(Yii::$app->user->identity->name)) ? Yii::$app->user->identity
                                 class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="/index.php/google-map"><i class="fa fa-circle-o"></i>Google Map</a></li>
-                            <li><a href="/index.php/google-map/multiple-location"><i class="fa fa-circle-o"></i>Multiple Markes</a>
+                            <li><a href="/google-map"><i class="fa fa-circle-o"></i>Google Map</a></li>
+                            <li><a href="/google-map/multiple-location"><i class="fa fa-circle-o"></i>Multiple Markes</a>
                             </li>
                         </ul>
                     </li>
@@ -129,12 +129,12 @@ $userName = (isset(Yii::$app->user->identity->name)) ? Yii::$app->user->identity
                                 class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="/index.php/person/grain-recycle-history/index"><i class="fa fa-circle-o"></i>Grain Recycle
+                            <li><a href="/person/grain-recycle-history/index"><i class="fa fa-circle-o"></i>Grain Recycle
                                     History</a></li>
-                            <li><a href="/index.php/person/grain-recycle-history-chart/index"><i class="fa fa-circle-o"></i>Grain
+                            <li><a href="/person/grain-recycle-history-chart/index"><i class="fa fa-circle-o"></i>Grain
                                     Recycle History Chart</a></li>
-                            <li><a href="/index.php/person/eject-history/index"><i class="fa fa-circle-o"></i>Eject History</a></li>
-                            <li><a href="/index.php/person/eject-history-chart/index"><i class="fa fa-circle-o"></i>Eject History
+                            <li><a href="/person/eject-history/index"><i class="fa fa-circle-o"></i>Eject History</a></li>
+                            <li><a href="/person/eject-history-chart/index"><i class="fa fa-circle-o"></i>Eject History
                                     Chart</a></li>
                         </ul>
                     </li>
@@ -144,11 +144,11 @@ $userName = (isset(Yii::$app->user->identity->name)) ? Yii::$app->user->identity
                                 class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="/index.php/person/finance-category/index"><i class="fa fa-circle-o"></i>Finance Category</a>
+                            <li><a href="/person/finance-category/index"><i class="fa fa-circle-o"></i>Finance Category</a>
                             </li>
-                            <li><a href="/index.php/person/finance-payment/index"><i class="fa fa-circle-o"></i>Finance Payment</a>
+                            <li><a href="/person/finance-payment/index"><i class="fa fa-circle-o"></i>Finance Payment</a>
                             </li>
-                            <li><a href="/index.php/person/finance-history/index"><i class="fa fa-circle-o"></i>Finance History</a>
+                            <li><a href="/person/finance-history/index"><i class="fa fa-circle-o"></i>Finance History</a>
                             </li>
                         </ul>
                     </li>

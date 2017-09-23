@@ -4,7 +4,7 @@ $(document).ready(function () {
 
 function ajaxIndex() {
     var $tblTbody = $('#tbl').find('tbody');
-    var getUrl = '/index.php/backend-acl/ajax-index';
+    var getUrl = '/backend-acl/ajax-index';
     var getData = {
         "params": $('#formSearch').serializeObject()
     };
@@ -56,7 +56,7 @@ $('#formBackendAcl').on('submit', (function (event) {
 
     if (isValidInput()) {
         $('#btn_submit_backend_acl').attr('disabled', true);
-        var postUrl = '/index.php/backend-acl/modify-backend-acl';
+        var postUrl = '/backend-acl/modify-backend-acl';
         var postData = {
             "params": $('#formBackendAcl').serializeObject()
         };
@@ -76,7 +76,7 @@ $('#formBackendAcl').on('submit', (function (event) {
 
 function modifyBackendAcl(modifyId) {
     var baid = modifyId.substr('modify_'.length);
-    var getUrl = '/index.php/backend-acl/get-backend-acl';
+    var getUrl = '/backend-acl/get-backend-acl';
     var getData = {
         "params": {
             "baid": baid
@@ -102,7 +102,7 @@ function modifyBackendAcl(modifyId) {
 function deleteBackendAcl(deleteId) {
     if (confirm(alertMessage.DELETE_CONFIRM)) {
         var baid = deleteId.substr('delete_'.length);
-        var postUrl = '/index.php/backend-acl/delete-backend-acl';
+        var postUrl = '/backend-acl/delete-backend-acl';
         var postData = {
             "params": {
                 "baid": baid
@@ -133,7 +133,7 @@ function isValidInput() {
 }
 
 $('#btn_load_acl').on('click', function () {
-    var getUrl = '/index.php/backend-acl/load-backend-acl';
+    var getUrl = '/backend-acl/load-backend-acl';
     var getData = {
         'params': {}
     };

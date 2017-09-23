@@ -37,19 +37,24 @@ $config = [
                 'port' => 'port',
             ],
         ],
+        'raven' => [
+            'class' => 'e96\sentry\ErrorHandler',
+            'dsn' => 'https://b56f336f488d4aba884a7ad2175c6a30:a071d1f27634436196a126b0fd50dcc3@sentry.io/218061', // Sentry DSN
+        ],
         'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
+            //'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class' => 'e96\sentry\Target',
                     'levels' => ['error', 'warning'],
+                    'dsn' => 'https://b56f336f488d4aba884a7ad2175c6a30:a071d1f27634436196a126b0fd50dcc3@sentry.io/218061', // Sentry DSN
                 ],
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
         'urlManager' => [
             'enablePrettyUrl' => true,
-            //'enableStrictParsing' => true,
+            'showScriptName' => false,
         ],
         'authManager' => [
             'class' => 'yii\rbac\PhpManager',

@@ -9,7 +9,7 @@ $(document).ready(function () {
 });
 
 function initPeriodChart() {
-    var getUrl = '/index.php/person/finance-history/ajax-finance-history-period';
+    var getUrl = '/person/finance-history/ajax-finance-history-period';
     var getData = {
         "params": $('#formSearchDay').serializeObject()
     };
@@ -48,7 +48,7 @@ function initPeriodChart() {
 }
 
 function initMonthChart() {
-    var getUrl = '/index.php/person/finance-history/ajax-finance-history-month';
+    var getUrl = '/person/finance-history/ajax-finance-history-month';
     var getData = {
         "params": $('#formSearchMonth').serializeObject()
     };
@@ -104,7 +104,7 @@ function initMonthChart() {
 }
 
 function initMonthCategoryChart() {
-    var getUrl = '/index.php/person/finance-history/ajax-finance-history-month-category';
+    var getUrl = '/person/finance-history/ajax-finance-history-month-category';
     var getData = {
         "params": {}
     };
@@ -158,7 +158,7 @@ function initMonthCategoryChart() {
 }
 
 function initYearCategoryChart() {
-    var getUrl = '/index.php/person/finance-history/ajax-finance-history-year-category';
+    var getUrl = '/person/finance-history/ajax-finance-history-year-category';
     var getData = {
         "params": {}
     };

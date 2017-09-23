@@ -7,7 +7,7 @@ $('#baidu_music_url').on('keydown', function (event) {
 $('#btn_generate_download_link').on('click', function () {
     var musicUrl = $.trim($('#baidu_music_url').val());
     if (musicUrl != '') {
-        var getUrl = '/index.php/index/get-baidu-music-link';
+        var getUrl = '/index/get-baidu-music-link';
         var getData = {
             "params": {
                 "downloadLink": musicUrl

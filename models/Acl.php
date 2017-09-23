@@ -28,14 +28,14 @@ class Acl
                         ];
                         return $jsonArray;
                     } else {
-                        return '/index.php/error/no-permission';
+                        return '/error/no-permission';
                     }
                 }
             } else {
                 return true;
             }
         } else {
-            return '/index.php/login/login';
+            return '/login/login';
         }
     }
 

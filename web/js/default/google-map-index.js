@@ -7,7 +7,7 @@ $('#location').on('keydown', function (event) {
 $('#btb_mark_location').on('click', function () {
     var location = $.trim($('#location').val());
     if (location != '') {
-        var getUrl = '/index.php/google-map/mark-location';
+        var getUrl = '/google-map/mark-location';
         var getData = {
             "params": {
                 "location": location
