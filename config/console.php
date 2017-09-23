@@ -8,7 +8,7 @@ $db = require(__DIR__ . '/db.php');
 return [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log', 'gii'],
+    'bootstrap' => ['log', 'gii', 'raven'],
     'controllerNamespace' => 'app\console\controllers',
     'modules' => [
         'gii' => 'yii\gii\Module',
@@ -17,11 +17,16 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'raven' => [
+            'class' => 'e96\sentry\ErrorHandler',
+            'dsn' => 'https://b56f336f488d4aba884a7ad2175c6a30:a071d1f27634436196a126b0fd50dcc3@sentry.io/218061', // Sentry DSN
+        ],
         'log' => [
             'targets' => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class' => 'e96\sentry\Target',
                     'levels' => ['error', 'warning'],
+                    'dsn' => 'https://b56f336f488d4aba884a7ad2175c6a30:a071d1f27634436196a126b0fd50dcc3@sentry.io/218061', // Sentry DSN
                 ],
             ],
         ],
